@@ -22,10 +22,8 @@ declare(strict_types=1);
  *
  */
 
-namespace OCA\LDAPContactsBackend\AppInfo;
+namespace OCA\LDAPContactsBackend\Exception;
 
-use OCP\AppFramework\App;
+class InvalidConfiguration extends \Exception {
 
-class Application extends App {
-	public const APPID = 'ldap_contacts_backend';
 }
