@@ -11,5 +11,7 @@
             "email": "blizzz@arthur-schiwon.de"
         }
     ],
-    "require": {}
+    "require": {
+        "symfony/ldap": "^5.0"
+    }
 }

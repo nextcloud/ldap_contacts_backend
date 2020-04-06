@@ -22,32 +22,6 @@ declare(strict_types=1);
  *
  */
 
-namespace OCA\LDAPContactsBackend\AppInfo;
+require_once __DIR__ . '/../vendor/autoload.php';
 
-use OCA\LDAPContactsBackend\Service\AddressBookProvider;
-use OCP\AppFramework\App;
-use OCP\Contacts\IManager;
-
-class Application extends App {
-	public const APPID = 'ldap_contacts_backend';
-
-	public function __construct() {
-		parent::__construct(self::APPID);
-		$this->registerListeners();
-	}
-
-	private function registerListeners(): void {
-		$cm = $this->getContainer()->getServer()->getContactsManager();
-		$cm->register(function() use ($cm) {
-			$this->registerAddressBook($cm);
-		});
-	}
-
-	private function registerAddressBook(IManager $cm) {
-		/** @var AddressBookProvider $provider */
-		$provider = $this->getContainer()->query(AddressBookProvider::class);
-		foreach ($provider->fetchAllForContactsStore() as $ab) {
-			$cm->registerAddressBook($ab);
-		}
-	}
-}
+\OC::$server->query(\OCA\LDAPContactsBackend\AppInfo\Application::class);
