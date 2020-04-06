@@ -28,8 +28,9 @@ use OCA\LDAPContactsBackend\AppInfo\Application;
 use OCA\LDAPContactsBackend\Exception\InvalidConfiguration;
 
 class Configuration implements \JsonSerializable {
-	protected  const PROPERTIES = [
+	public const PROPERTIES = [
 		'id',
+		'addressBookDisplayName',
 		'host',
 		'port',
 		'agentDn',
@@ -39,7 +40,7 @@ class Configuration implements \JsonSerializable {
 		'attributeMapping',
 		'enabled',
 		'tEnc',
-		'filter'
+		'filter',
 	];
 
 	protected $data = [];
@@ -140,6 +141,15 @@ class Configuration implements \JsonSerializable {
 
 	public function setFilter(string $filter): Configuration {
 		$this->data['filter'] = $filter;
+		return $this;
+	}
+
+	public function getAddressBookDisplayName(): string {
+		return $this->data['addressBookDisplayName'] ?? '';
+	}
+
+	public function setAddressBookDisplayName(string $name): Configuration {
+		$this->data['addressBookDisplayName'] = trim($name);
 		return $this;
 	}
 

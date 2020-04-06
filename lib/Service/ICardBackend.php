@@ -22,14 +22,20 @@ declare(strict_types=1);
  *
  */
 
-namespace OCA\LDAPContactsBackend\AppInfo;
+namespace OCA\LDAPContactsBackend\Service;
 
-use OCP\AppFramework\App;
+use OCA\LDAPContactsBackend\Model\Card;
 
-class Application extends App {
-	public const APPID = 'ldap_contacts_backend';
+interface ICardBackend {
+	public function getURI(): string;
 
-	public function __construct() {
-		parent::__construct(self::APPID);
-	}
+	public function getDisplayName(): string;
+
+	public function getCard($name): Card;
+
+	/**
+	 * @return Card[]
+	 */
+	public function getCards(): array;
+
 }

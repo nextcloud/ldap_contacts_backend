@@ -22,14 +22,6 @@ declare(strict_types=1);
  *
  */
 
-namespace OCA\LDAPContactsBackend\AppInfo;
+namespace OCA\LDAPContactsBackend\Exception;
 
-use OCP\AppFramework\App;
-
-class Application extends App {
-	public const APPID = 'ldap_contacts_backend';
-
-	public function __construct() {
-		parent::__construct(self::APPID);
-	}
-}
+class RecordNotFound extends \Exception {}

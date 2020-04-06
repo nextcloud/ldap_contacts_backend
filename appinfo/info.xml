@@ -20,4 +20,9 @@
 		<lib>ldap</lib>
 		<nextcloud min-version="18" max-version="19"/>
     </dependencies>
+	<sabre>
+		<address-book-plugins>
+			<plugin>OCA\LDAPContactsBackend\Service\AddressBookProvider</plugin>
+		</address-book-plugins>
+	</sabre>
 </info>
