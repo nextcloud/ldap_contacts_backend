@@ -20,6 +20,11 @@
 		<lib>ldap</lib>
 		<nextcloud min-version="18" max-version="19"/>
     </dependencies>
+	<commands>
+		<command>OCA\LDAPContactsBackend\Command\Add</command>
+		<command>OCA\LDAPContactsBackend\Command\ListConfigs</command>
+		<command>OCA\LDAPContactsBackend\Command\Delete</command>
+	</commands>
 	<sabre>
 		<address-book-plugins>
 			<plugin>OCA\LDAPContactsBackend\Service\AddressBookProvider</plugin>
