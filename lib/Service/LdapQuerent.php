@@ -60,7 +60,7 @@ class LdapQuerent {
 		$results = [];
 		$filter = $filter ??  $this->configuration->getFilter();
 		foreach ($this->configuration->getBases() as $base) {
-			$query = $ldap->query($base, $filter, ['pageSize' => 500, 'limit' => $limit]);
+			$query = $ldap->query($base, $filter, ['pageSize' => 500, 'sizeLimit' => $limit]);
 			array_merge($results, $query->execute()->toArray());
 		}
 		return $results;
@@ -104,6 +104,8 @@ class LdapQuerent {
 			$this->configuration->getAgentDn(),
 			$this->configuration->getAgentPassword()
 		);
+
+		return $this->ldap;
 	}
 
 }
