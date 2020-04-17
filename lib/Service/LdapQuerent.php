@@ -24,8 +24,10 @@ declare(strict_types=1);
 
 namespace OCA\LDAPContactsBackend\Service;
 
+use OCA\LDAPContactsBackend\AppInfo\Application;
 use OCA\LDAPContactsBackend\Exception\RecordNotFound;
 use OCA\LDAPContactsBackend\Model\Configuration as ConfigurationModel;
+use OCP\ILogger;
 use Symfony\Component\Ldap\Adapter\QueryInterface;
 use Symfony\Component\Ldap\Entry;
 use Symfony\Component\Ldap\Ldap;
@@ -36,9 +38,12 @@ class LdapQuerent {
 	private $configuration;
 
 	protected $ldap;
+	/** @var ILogger */
+	private $logger;
 
-	public function __construct(ConfigurationModel $configuration) {
+	public function __construct(ConfigurationModel $configuration, ILogger $logger) {
 		$this->configuration = $configuration;
+		$this->logger = $logger;
 	}
 
 	/**
@@ -46,20 +51,23 @@ class LdapQuerent {
 	 */
 	public function fetchOne(string $dn): Entry {
 		$ldap = $this->getClient();
-		$query = $ldap->query($dn, $this->configuration->getFilter(), ['scope'=> QueryInterface::SCOPE_BASE]);
+		$query = $ldap->query($dn, $this->configuration->getFilter(), ['scope' => QueryInterface::SCOPE_BASE]);
 		$collection = $query->execute();
-		foreach ($collection->getIterator() as $record) {
-			return $record;
+		try {
+			foreach ($collection->getIterator() as $record) {
+				return $record;
+			}
+		} catch (\Exception $e) {
+			$this->logger->logException($e, ['app' => Application::APPID]);
 		}
 		throw new RecordNotFound();
-
 	}
 
 	public function fetchAll(string $filter = null, int $limit = 0): \Generator {
 		$ldap = $this->getClient();
-		$filter = $filter ??  $this->configuration->getFilter();
+		$filter = $filter ?? $this->configuration->getFilter();
 		foreach ($this->configuration->getBases() as $base) {
-			$query = $ldap->query($base, $filter, ['pageSize' => 500, 'sizeLimit' => $limit, 'timeout' =>  0]);
+			$query = $ldap->query($base, $filter, ['pageSize' => 500, 'sizeLimit' => $limit, 'timeout' => 0]);
 			$subset = $query->execute()->toArray();
 			foreach ($subset as &$record) {
 				yield $record;

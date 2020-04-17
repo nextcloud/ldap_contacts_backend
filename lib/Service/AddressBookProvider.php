@@ -33,9 +33,12 @@ class AddressBookProvider implements IAddressBookProvider {
 
 	/** @var Configuration */
 	private $configurationService;
+	/** @var LdapQuerentFactory */
+	private $ldapQuerentFactory;
 
-	public function __construct(Configuration $configurationService) {
+	public function __construct(Configuration $configurationService, LdapQuerentFactory $ldapQuerentFactory) {
 		$this->configurationService = $configurationService;
+		$this->ldapQuerentFactory = $ldapQuerentFactory;
 	}
 
 	/**
@@ -51,7 +54,7 @@ class AddressBookProvider implements IAddressBookProvider {
 	public function fetchAllForAddressBookHome(string $principalUri): array {
 		$configs = array_filter(
 			$this->configurationService->getAll(),
-			function(ConfigurationModel $config) {
+			function (ConfigurationModel $config) {
 				return $config->isEnabled();
 			}
 		);
@@ -59,8 +62,7 @@ class AddressBookProvider implements IAddressBookProvider {
 		$addressBooks = [];
 		foreach ($configs as $config) {
 			/** @var ConfigurationModel $config */
-			$ldap = new LdapQuerent($config);
-			$cardBackend = new LdapCardBackend($ldap, $config);
+			$cardBackend = new LdapCardBackend($this->ldapQuerentFactory->get($config), $config);
 			$addressBooks[] = new AddressBook(Application::APPID, $cardBackend);
 		}
 		return $addressBooks;
@@ -72,7 +74,7 @@ class AddressBookProvider implements IAddressBookProvider {
 	public function hasAddressBookInAddressBookHome(string $principalUri, string $uri): bool {
 		foreach ($this->configurationService->getAll() as $config) {
 			/** @var ConfigurationModel $config */
-			if($config->isEnabled()) {
+			if ($config->isEnabled()) {
 				return true;
 			}
 		}
@@ -85,9 +87,8 @@ class AddressBookProvider implements IAddressBookProvider {
 	public function getAddressBookInAddressBookHome(string $principalUri, string $uri): ?ExternalAddressBook {
 		foreach ($this->configurationService->getAll() as $config) {
 			/** @var ConfigurationModel $config */
-			if($config->isEnabled() && (string)$config->getId() === $uri) {
-				$ldap = new LdapQuerent($config);
-				$cardBackend = new LdapCardBackend($ldap, $config);
+			if ($config->isEnabled() && (string)$config->getId() === $uri) {
+				$cardBackend = new LdapCardBackend($this->ldapQuerentFactory->get($config), $config);
 				return new AddressBook($principalUri, $cardBackend);
 			}
 		}
