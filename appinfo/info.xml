@@ -22,6 +22,7 @@
     </dependencies>
 	<commands>
 		<command>OCA\LDAPContactsBackend\Command\Add</command>
+		<command>OCA\LDAPContactsBackend\Command\Edit</command>
 		<command>OCA\LDAPContactsBackend\Command\ListConfigs</command>
 		<command>OCA\LDAPContactsBackend\Command\Delete</command>
 	</commands>
