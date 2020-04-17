@@ -58,6 +58,7 @@ class LdapCardBackend implements ICardBackend {
 		$vCards = [];
 		foreach ($records as $record) {
 			 $vCards[] = $this->entryToCard($record);
+			 unset($record);
 		}
 		return $vCards;
 	}

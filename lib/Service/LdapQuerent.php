@@ -55,18 +55,19 @@ class LdapQuerent {
 
 	}
 
-	public function fetchAll(string $filter = null, int $limit = 0): array {
+	public function fetchAll(string $filter = null, int $limit = 0): \Generator {
 		$ldap = $this->getClient();
-		$results = [];
 		$filter = $filter ??  $this->configuration->getFilter();
 		foreach ($this->configuration->getBases() as $base) {
-			$query = $ldap->query($base, $filter, ['pageSize' => 500, 'sizeLimit' => $limit]);
-			array_merge($results, $query->execute()->toArray());
+			$query = $ldap->query($base, $filter, ['pageSize' => 500, 'sizeLimit' => $limit, 'timeout' =>  0]);
+			$subset = $query->execute()->toArray();
+			foreach ($subset as &$record) {
+				yield $record;
+			}
 		}
-		return $results;
 	}
 
-	public function find(string $search): array {
+	public function find(string $search): \Generator {
 		$ldap = $this->getClient();
 		$search = $ldap->escape($search);
 
@@ -77,7 +78,9 @@ class LdapQuerent {
 		$searchFilter .= ')';
 		$filter = '(&(' . $this->configuration->getFilter() . ')' . $searchFilter . ')';
 
-		return $this->fetchAll($filter, 10);
+		foreach ($this->fetchAll($filter, 10) as $record) {
+			yield $record;
+		}
 	}
 
 	protected function getClient(): Ldap {
