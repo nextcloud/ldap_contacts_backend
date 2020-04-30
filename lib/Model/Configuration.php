@@ -50,7 +50,7 @@ class Configuration implements \JsonSerializable {
 	}
 
 	public function setHost(string $host): Configuration {
-		$this->data['host'] = $host;
+		$this->data['host'] = preg_replace('/^ldap(s)?:\/\//','', $host);
 		return $this;
 	}
 
