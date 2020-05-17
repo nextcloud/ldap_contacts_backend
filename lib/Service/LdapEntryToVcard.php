@@ -32,7 +32,7 @@ class LdapEntryToVcard {
 		'FN' => 'displayName',
 		'URI' => 'dn',
 		'EMAIL' => 'mail',
-		'PHOTO' => 'jpegPhoto',
+		//'PHOTO:data:image/jpeg;base64,' => 'jpegPhoto',
 		'ADR' => 'registeredAddress',
 		'TEL' => 'telephoneNumber', // mobile??
 		'TITLE' => 'title',
@@ -40,15 +40,21 @@ class LdapEntryToVcard {
 	];
 
 	static public function convert(Entry $record, ConfigurationModel $configuration): array {
-		$vCardData = [];
+		$vCardData = ['VERSION' => 4.0];
 		$mappings = array_merge(self::DEFAULT_MAPPING, $configuration->getAttributeMapping());
 		foreach ($mappings as $vcProperty => $lAttributes) {
 			$lAttributes = explode(',', $lAttributes);
 			foreach ($lAttributes  as $lAttribute) {
 				$lAttribute = trim($lAttribute);
-				if ($record->hasAttribute($lAttribute)) {
+				if($lAttribute === 'dn') {
+					$vCardData[strtoupper($vcProperty)] = [];
+					$vCardData[strtoupper($vcProperty)] = base64_encode($record->getDn());
+				} else if ($record->hasAttribute($lAttribute)) {
 					$vCardData[strtoupper($vcProperty)] = [];
 					foreach ($record->getAttribute($lAttribute) as $value) {
+						if(strpos($vcProperty, 'base64') !== false) {
+							$value = base64_encode($value);
+						}
 						$vCardData[strtoupper($vcProperty)][] = $value;
 					}
 				}

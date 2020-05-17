@@ -28,6 +28,7 @@ use OCA\LDAPContactsBackend\Model\Card;
 use OCA\LDAPContactsBackend\Model\Configuration as ConfigurationModel;
 use Sabre\VObject\Component\VCard;
 use Symfony\Component\Ldap\Entry;
+use function base64_decode;
 
 class LdapCardBackend implements ICardBackend {
 	/** @var LdapQuerent */
@@ -49,11 +50,13 @@ class LdapCardBackend implements ICardBackend {
 	}
 
 	public function getCard($name): Card {
-		$record = $this->ldapQuerent->fetchOne($name);
+		$record = $this->ldapQuerent->fetchOne(base64_decode($name));
 		return $this->entryToCard($record);
 	}
 
 	public function getCards(): array {
+		// to appear in the contacts app, this must really return everything
+		// as search is only by client in the presented contacts
 		$records = $this->ldapQuerent->fetchAll();
 		$vCards = [];
 		foreach ($records as $record) {
