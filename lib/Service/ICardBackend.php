@@ -36,6 +36,11 @@ interface ICardBackend {
 	/**
 	 * @return Card[]
 	 */
+	public function searchCards(string $pattern): array;
+
+	/**
+	 * @return Card[]
+	 */
 	public function getCards(): array;
 
 }

@@ -51,6 +51,10 @@ class Card implements ICard {
 		return (new VCard($this->vCardData))->serialize();
 	}
 
+	public function getData(): array {
+		return $this->vCardData;
+	}
+
 	/**
 	 * @inheritDoc
 	 */

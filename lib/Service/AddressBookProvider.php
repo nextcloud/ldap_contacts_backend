@@ -94,4 +94,24 @@ class AddressBookProvider implements IAddressBookProvider {
 		}
 		return null;
 	}
+
+	/**
+	 * @return ContactsAddressBook[]
+	 */
+	public function fetchAllForContactsStore(): array {
+		$configs = array_filter(
+			$this->configurationService->getAll(),
+			function (ConfigurationModel $config) {
+				return $config->isEnabled();
+			}
+		);
+
+		$addressBooks = [];
+		foreach ($configs as $config) {
+			/** @var ConfigurationModel $config */
+			$cardBackend = new LdapCardBackend($this->ldapQuerentFactory->get($config), $config);
+			$addressBooks[] = new ContactsAddressBook($cardBackend);
+		}
+		return $addressBooks;
+	}
 }

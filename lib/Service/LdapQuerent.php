@@ -84,7 +84,7 @@ class LdapQuerent {
 			$searchFilter .= '(' . $attribute . '=' . $search . '*)';
 		}
 		$searchFilter .= ')';
-		$filter = '(&(' . $this->configuration->getFilter() . ')' . $searchFilter . ')';
+		$filter = '(&' . $this->configuration->getFilter() . $searchFilter . ')';
 
 		foreach ($this->fetchAll($filter, 10) as $record) {
 			yield $record;

@@ -54,6 +54,16 @@ class LdapCardBackend implements ICardBackend {
 		return $this->entryToCard($record);
 	}
 
+	public function searchCards(string $pattern): array  {
+		$records = $this->ldapQuerent->find($pattern);
+		$vCards = [];
+		foreach ($records as $record) {
+			$vCards[] = $this->entryToCard($record);
+			unset($record);
+		}
+		return $vCards;
+	}
+
 	public function getCards(): array {
 		// to appear in the contacts app, this must really return everything
 		// as search is only by client in the presented contacts
