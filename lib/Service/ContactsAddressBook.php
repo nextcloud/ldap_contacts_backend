@@ -30,9 +30,12 @@ use OCP\IAddressBook;
 class ContactsAddressBook implements IAddressBook {
 	/** @var ICardBackend */
 	private $cardBackend;
+	/** @var string */
+	private $principalURI;
 
-	public function __construct(ICardBackend $cardBackend) {
+	public function __construct(ICardBackend $cardBackend, string $principalURI) {
 		$this->cardBackend = $cardBackend;
+		$this->principalURI = $principalURI;
 	}
 
 	public function getKey() {
@@ -40,7 +43,8 @@ class ContactsAddressBook implements IAddressBook {
 	}
 
 	public function getUri(): string {
-		return $this->cardBackend->getURI();
+		// this will have the URL part to direct to the contacts app
+		return $this->principalURI;
 	}
 
 	public function getDisplayName() {
@@ -61,6 +65,7 @@ class ContactsAddressBook implements IAddressBook {
 		$result = [];
 		foreach ($vCards as $card) {
 			$record = $card->getData();
+			//FN field must be flattened for contacts menu
 			$record['FN'] = array_pop($record['FN']);
 			$result[] = $record;
 		}

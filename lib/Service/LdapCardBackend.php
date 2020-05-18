@@ -26,7 +26,6 @@ namespace OCA\LDAPContactsBackend\Service;
 
 use OCA\LDAPContactsBackend\Model\Card;
 use OCA\LDAPContactsBackend\Model\Configuration as ConfigurationModel;
-use Sabre\VObject\Component\VCard;
 use Symfony\Component\Ldap\Entry;
 use function base64_decode;
 

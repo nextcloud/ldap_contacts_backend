@@ -110,7 +110,9 @@ class AddressBookProvider implements IAddressBookProvider {
 		foreach ($configs as $config) {
 			/** @var ConfigurationModel $config */
 			$cardBackend = new LdapCardBackend($this->ldapQuerentFactory->get($config), $config);
-			$addressBooks[] = new ContactsAddressBook($cardBackend);
+			$addressBook = new AddressBook(Application::APPID, $cardBackend);
+			$addressBooks[] = new ContactsAddressBook($cardBackend, $addressBook->getName());
+			unset($addressBook);
 		}
 		return $addressBooks;
 	}
