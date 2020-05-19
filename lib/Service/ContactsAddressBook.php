@@ -33,7 +33,7 @@ class ContactsAddressBook implements IAddressBook {
 	/** @var string */
 	private $principalURI;
 
-	public function __construct(ICardBackend $cardBackend, string $principalURI) {
+	public function __construct(ICardBackend $cardBackend, ?string $principalURI = null) {
 		$this->cardBackend = $cardBackend;
 		$this->principalURI = $principalURI;
 	}
@@ -44,7 +44,7 @@ class ContactsAddressBook implements IAddressBook {
 
 	public function getUri(): string {
 		// this will have the URL part to direct to the contacts app
-		return $this->principalURI;
+		return $this->principalURI ?? $this->cardBackend->getURI();
 	}
 
 	public function getDisplayName() {
@@ -67,6 +67,8 @@ class ContactsAddressBook implements IAddressBook {
 			$record = $card->getData();
 			//FN field must be flattened for contacts menu
 			$record['FN'] = array_pop($record['FN']);
+			// prevents linking to contacts if UID is set
+			$record['isLocalSystemBook'] = true;
 			$result[] = $record;
 		}
 		return $result;

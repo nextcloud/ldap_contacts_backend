@@ -63,7 +63,7 @@ class LdapEntryToVcard {
 		if(!isset($vCardData['FN'])) {
 			throw new \RuntimeException('Invalid record or configuration for vcard');
 		}
-		$vCardData['UID'] = $vCardData['URI'];
+		// $vCardData['UID'] = $vCardData['URI'];
 		return $vCardData;
 	}
 }

@@ -26,9 +26,4 @@
 		<command>OCA\LDAPContactsBackend\Command\ListConfigs</command>
 		<command>OCA\LDAPContactsBackend\Command\Delete</command>
 	</commands>
-	<sabre>
-		<address-book-plugins>
-			<plugin>OCA\LDAPContactsBackend\Service\AddressBookProvider</plugin>
-		</address-book-plugins>
-	</sabre>
 </info>
