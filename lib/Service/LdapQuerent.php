@@ -66,8 +66,12 @@ class LdapQuerent {
 	public function fetchAll(string $filter = null, int $limit = 0): \Generator {
 		$ldap = $this->getClient();
 		$filter = $filter ?? $this->configuration->getFilter();
+		$options = ['sizeLimit' => $limit, 'timeout' => 0];
+		if($limit === 0 || $limit > 500) {
+			$options['pageSize'] = 500;
+		}
 		foreach ($this->configuration->getBases() as $base) {
-			$query = $ldap->query($base, $filter, ['pageSize' => 500, 'sizeLimit' => $limit, 'timeout' => 0]);
+			$query = $ldap->query($base, $filter, $options);
 			$subset = $query->execute()->toArray();
 			foreach ($subset as &$record) {
 				yield $record;
@@ -75,7 +79,7 @@ class LdapQuerent {
 		}
 	}
 
-	public function find(string $search): \Generator {
+	public function find(string $search, int $limit = 0): \Generator {
 		$ldap = $this->getClient();
 		$search = $ldap->escape($search);
 
@@ -86,7 +90,7 @@ class LdapQuerent {
 		$searchFilter .= ')';
 		$filter = '(&' . $this->configuration->getFilter() . $searchFilter . ')';
 
-		foreach ($this->fetchAll($filter, 10) as $record) {
+		foreach ($this->fetchAll($filter, $limit) as $record) {
 			yield $record;
 		}
 	}

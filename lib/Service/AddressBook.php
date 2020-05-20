@@ -53,6 +53,7 @@ class AddressBook extends ExternalAddressBook {
 
 	/**
 	 * @inheritDoc
+	 * @throws RecordNotFound
 	 */
 	function getChild($name) {
 		return $this->cardBackend->getCard($name);

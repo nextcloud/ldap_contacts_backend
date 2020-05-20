@@ -27,7 +27,9 @@ namespace OCA\LDAPContactsBackend\Service;
 use OCA\DAV\CardDAV\Integration\ExternalAddressBook;
 use OCA\DAV\CardDAV\Integration\IAddressBookProvider;
 use OCA\LDAPContactsBackend\AppInfo\Application;
+use OCA\LDAPContactsBackend\Exception\ConfigurationNotFound;
 use OCA\LDAPContactsBackend\Model\Configuration as ConfigurationModel;
+use OCP\IConfig;
 
 class AddressBookProvider implements IAddressBookProvider {
 
@@ -35,10 +37,17 @@ class AddressBookProvider implements IAddressBookProvider {
 	private $configurationService;
 	/** @var LdapQuerentFactory */
 	private $ldapQuerentFactory;
+	/** @var IConfig */
+	private $config;
 
-	public function __construct(Configuration $configurationService, LdapQuerentFactory $ldapQuerentFactory) {
+	public function __construct(
+		Configuration $configurationService,
+		LdapQuerentFactory $ldapQuerentFactory,
+		IConfig $config
+	) {
 		$this->configurationService = $configurationService;
 		$this->ldapQuerentFactory = $ldapQuerentFactory;
+		$this->config = $config;
 	}
 
 	/**
@@ -96,6 +105,15 @@ class AddressBookProvider implements IAddressBookProvider {
 	}
 
 	/**
+	 * @throws ConfigurationNotFound
+	 */
+	public function getAddressBookById(int $addressBookId) {
+		$config = $this->configurationService->get($addressBookId);
+		$cardBackend = new LdapCardBackend($this->ldapQuerentFactory->get($config), $config);
+		return new AddressBook(Application::APPID, $cardBackend);
+	}
+
+	/**
 	 * @return ContactsAddressBook[]
 	 */
 	public function fetchAllForContactsStore(): array {
@@ -110,7 +128,7 @@ class AddressBookProvider implements IAddressBookProvider {
 		foreach ($configs as $config) {
 			/** @var ConfigurationModel $config */
 			$cardBackend = new LdapCardBackend($this->ldapQuerentFactory->get($config), $config);
-			$addressBooks[] = new ContactsAddressBook($cardBackend);
+			$addressBooks[] = new ContactsAddressBook($cardBackend, $this->config);
 		}
 		return $addressBooks;
 	}

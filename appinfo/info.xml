@@ -26,4 +26,7 @@
 		<command>OCA\LDAPContactsBackend\Command\ListConfigs</command>
 		<command>OCA\LDAPContactsBackend\Command\Delete</command>
 	</commands>
+	<contactsmenu>
+		<provider>OCA\LDAPContactsBackend\Provider\ImportProvider</provider>
+	</contactsmenu>
 </info>

@@ -26,16 +26,20 @@ namespace OCA\LDAPContactsBackend\Service;
 
 use OCP\Constants;
 use OCP\IAddressBook;
+use OCP\IConfig;
 
 class ContactsAddressBook implements IAddressBook {
 	/** @var ICardBackend */
 	private $cardBackend;
 	/** @var string */
 	private $principalURI;
+	/** @var IConfig */
+	private $config;
 
-	public function __construct(ICardBackend $cardBackend, ?string $principalURI = null) {
+	public function __construct(ICardBackend $cardBackend, IConfig $config, ?string $principalURI = null) {
 		$this->cardBackend = $cardBackend;
 		$this->principalURI = $principalURI;
+		$this->config = $config;
 	}
 
 	public function getKey() {
@@ -54,7 +58,8 @@ class ContactsAddressBook implements IAddressBook {
 	public function search($pattern, $searchProperties, $options) {
 		// searchProperties are ignore as we follow search attributes
 		// options worth considering: types
-		$vCards = $this->cardBackend->searchCards($pattern);
+		$limit = $this->config->getSystemValueInt('sharing.maxAutocompleteResults', 25);
+		$vCards = $this->cardBackend->searchCards($pattern, $limit);
 		if(isset($options['offset'])) {
 			$vCards = array_slice($vCards, (int)$options['offset']);
 		}
@@ -69,6 +74,7 @@ class ContactsAddressBook implements IAddressBook {
 			$record['FN'] = array_pop($record['FN']);
 			// prevents linking to contacts if UID is set
 			$record['isLocalSystemBook'] = true;
+			$record['X-NC_LDAP_CONTACTS_ID'] = $this->cardBackend->getURI();
 			$result[] = $record;
 		}
 		return $result;

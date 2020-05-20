@@ -30,7 +30,6 @@ use Symfony\Component\Ldap\Entry;
 class LdapEntryToVcard {
 	private const DEFAULT_MAPPING = [
 		'FN' => 'displayName',
-		'URI' => 'dn',
 		'EMAIL' => 'mail',
 		//'PHOTO:data:image/jpeg;base64,' => 'jpegPhoto',
 		'ADR' => 'registeredAddress',
@@ -63,6 +62,7 @@ class LdapEntryToVcard {
 		if(!isset($vCardData['FN'])) {
 			throw new \RuntimeException('Invalid record or configuration for vcard');
 		}
+		$vCardData['URI'] = base64_encode($record->getDn());
 		// $vCardData['UID'] = $vCardData['URI'];
 		return $vCardData;
 	}

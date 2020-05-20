@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace OCA\LDAPContactsBackend\Service;
 
+use OCA\LDAPContactsBackend\Exception\RecordNotFound;
 use OCA\LDAPContactsBackend\Model\Card;
 use OCA\LDAPContactsBackend\Model\Configuration as ConfigurationModel;
 use Symfony\Component\Ldap\Entry;
@@ -48,13 +49,16 @@ class LdapCardBackend implements ICardBackend {
 		return $this->configuration->getAddressBookDisplayName();
 	}
 
+	/**
+	 * @throws RecordNotFound
+	 */
 	public function getCard($name): Card {
 		$record = $this->ldapQuerent->fetchOne(base64_decode($name));
 		return $this->entryToCard($record);
 	}
 
-	public function searchCards(string $pattern): array  {
-		$records = $this->ldapQuerent->find($pattern);
+	public function searchCards(string $pattern, int $limit = 0): array  {
+		$records = $this->ldapQuerent->find($pattern, $limit);
 		$vCards = [];
 		foreach ($records as $record) {
 			$vCards[] = $this->entryToCard($record);

@@ -22,29 +22,8 @@ declare(strict_types=1);
  *
  */
 
-namespace OCA\LDAPContactsBackend\Service;
-
-use OCA\LDAPContactsBackend\Exception\RecordNotFound;
-use OCA\LDAPContactsBackend\Model\Card;
-
-interface ICardBackend {
-	public function getURI(): string;
-
-	public function getDisplayName(): string;
-
-	/**
-	 * @throws RecordNotFound
-	 */
-	public function getCard($name): Card;
-
-	/**
-	 * @return Card[]
-	 */
-	public function searchCards(string $pattern): array;
-
-	/**
-	 * @return Card[]
-	 */
-	public function getCards(): array;
-
-}
+return [
+	'routes' => [
+		['name' => 'contacts#import', 'url' => '/import/{sourceId}/{contactId}', 'verb' => 'GET'],
+	],
+];
