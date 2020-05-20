@@ -26,6 +26,7 @@ namespace OCA\LDAPContactsBackend\Provider;
 
 use OC\Security\CSRF\CsrfTokenManager;
 use OCA\LDAPContactsBackend\AppInfo\Application;
+use OCA\LDAPContactsBackend\Service\ContactsAddressBook;
 use OCP\App\IAppManager;
 use OCP\Contacts\ContactsMenu\IActionFactory;
 use OCP\Contacts\ContactsMenu\IEntry;
@@ -65,7 +66,7 @@ class ImportProvider implements IProvider {
 			return;
 		}
 
-		$configId = $entry->getProperty('X-NC_LDAP_CONTACTS_ID');
+		$configId = $entry->getProperty(ContactsAddressBook::DAV_PROPERTY_SOURCE);
 		if($configId === null) {
 			return;
 		}

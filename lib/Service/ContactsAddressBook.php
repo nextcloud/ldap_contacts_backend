@@ -36,6 +36,8 @@ class ContactsAddressBook implements IAddressBook {
 	/** @var IConfig */
 	private $config;
 
+	public const DAV_PROPERTY_SOURCE = 'X-NC_LDAP_CONTACTS_ID';
+
 	public function __construct(ICardBackend $cardBackend, IConfig $config, ?string $principalURI = null) {
 		$this->cardBackend = $cardBackend;
 		$this->principalURI = $principalURI;
@@ -74,7 +76,7 @@ class ContactsAddressBook implements IAddressBook {
 			$record['FN'] = array_pop($record['FN']);
 			// prevents linking to contacts if UID is set
 			$record['isLocalSystemBook'] = true;
-			$record['X-NC_LDAP_CONTACTS_ID'] = $this->cardBackend->getURI();
+			$record[self::DAV_PROPERTY_SOURCE] = $this->cardBackend->getURI();
 			$result[] = $record;
 		}
 		return $result;
