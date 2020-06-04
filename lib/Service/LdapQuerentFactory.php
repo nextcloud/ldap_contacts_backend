@@ -22,32 +22,20 @@ declare(strict_types=1);
  *
  */
 
-namespace OCA\LDAPContactsBackend\AppInfo;
+namespace OCA\LDAPContactsBackend\Service;
 
-use OCA\LDAPContactsBackend\Service\AddressBookProvider;
-use OCP\AppFramework\App;
-use OCP\Contacts\IManager;
+use OCA\LDAPContactsBackend\Model\Configuration as ConfigurationModel;
+use OCP\ILogger;
 
-class Application extends App {
-	public const APPID = 'ldap_contacts_backend';
+class LdapQuerentFactory {
+	/** @var ILogger */
+	private $logger;
 
-	public function __construct() {
-		parent::__construct(self::APPID);
-		$this->registerListeners();
+	public function __construct(ILogger $logger) {
+		$this->logger = $logger;
 	}
 
-	private function registerListeners(): void {
-		$cm = $this->getContainer()->getServer()->getContactsManager();
-		$cm->register(function() use ($cm) {
-			$this->registerAddressBook($cm);
-		});
-	}
-
-	private function registerAddressBook(IManager $cm) {
-		/** @var AddressBookProvider $provider */
-		$provider = $this->getContainer()->query(AddressBookProvider::class);
-		foreach ($provider->fetchAllForContactsStore() as $ab) {
-			$cm->registerAddressBook($ab);
-		}
+	public function get(ConfigurationModel $model) {
+		return new LdapQuerent($model, $this->logger);
 	}
 }

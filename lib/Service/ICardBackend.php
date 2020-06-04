@@ -22,32 +22,29 @@ declare(strict_types=1);
  *
  */
 
-namespace OCA\LDAPContactsBackend\AppInfo;
+namespace OCA\LDAPContactsBackend\Service;
 
-use OCA\LDAPContactsBackend\Service\AddressBookProvider;
-use OCP\AppFramework\App;
-use OCP\Contacts\IManager;
+use OCA\LDAPContactsBackend\Exception\RecordNotFound;
+use OCA\LDAPContactsBackend\Model\Card;
 
-class Application extends App {
-	public const APPID = 'ldap_contacts_backend';
+interface ICardBackend {
+	public function getURI(): string;
 
-	public function __construct() {
-		parent::__construct(self::APPID);
-		$this->registerListeners();
-	}
+	public function getDisplayName(): string;
 
-	private function registerListeners(): void {
-		$cm = $this->getContainer()->getServer()->getContactsManager();
-		$cm->register(function() use ($cm) {
-			$this->registerAddressBook($cm);
-		});
-	}
+	/**
+	 * @throws RecordNotFound
+	 */
+	public function getCard($name): Card;
 
-	private function registerAddressBook(IManager $cm) {
-		/** @var AddressBookProvider $provider */
-		$provider = $this->getContainer()->query(AddressBookProvider::class);
-		foreach ($provider->fetchAllForContactsStore() as $ab) {
-			$cm->registerAddressBook($ab);
-		}
-	}
+	/**
+	 * @return Card[]
+	 */
+	public function searchCards(string $pattern): array;
+
+	/**
+	 * @return Card[]
+	 */
+	public function getCards(): array;
+
 }

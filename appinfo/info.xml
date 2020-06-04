@@ -18,6 +18,15 @@
     <dependencies>
 		<php min-version="7.2"/>
 		<lib>ldap</lib>
-		<nextcloud min-version="18" max-version="19"/>
+		<nextcloud min-version="19" max-version="20"/>
     </dependencies>
+	<commands>
+		<command>OCA\LDAPContactsBackend\Command\Add</command>
+		<command>OCA\LDAPContactsBackend\Command\Edit</command>
+		<command>OCA\LDAPContactsBackend\Command\ListConfigs</command>
+		<command>OCA\LDAPContactsBackend\Command\Delete</command>
+	</commands>
+	<contactsmenu>
+		<provider>OCA\LDAPContactsBackend\Provider\ImportProvider</provider>
+	</contactsmenu>
 </info>

@@ -136,31 +136,31 @@ class Configuration {
 
 	private function loadCredentials(ConfigurationModel $model) {
 		$model->setAgentDN((string)$this->credentialsManager->retrieve(
-			null,
+			'',
 			$this->getCredentialsDNKey($model->getId())
 		));
 		$model->setAgentPassword((string)$this->credentialsManager->retrieve(
-			null,
+			'',
 			$this->getCredentialsPwdKey($model->getId())
 		));
 	}
 
 	private function saveCredentials(ConfigurationModel $model): void {
 		$this->credentialsManager->store(
-			null,
+			'',
 			$this->getCredentialsDNKey($model->getId()),
 			$model->getAgentDN()
 		);
 		$this->credentialsManager->store(
-			null,
+			'',
 			$this->getCredentialsPwdKey($model->getId()),
 			$model->getAgentPassword()
 		);
 	}
 
 	private function deleteCredentials(ConfigurationModel $model): void {
-		$this->credentialsManager->delete(null, $this->getCredentialsDNKey($model->getId()));
-		$this->credentialsManager->delete(null, $this->getCredentialsPwdKey($model->getId()));
+		$this->credentialsManager->delete('', $this->getCredentialsDNKey($model->getId()));
+		$this->credentialsManager->delete('', $this->getCredentialsPwdKey($model->getId()));
 	}
 
 	private function getCredentialsDNKey(int $id): string {
