@@ -31,7 +31,7 @@ class LdapEntryToVcard {
 	private const DEFAULT_MAPPING = [
 		'FN' => 'displayName',
 		'EMAIL' => 'mail',
-		//'PHOTO:data:image/jpeg;base64,' => 'jpegPhoto',
+		'PHOTO:data:image/jpeg;base64,' => 'jpegPhoto', // that's hacky
 		'ADR' => 'registeredAddress',
 		'TEL' => 'telephoneNumber', // mobile??
 		'TITLE' => 'title',
@@ -51,7 +51,9 @@ class LdapEntryToVcard {
 				} else if ($record->hasAttribute($lAttribute)) {
 					$vCardData[strtoupper($vcProperty)] = [];
 					foreach ($record->getAttribute($lAttribute) as $value) {
-						if(strpos($vcProperty, 'base64') !== false) {
+						if(strpos($vcProperty, 'base64') !== false
+							|| strpos($vcProperty, 'ENCODING=B') !== false
+						) {
 							$value = base64_encode($value);
 						}
 						$vCardData[strtoupper($vcProperty)][] = $value;

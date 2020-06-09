@@ -24,9 +24,13 @@ declare(strict_types=1);
 
 namespace OCA\LDAPContactsBackend\Service;
 
+use OC\Security\CSRF\CsrfTokenManager;
+use OCA\LDAPContactsBackend\AppInfo\Application;
+use OCA\LDAPContactsBackend\Exception\PhotoServiceUnavailable;
 use OCP\Constants;
 use OCP\IAddressBook;
 use OCP\IConfig;
+use OCP\IURLGenerator;
 
 class ContactsAddressBook implements IAddressBook {
 	/** @var ICardBackend */
@@ -35,13 +39,30 @@ class ContactsAddressBook implements IAddressBook {
 	private $principalURI;
 	/** @var IConfig */
 	private $config;
+	/** @var IURLGenerator */
+	private $urlGenerator;
+	/** @var CsrfTokenManager */
+	private $tokenManager;
+
 
 	public const DAV_PROPERTY_SOURCE = 'X-NC_LDAP_CONTACTS_ID';
+	/** @var PhotoService */
+	private $photoService;
 
-	public function __construct(ICardBackend $cardBackend, IConfig $config, ?string $principalURI = null) {
+	public function __construct(
+		ICardBackend $cardBackend,
+		IConfig $config,
+		IURLGenerator $urlGenerator,
+		CsrfTokenManager $tokenManager,
+		PhotoService $photoService,
+		?string $principalURI = null
+	) {
 		$this->cardBackend = $cardBackend;
 		$this->principalURI = $principalURI;
 		$this->config = $config;
+		$this->urlGenerator = $urlGenerator;
+		$this->tokenManager = $tokenManager;
+		$this->photoService = $photoService;
 	}
 
 	public function getKey() {
@@ -74,6 +95,21 @@ class ContactsAddressBook implements IAddressBook {
 			$record = $card->getData();
 			//FN field must be flattened for contacts menu
 			$record['FN'] = array_pop($record['FN']);
+			if($record[strtoupper('PHOTO:data:image/jpeg;base64,')]) {
+				try {
+					$this->photoService->store($this->cardBackend->getURI(), $record['URI'], $record[strtoupper('PHOTO:data:image/jpeg;base64,')][0]);
+					$photoUrl = $this->urlGenerator->linkToRouteAbsolute(Application::APPID . '.contacts.photo',
+						[
+							'sourceId' => $this->cardBackend->getURI(),
+							'contactId' => $record['URI'],
+							'requesttoken' => $this->tokenManager->getToken()->getEncryptedValue()
+						]);
+					$record['PHOTO'] = 'VALUE=uri:' . $photoUrl;
+				} catch (PhotoServiceUnavailable $e) {
+
+				}
+				unset($record[strtoupper('PHOTO:data:image/jpeg;base64,')]);
+			}
 			// prevents linking to contacts if UID is set
 			$record['isLocalSystemBook'] = true;
 			$record[self::DAV_PROPERTY_SOURCE] = $this->cardBackend->getURI();
