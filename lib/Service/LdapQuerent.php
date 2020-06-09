@@ -66,7 +66,7 @@ class LdapQuerent {
 	public function fetchAll(string $filter = null, int $limit = 0): \Generator {
 		$ldap = $this->getClient();
 		$filter = $filter ?? $this->configuration->getFilter();
-		$options = ['sizeLimit' => $limit, 'timeout' => 0];
+		$options = ['maxItems' => $limit, 'timeout' => 0];
 		if($limit === 0 || $limit > 500) {
 			$options['pageSize'] = 500;
 		}

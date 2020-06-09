@@ -40,7 +40,7 @@ interface ICardBackend {
 	/**
 	 * @return Card[]
 	 */
-	public function searchCards(string $pattern): array;
+	public function searchCards(string $pattern, int $limit = 0): array;
 
 	/**
 	 * @return Card[]
