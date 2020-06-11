@@ -44,7 +44,6 @@ class ContactsAddressBook implements IAddressBook {
 	/** @var CsrfTokenManager */
 	private $tokenManager;
 
-
 	public const DAV_PROPERTY_SOURCE = 'X-NC_LDAP_CONTACTS_ID';
 	/** @var PhotoService */
 	private $photoService;

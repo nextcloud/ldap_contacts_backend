@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace OCA\LDAPContactsBackend\Controller;
 
+use OCP\L10N\IFactory;
 use OCA\DAV\DAV\Sharing\IShareable;
 use OCA\LDAPContactsBackend\AppInfo\Application;
 use OCA\LDAPContactsBackend\Exception\ConfigurationNotFound;
@@ -40,7 +41,6 @@ use OCP\AppFramework\Http\Response;
 use OCP\Constants;
 use OCP\Contacts\IManager;
 use OCP\IAddressBook;
-use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IRequest;
 use OCP\IURLGenerator;
@@ -56,12 +56,12 @@ class ContactsController extends Controller {
 	private $userSession;
 	/** @var ILogger */
 	private $logger;
-	/** @var IL10N */
-	private $l;
 	/** @var IURLGenerator */
 	private $urlGenerator;
 	/** @var PhotoService */
 	private $photoService;
+	/** @var IFactory */
+	private $l10nFactory;
 
 	public function __construct(
 		IRequest $request,
@@ -69,18 +69,18 @@ class ContactsController extends Controller {
 		IManager $contactsManager,
 		IUserSession $userSession,
 		ILogger $logger,
-		IL10N $l,
 		IURLGenerator $urlGenerator,
-		PhotoService $photoService
+		PhotoService $photoService,
+		IFactory $l10nFactory
 	) {
 		parent::__construct(Application::APPID, $request);
 		$this->addressBookProvider = $addressBookProvider;
 		$this->contactsManager = $contactsManager;
 		$this->userSession = $userSession;
 		$this->logger = $logger;
-		$this->l = $l;
 		$this->urlGenerator = $urlGenerator;
 		$this->photoService = $photoService;
+		$this->l10nFactory = $l10nFactory;
 	}
 
 	public function import(int $sourceId = -1, string $contactId = ''): Response {
@@ -161,9 +161,10 @@ class ContactsController extends Controller {
 	}
 
 	protected function getRedirectURL(string $uri): string {
+		$contactsL10N = $this->l10nFactory->get('contacts');
 		return $this->urlGenerator->linkToRoute('contacts.page.indexgroup.contact',
 			[
-				'group' => $this->l->t('All contacts'),
+				'group' => $contactsL10N->t('All contacts'),
 				'contact' => $uri
 			]
 		);
