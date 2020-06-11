@@ -95,9 +95,11 @@ class ContactsAddressBook implements IAddressBook {
 			$record = $card->getData();
 			//FN field must be flattened for contacts menu
 			$record['FN'] = array_pop($record['FN']);
-			if($record[strtoupper('PHOTO:data:image/jpeg;base64,')]) {
+			if($record['PHOTO']) {
 				try {
-					$this->photoService->store($this->cardBackend->getURI(), $record['URI'], $record[strtoupper('PHOTO:data:image/jpeg;base64,')][0]);
+					// "data:image/<submime>;base64," is prefixed
+					$imageData = substr($record['PHOTO'][0], strpos($record['PHOTO'][0], ','));
+					$this->photoService->store($this->cardBackend->getURI(), $record['URI'], $imageData);
 					$photoUrl = $this->urlGenerator->linkToRouteAbsolute(Application::APPID . '.contacts.photo',
 						[
 							'sourceId' => $this->cardBackend->getURI(),
@@ -108,7 +110,6 @@ class ContactsAddressBook implements IAddressBook {
 				} catch (PhotoServiceUnavailable $e) {
 
 				}
-				unset($record[strtoupper('PHOTO:data:image/jpeg;base64,')]);
 			}
 			// prevents linking to contacts if UID is set
 			$record['isLocalSystemBook'] = true;
