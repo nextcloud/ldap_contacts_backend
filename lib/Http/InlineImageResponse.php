@@ -22,29 +22,39 @@ declare(strict_types=1);
  *
  */
 
-namespace OCA\LDAPContactsBackend\Service;
+namespace OCA\LDAPContactsBackend\Http;
 
-use OCA\LDAPContactsBackend\Exception\RecordNotFound;
-use OCA\LDAPContactsBackend\Model\Card;
+use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\ICallbackResponse;
+use OCP\AppFramework\Http\IOutput;
+use OCP\AppFramework\Http\Response;
+use OCP\Image;
 
-interface ICardBackend {
-	public function getURI(): string;
+class InlineImageResponse extends Response implements ICallbackResponse {
 
-	public function getDisplayName(): string;
+	/** @var Image */
+	protected $image;
+
+	public function __construct(Image $image) {
+		parent::__construct();
+
+		$etag = md5($image->data());
+		$ext = '.' . explode('/', $image->dataMimeType())[1];
+
+		$this->setETag($etag);
+		$this->setStatus(Http::STATUS_OK);
+		$this->addHeader('Content-Disposition', 'inline; filename="' . $etag . $ext . '"');
+
+		$this->image = $image;
+	}
 
 	/**
-	 * @throws RecordNotFound
+	 * @inheritDoc
 	 */
-	public function getCard($name): Card;
-
-	/**
-	 * @return Card[]
-	 */
-	public function searchCards(string $pattern, int $limit = 0): array;
-
-	/**
-	 * @return Card[]
-	 */
-	public function getCards(): array;
-
+	public function callback(IOutput $output) {
+		if ($output->getHttpResponseCode() !== Http::STATUS_NOT_MODIFIED) {
+			$output->setHeader('Content-Length: ' . strlen($this->image->data()));
+			$output->setOutput($this->image->data());
+		}
+	}
 }

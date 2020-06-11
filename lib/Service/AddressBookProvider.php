@@ -39,15 +39,19 @@ class AddressBookProvider implements IAddressBookProvider {
 	private $ldapQuerentFactory;
 	/** @var IConfig */
 	private $config;
+	/** @var ContactsAddressBookFactory */
+	private $contactsAddressBookFactory;
 
 	public function __construct(
 		Configuration $configurationService,
 		LdapQuerentFactory $ldapQuerentFactory,
-		IConfig $config
+		IConfig $config,
+		ContactsAddressBookFactory $contactsAddressBookFactory
 	) {
 		$this->configurationService = $configurationService;
 		$this->ldapQuerentFactory = $ldapQuerentFactory;
 		$this->config = $config;
+		$this->contactsAddressBookFactory = $contactsAddressBookFactory;
 	}
 
 	/**
@@ -128,7 +132,7 @@ class AddressBookProvider implements IAddressBookProvider {
 		foreach ($configs as $config) {
 			/** @var ConfigurationModel $config */
 			$cardBackend = new LdapCardBackend($this->ldapQuerentFactory->get($config), $config);
-			$addressBooks[] = new ContactsAddressBook($cardBackend, $this->config);
+			$addressBooks[] = $this->contactsAddressBookFactory->get($cardBackend);
 		}
 		return $addressBooks;
 	}

@@ -27,12 +27,16 @@ namespace OCA\LDAPContactsBackend\Controller;
 use OCA\DAV\DAV\Sharing\IShareable;
 use OCA\LDAPContactsBackend\AppInfo\Application;
 use OCA\LDAPContactsBackend\Exception\ConfigurationNotFound;
+use OCA\LDAPContactsBackend\Exception\PhotoServiceUnavailable;
 use OCA\LDAPContactsBackend\Exception\RecordNotFound;
+use OCA\LDAPContactsBackend\Http\InlineImageResponse;
 use OCA\LDAPContactsBackend\Model\Card;
 use OCA\LDAPContactsBackend\Service\AddressBookProvider;
+use OCA\LDAPContactsBackend\Service\PhotoService;
 use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\RedirectResponse;
+use OCP\AppFramework\Http\Response;
 use OCP\Constants;
 use OCP\Contacts\IManager;
 use OCP\IAddressBook;
@@ -56,6 +60,8 @@ class ContactsController extends Controller {
 	private $l;
 	/** @var IURLGenerator */
 	private $urlGenerator;
+	/** @var PhotoService */
+	private $photoService;
 
 	public function __construct(
 		IRequest $request,
@@ -64,7 +70,8 @@ class ContactsController extends Controller {
 		IUserSession $userSession,
 		ILogger $logger,
 		IL10N $l,
-		IURLGenerator $urlGenerator
+		IURLGenerator $urlGenerator,
+		PhotoService $photoService
 	) {
 		parent::__construct(Application::APPID, $request);
 		$this->addressBookProvider = $addressBookProvider;
@@ -73,9 +80,10 @@ class ContactsController extends Controller {
 		$this->logger = $logger;
 		$this->l = $l;
 		$this->urlGenerator = $urlGenerator;
+		$this->photoService = $photoService;
 	}
 
-	public function import(int $sourceId = -1, string $contactId = '') {
+	public function import(int $sourceId = -1, string $contactId = ''): Response {
 		try {
 			$addressBook = $this->addressBookProvider->getAddressBookById($sourceId);
 			$contact = $addressBook->getChild($contactId);
@@ -119,6 +127,23 @@ class ContactsController extends Controller {
 				[
 					'app' => Application::APPID,
 					'id' => $sourceId
+				]
+			);
+			return new NotFoundResponse();
+		}
+	}
+
+	public function photo(int $sourceId = -1, string $contactId = ''): Response {
+		try {
+			$image = $this->photoService->retrieve((string)$sourceId, $contactId);
+			return new InlineImageResponse($image);
+
+		} catch (PhotoServiceUnavailable $e) {
+			$this->logger->info(
+				'Photo could not be retrieved, reason: {msg}',
+				[
+					'app' => Application::APPID,
+					'msg' => $e->getMessage(),
 				]
 			);
 			return new NotFoundResponse();

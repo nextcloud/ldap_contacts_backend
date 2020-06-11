@@ -22,9 +22,6 @@ declare(strict_types=1);
  *
  */
 
-return [
-	'routes' => [
-		['name' => 'contacts#import', 'url' => '/import/{sourceId}/{contactId}', 'verb' => 'GET'],
-		['name' => 'contacts#photo', 'url' => '/photo/{sourceId}/{contactId}', 'verb' => 'GET'],
-	],
-];
+namespace OCA\LDAPContactsBackend\Exception;
+
+class PhotoServiceUnavailable extends \Exception {}

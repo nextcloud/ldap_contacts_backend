@@ -24,27 +24,43 @@ declare(strict_types=1);
 
 namespace OCA\LDAPContactsBackend\Service;
 
-use OCA\LDAPContactsBackend\Exception\RecordNotFound;
-use OCA\LDAPContactsBackend\Model\Card;
+use OC\Security\CSRF\CsrfTokenManager;
+use OCP\IConfig;
+use OCP\IURLGenerator;
 
-interface ICardBackend {
-	public function getURI(): string;
+class ContactsAddressBookFactory {
 
-	public function getDisplayName(): string;
+	/** @var ICardBackend */
+	private $cardBackend;
+	/** @var IConfig */
+	private $config;
+	/** @var IURLGenerator */
+	private $urlGenerator;
+	/** @var CsrfTokenManager */
+	private $tokenManager;
+	/** @var PhotoService */
+	private $photoService;
 
-	/**
-	 * @throws RecordNotFound
-	 */
-	public function getCard($name): Card;
+	public function __construct(
+		IConfig $config,
+		IURLGenerator $urlGenerator,
+		CsrfTokenManager $tokenManager,
+		PhotoService $photoService
+	) {
 
-	/**
-	 * @return Card[]
-	 */
-	public function searchCards(string $pattern, int $limit = 0): array;
+		$this->config = $config;
+		$this->urlGenerator = $urlGenerator;
+		$this->tokenManager = $tokenManager;
+		$this->photoService = $photoService;
+	}
 
-	/**
-	 * @return Card[]
-	 */
-	public function getCards(): array;
-
+	public function get(ICardBackend $cardBackend) {
+		return new ContactsAddressBook(
+			$cardBackend,
+			$this->config,
+			$this->urlGenerator,
+			$this->tokenManager,
+			$this->photoService
+		);
+	}
 }
