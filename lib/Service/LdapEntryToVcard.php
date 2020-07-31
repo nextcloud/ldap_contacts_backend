@@ -40,7 +40,7 @@ class LdapEntryToVcard {
 	];
 
 	static public function convert(Entry $record, ConfigurationModel $configuration): array {
-		$vCardData = ['VERSION' => 4.0];
+		$vCardData = ['VERSION' => '4.0'];
 		$mappings = array_merge(self::DEFAULT_MAPPING, $configuration->getAttributeMapping());
 		foreach ($mappings as $vcProperty => $lAttributes) {
 			$propertyName = strtoupper($vcProperty);

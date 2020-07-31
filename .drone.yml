@@ -72,6 +72,7 @@ steps:
           - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
           - bash ./before_install.sh $APP_NAME $CORE_BRANCH $DB
           - cd ../server/apps/$APP_NAME
+          - composer install
           - cd tests/phpunit/
           - phpunit --configuration phpunit.xml
     - name: php7.3
@@ -84,6 +85,7 @@ steps:
           - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
           - bash ./before_install.sh $APP_NAME $CORE_BRANCH $DB
           - cd ../server/apps/$APP_NAME
+          - composer install
           - cd tests/phpunit/
           - phpunit --configuration phpunit.xml
     - name: php7.4
@@ -96,6 +98,7 @@ steps:
           - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
           - bash ./before_install.sh $APP_NAME $CORE_BRANCH $DB
           - cd ../server/apps/$APP_NAME
+          - composer install
           - cd tests/phpunit/
           - phpunit --configuration phpunit.xml
 
