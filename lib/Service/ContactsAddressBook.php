@@ -129,4 +129,18 @@ class ContactsAddressBook implements IAddressBook {
 	public function delete($id) {
 		return false;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function isShared(): bool {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function isSystemAddressBook(): bool {
+		return true;
+	}
 }
