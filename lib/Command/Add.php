@@ -25,22 +25,28 @@ declare(strict_types=1);
 namespace OCA\LDAPContactsBackend\Command;
 
 use OC\Core\Command\Base;
+use OCA\LDAPContactsBackend\Model\LDAPBaseConfiguration;
 use OCA\LDAPContactsBackend\Service\Configuration;
+use OCA\LDAPContactsBackend\Service\ConnectionImporter;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 
 class Add extends Base {
 
 	/** @var Configuration */
 	private $configurationService;
+	/** @var ConnectionImporter */
+	private $connectionImporter;
 
-	public function __construct(Configuration $configurationService) {
+	public function __construct(Configuration $configurationService, ConnectionImporter $connectionImporter) {
 		parent::__construct();
 		$this->configurationService = $configurationService;
+		$this->connectionImporter = $connectionImporter;
 	}
 
 	protected function configure() {
@@ -51,6 +57,12 @@ class Add extends Base {
 				'addressBookName',
 				InputArgument::REQUIRED,
 				'Address book display name'
+			)
+			->addOption(
+				'ldapConfiguration',
+				null,
+				InputOption::VALUE_REQUIRED,
+				'Read connections details from a specified LDAP backend'
 			)
 			->addOption(
 				'host',
@@ -127,6 +139,10 @@ class Add extends Base {
 			return;
 		}
 
+		if($input->getOption('ldapConfiguration') !== null) {
+			$this->importConnection($input);
+		}
+
 		if ($input->getArgument('addressBookName') === null) {
 			/** @var QuestionHelper $helper */
 			$helper = $this->getHelper('question');
@@ -137,6 +153,10 @@ class Add extends Base {
 			});
 
 			$input->setArgument('addressBookName', $helper->ask($input, $output, $q));
+		}
+
+		if ($input->getOption('ldapConfiguration') === null) {
+			$this->askImport($input,  $output);
 		}
 
 		if ($input->getOption('host') === null) {
@@ -209,6 +229,10 @@ class Add extends Base {
 		$config = $this->configurationService->add();
 		$config->setAddressBookDisplayName($input->getArgument('addressBookName'));
 
+		if($input->getOption('ldapConfiguration') !== null) {
+			$this->importConnection($input);
+		}
+
 		$hostSet = false;
 		$host = (string)$input->getOption('host');
 		if ($host !== '') {
@@ -256,6 +280,31 @@ class Add extends Base {
 		$this->configurationService->update($config);
 	}
 
+	protected function importConnection(InputInterface $input) {
+		static $wasRun = false;
+		if($wasRun) {
+			// avoid running twice during interact && executed
+			return;
+		}
+		$connection = $this->connectionImporter->getConnection($input->getOption('ldapConfiguration'));
+		if($input->getOption('host') === null) {
+			$input->setOption('host', $connection->getHost());
+		}
+		if($input->getOption('port') === null) {
+			$input->setOption('port', $connection->getPort());
+		}
+		if($input->getOption('trans_enc') === null) {
+			$input->setOption('trans_enc', $connection->getTlsMode());
+		}
+		if ($input->getOption('bindDN') === null) {
+			$input->setOption('bindDN', $connection->getBindDn());
+		}
+		if ($input->getOption('bindPwd') === null) {
+			$input->setOption('bindPwd', $connection->getBindPwd());
+		}
+		$wasRun = true;
+	}
+
 	protected function askArrayOfString(string $subject, string $label, InputInterface $input, OutputInterface $output): void {
 		/** @var QuestionHelper $helper */
 		$helper = $this->getHelper('question');
@@ -266,6 +315,34 @@ class Add extends Base {
 		});
 
 		$input->setOption($subject, $helper->ask($input, $output, $q));
+	}
+
+	protected function askImport(InputInterface $input, OutputInterface $output): void {
+		$availableConnections = $this->connectionImporter->getAvailableConnections();
+		if(count($availableConnections) === 0) {
+			return;
+		}
+
+		$list = [];
+		foreach ($availableConnections as $connection) {
+			$list[] = $connection->getPrefix() . ' ' . $connection->getHost() . ' (Bind with: ' . $connection->getBindDn() . ')';
+		}
+		$list[] = 'None';
+
+		/** @var QuestionHelper $helper */
+		$helper = $this->getHelper('question');
+		$question = new ChoiceQuestion(
+			'Would you like to use data from an existing connection? (Default: none)',
+			$list,
+			count($list) - 1
+		);
+		$choice = $helper->ask($input, $output, $question);
+		if($choice === 'None') {
+			return;
+		}
+		$chosenPrefix = substr($choice, 0, strpos($choice, ' '));
+		$input->setOption('ldapConfiguration', $chosenPrefix);
+		$this->importConnection($input);
 	}
 
 	protected function askString(string $subject, string $label, InputInterface $input, OutputInterface $output): void {
