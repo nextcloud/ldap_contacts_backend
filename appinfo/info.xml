@@ -4,7 +4,20 @@
     <id>ldap_contacts_backend</id>
     <name>LDAP Contacts Backend</name>
     <summary>LDAP backend for Nextcloud Contacts</summary>
-    <description><![CDATA[Adds a virtual address book and lets import contacts to user&#39;s individual one]]></description>
+    <description><![CDATA[Adds a virtual address book and lets import contacts to user&#39;s individual one.
+
+![Copy found LDAP contact to address book](https://raw.githubusercontent.com/nextcloud/ldap_contacts_backend/master/screenshots/contactsmenu-with-action.png)
+
+In order to configure an LDAP backend, run
+
+``php
+php occ ldap_contacts:add --interactive $ADDRESSBOOKNAME
+``
+
+Where $ADDRESSBOOKNAME is a name you like to identify the virtual addressbook with. The interactive mode leads you through the configuration, but you can also use the `--help` flag to see all the options.
+
+Given that the configuration is correct, you and your users will be able to search through the LDAP contacts via the global contacts menu. An import action allows to copy the contact over to the best fitting existing addressbook. A redirect takes you the contacts app with the newly created card open.
+]]></description>
     <version>1.0.0</version>
     <licence>agpl</licence>
     <author mail="blizzz@arthur-schiwon.de">Arthur Schiwon</author>
@@ -15,6 +28,7 @@
 	<category>organization</category>
 	<bugs>https://github.com/nextcloud/ldap_contacts_backend/issues</bugs>
 	<repository>https://github.com/nextcloud/ldap_contacts_backend</repository>
+	<screenshot>https://raw.githubusercontent.com/nextcloud/ldap_contacts_backend/master/screenshots/contactsmenu-with-action.png</screenshot>
     <dependencies>
 		<php min-version="7.2"/>
 		<lib>ldap</lib>
