@@ -25,7 +25,6 @@ declare(strict_types=1);
 namespace OCA\LDAPContactsBackend\Command;
 
 use OC\Core\Command\Base;
-use OCA\LDAPContactsBackend\Model\LDAPBaseConfiguration;
 use OCA\LDAPContactsBackend\Service\Configuration;
 use OCA\LDAPContactsBackend\Service\ConnectionImporter;
 use Symfony\Component\Console\Helper\QuestionHelper;
@@ -40,10 +39,10 @@ class Add extends Base {
 
 	/** @var Configuration */
 	private $configurationService;
-	/** @var ConnectionImporter */
+	/** @var ConnectionImporter|null */
 	private $connectionImporter;
 
-	public function __construct(Configuration $configurationService, ConnectionImporter $connectionImporter) {
+	public function __construct(Configuration $configurationService, ?ConnectionImporter $connectionImporter = null) {
 		parent::__construct();
 		$this->configurationService = $configurationService;
 		$this->connectionImporter = $connectionImporter;
@@ -282,7 +281,7 @@ class Add extends Base {
 
 	protected function importConnection(InputInterface $input) {
 		static $wasRun = false;
-		if($wasRun) {
+		if($wasRun || !$this->connectionImporter instanceof ConnectionImporter) {
 			// avoid running twice during interact && executed
 			return;
 		}
