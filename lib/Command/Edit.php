@@ -177,7 +177,7 @@ class Edit extends Base {
 
 	}
 
-	public function execute(InputInterface $input, OutputInterface $output) {
+	public function execute(InputInterface $input, OutputInterface $output): int {
 		$config = $this->configurationService->get((int)$input->getArgument('id'));
 
 		foreach ($this->getListOfOptions($config) as $optionData) {
@@ -201,6 +201,7 @@ class Edit extends Base {
 		}
 
 		$this->configurationService->update($config);
+		return 0;
 	}
 
 	private function yesOrNoNormalizer(string $input): ?bool {

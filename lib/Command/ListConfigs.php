@@ -46,7 +46,7 @@ class ListConfigs extends Base {
 			->setDescription('Lists all LDAP contacts backend configurations');
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output) {
+	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$configs = $this->configurationService->getAll();
 		foreach ($configs as $config) {
 			/** @var ConfigurationModel $config */
@@ -59,5 +59,6 @@ class ListConfigs extends Base {
 			}
 			$this->writeMixedInOutputFormat($input, $output, $cfgValues);
 		}
+		return 0;
 	}
 }
