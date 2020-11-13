@@ -224,7 +224,7 @@ class Add extends Base {
 		}
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output) {
+	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$config = $this->configurationService->add();
 		$config->setAddressBookDisplayName($input->getArgument('addressBookName'));
 
@@ -277,6 +277,8 @@ class Add extends Base {
 		}
 
 		$this->configurationService->update($config);
+
+		return 0;
 	}
 
 	protected function importConnection(InputInterface $input) {
