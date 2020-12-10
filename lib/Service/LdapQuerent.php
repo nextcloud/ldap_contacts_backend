@@ -30,6 +30,7 @@ use OCA\LDAPContactsBackend\Model\Configuration as ConfigurationModel;
 use OCP\ILogger;
 use Symfony\Component\Ldap\Adapter\QueryInterface;
 use Symfony\Component\Ldap\Entry;
+use Symfony\Component\Ldap\Exception\ConnectionException;
 use Symfony\Component\Ldap\Ldap;
 
 class LdapQuerent {
@@ -80,7 +81,19 @@ class LdapQuerent {
 	}
 
 	public function find(string $search, int $limit = 0): \Generator {
-		$ldap = $this->getClient();
+		try {
+			$ldap = $this->getClient();
+		} catch (ConnectionException $e) {
+			$this->logger->warning(
+				'LDAP server {host}:{port} is unavailable',
+				[
+					'app' => Application::APPID,
+					'host' => $this->configuration->getHost(),
+					'port' => $this->configuration->getPort(),
+				]
+			);
+			return;
+		}
 		$search = $ldap->escape($search);
 
 		$searchFilter = '(|';
@@ -95,6 +108,9 @@ class LdapQuerent {
 		}
 	}
 
+	/**
+	 * @throws \Exception
+	 */
 	protected function getClient(): Ldap {
 		if ($this->ldap instanceof Ldap) {
 			return $this->ldap;
@@ -115,10 +131,15 @@ class LdapQuerent {
 			]
 		);
 
-		$this->ldap->bind(
-			$this->configuration->getAgentDn(),
-			$this->configuration->getAgentPassword()
-		);
+		try {
+			$this->ldap->bind(
+				$this->configuration->getAgentDn(),
+				$this->configuration->getAgentPassword()
+			);
+		} catch (\Exception $e) {
+			$this->ldap = null;
+			throw $e;
+		}
 
 		return $this->ldap;
 	}
