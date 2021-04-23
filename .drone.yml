@@ -9,7 +9,7 @@ steps:
       image: nextcloudci/php7.4:php7.4-2
       environment:
           APP_NAME: ldap_contacts_backend
-          CORE_BRANCH: master
+          CORE_BRANCH: stable21
           DB: sqlite
       commands:
           - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
@@ -17,20 +17,11 @@ steps:
           - cd ../server
           - ./occ app:check-code $APP_NAME -c strong-comparison -c deprecation
           - cd apps/$APP_NAME/
-    -   name: syntax-php7.2
-        image: nextcloudci/php7.2:php7.2-13
-        environment:
-            APP_NAME: ldap_contacts_backend
-            CORE_BRANCH: stable20
-            DB: sqlite
-        commands:
-            - composer install
-            - ./vendor/bin/parallel-lint --exclude ./vendor/ .
     -   name: syntax-php7.3
         image: nextcloudci/php7.3:php7.3-5
         environment:
             APP_NAME: ldap_contacts_backend
-            CORE_BRANCH: master
+            CORE_BRANCH: stable21
             DB: sqlite
         commands:
             - composer install
@@ -39,7 +30,7 @@ steps:
         image: nextcloudci/php7.4:php7.4-2
         environment:
             APP_NAME: ldap_write_support
-            CORE_BRANCH: master
+            CORE_BRANCH: stable21
             DB: sqlite
         commands:
             - composer install
@@ -56,30 +47,17 @@ trigger:
 
 ---
 kind: pipeline
-name: tests-master
+name: tests-stable21
 
 clone:
     depth: 1
 
 steps:
-    - name: php7.2
-      image: nextcloudci/php7.2:php7.2-13
-      environment:
-          APP_NAME: ldap_contacts_backend
-          CORE_BRANCH: master
-          DB: sqlite
-      commands:
-          - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
-          - bash ./before_install.sh $APP_NAME $CORE_BRANCH $DB
-          - cd ../server/apps/$APP_NAME
-          - composer install
-          - cd tests/phpunit/
-          - phpunit --configuration phpunit.xml
     - name: php7.3
       image: nextcloudci/php7.3:php7.3-5
       environment:
           APP_NAME: ldap_contacts_backend
-          CORE_BRANCH: master
+          CORE_BRANCH: stable21
           DB: sqlite
       commands:
           - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
@@ -92,7 +70,7 @@ steps:
       image: nextcloudci/php7.4:php7.4-1
       environment:
           APP_NAME: ldap_contacts_backend
-          CORE_BRANCH: master
+          CORE_BRANCH: stable21
           DB: sqlite
       commands:
           - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
@@ -109,166 +87,5 @@ trigger:
     event:
         - pull_request
         - push
-
-type: docker
-
----
-kind: pipeline
-name: tests-master
-
-clone:
-  depth: 1
-
-steps:
-  - name: php7.3
-    image: nextcloudci/php7.3:php7.3-5
-    environment:
-      APP_NAME: ldap_contacts_backend
-      CORE_BRANCH: master
-      DB: sqlite
-    commands:
-      - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
-      - bash ./before_install.sh $APP_NAME $CORE_BRANCH $DB
-      - cd ../server/apps/$APP_NAME
-      - composer install
-      - cd tests/phpunit/
-      - phpunit --configuration phpunit.xml
-  - name: php7.4
-    image: nextcloudci/php7.4:php7.4-1
-    environment:
-      APP_NAME: ldap_contacts_backend
-      CORE_BRANCH: master
-      DB: sqlite
-    commands:
-      - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
-      - bash ./before_install.sh $APP_NAME $CORE_BRANCH $DB
-      - cd ../server/apps/$APP_NAME
-      - composer install
-      - cd tests/phpunit/
-      - phpunit --configuration phpunit.xml
-
-trigger:
-  branch:
-    - master
-    - stable*
-  event:
-    - pull_request
-    - push
-
-type: docker
-
----
-kind: pipeline
-name: tests-stable20
-
-clone:
-  depth: 1
-
-steps:
-  - name: php7.2
-    image: nextcloudci/php7.2:php7.2-13
-    environment:
-      APP_NAME: ldap_contacts_backend
-      CORE_BRANCH: stable20
-      DB: sqlite
-    commands:
-      - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
-      - bash ./before_install.sh $APP_NAME $CORE_BRANCH $DB
-      - cd ../server/apps/$APP_NAME
-      - composer install
-      - cd tests/phpunit/
-      - phpunit --configuration phpunit.xml
-  - name: php7.3
-    image: nextcloudci/php7.3:php7.3-5
-    environment:
-      APP_NAME: ldap_contacts_backend
-      CORE_BRANCH: stable20
-      DB: sqlite
-    commands:
-      - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
-      - bash ./before_install.sh $APP_NAME $CORE_BRANCH $DB
-      - cd ../server/apps/$APP_NAME
-      - composer install
-      - cd tests/phpunit/
-      - phpunit --configuration phpunit.xml
-  - name: php7.4
-    image: nextcloudci/php7.4:php7.4-2
-    environment:
-      APP_NAME: ldap_contacts_backend
-      CORE_BRANCH: stable20
-      DB: sqlite
-    commands:
-      - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
-      - bash ./before_install.sh $APP_NAME $CORE_BRANCH $DB
-      - cd ../server/apps/$APP_NAME
-      - composer install
-      - cd tests/phpunit/
-      - phpunit --configuration phpunit.xml
-
-trigger:
-  branch:
-    - master
-    - stable*
-  event:
-    - pull_request
-    - push
-
-type: docker
-
----
-kind: pipeline
-name: tests-stable19
-
-clone:
-  depth: 1
-
-steps:
-  - name: php7.2
-    image: nextcloudci/php7.2:php7.2-13
-    environment:
-      APP_NAME: ldap_contacts_backend
-      CORE_BRANCH: stable19
-      DB: sqlite
-    commands:
-      - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
-      - bash ./before_install.sh $APP_NAME $CORE_BRANCH $DB
-      - cd ../server/apps/$APP_NAME
-      - composer install
-      - cd tests/phpunit/
-      - phpunit --configuration phpunit.xml
-  - name: php7.3
-    image: nextcloudci/php7.3:php7.3-5
-    environment:
-      APP_NAME: ldap_contacts_backend
-      CORE_BRANCH: stable19
-      DB: sqlite
-    commands:
-      - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
-      - bash ./before_install.sh $APP_NAME $CORE_BRANCH $DB
-      - cd ../server/apps/$APP_NAME
-      - composer install
-      - cd tests/phpunit/
-      - phpunit --configuration phpunit.xml
-  - name: php7.4
-    image: nextcloudci/php7.4:php7.4-2
-    environment:
-      APP_NAME: ldap_contacts_backend
-      CORE_BRANCH: stable19
-      DB: sqlite
-    commands:
-      - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
-      - bash ./before_install.sh $APP_NAME $CORE_BRANCH $DB
-      - cd ../server/apps/$APP_NAME
-      - composer install
-      - cd tests/phpunit/
-      - phpunit --configuration phpunit.xml
-
-trigger:
-  branch:
-    - master
-    - stable*
-  event:
-    - pull_request
-    - push
 
 type: docker
