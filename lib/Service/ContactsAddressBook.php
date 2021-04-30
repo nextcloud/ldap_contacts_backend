@@ -94,7 +94,7 @@ class ContactsAddressBook implements IAddressBook {
 			$record = $card->getData();
 			//FN field must be flattened for contacts menu
 			$record['FN'] = array_pop($record['FN']);
-			if($record['PHOTO']) {
+			if (isset($record['PHOTO'])) {
 				try {
 					// "data:image/<submime>;base64," is prefixed
 					$imageData = substr($record['PHOTO'][0], strpos($record['PHOTO'][0], ','));
