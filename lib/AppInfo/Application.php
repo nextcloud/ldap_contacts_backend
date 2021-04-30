@@ -26,21 +26,18 @@ namespace OCA\LDAPContactsBackend\AppInfo;
 
 use OCA\LDAPContactsBackend\Service\AddressBookProvider;
 use OCP\AppFramework\App;
+use OCP\AppFramework\Bootstrap\IBootContext;
+use OCP\AppFramework\Bootstrap\IBootstrap;
+use OCP\AppFramework\Bootstrap\IRegistrationContext;
 use OCP\Contacts\IManager;
 
-class Application extends App {
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+class Application extends App implements IBootstrap {
 	public const APPID = 'ldap_contacts_backend';
 
 	public function __construct() {
 		parent::__construct(self::APPID);
-		$this->registerListeners();
-	}
-
-	private function registerListeners(): void {
-		$cm = $this->getContainer()->getServer()->getContactsManager();
-		$cm->register(function() use ($cm) {
-			$this->registerAddressBook($cm);
-		});
 	}
 
 	private function registerAddressBook(IManager $cm) {
@@ -49,5 +46,15 @@ class Application extends App {
 		foreach ($provider->fetchAllForContactsStore() as $ab) {
 			$cm->registerAddressBook($ab);
 		}
+	}
+
+	public function register(IRegistrationContext $context): void {
+	}
+
+	public function boot(IBootContext $context): void {
+		$cm = $context->getServerContainer()->get(IManager::class);
+		$cm->register(function() use ($cm) {
+			$this->registerAddressBook($cm);
+		});
 	}
 }
