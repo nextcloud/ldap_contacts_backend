@@ -319,7 +319,7 @@ class Add extends Base {
 	}
 
 	protected function askImport(InputInterface $input, OutputInterface $output): void {
-		$availableConnections = $this->connectionImporter->getAvailableConnections();
+		$availableConnections = $this->connectionImporter ? $this->connectionImporter->getAvailableConnections() : [];
 		if(count($availableConnections) === 0) {
 			return;
 		}
