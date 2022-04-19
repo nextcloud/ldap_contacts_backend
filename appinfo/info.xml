@@ -30,7 +30,6 @@ Given that the configuration is correct, you and your users will be able to sear
 	<repository>https://github.com/nextcloud/ldap_contacts_backend</repository>
 	<screenshot>https://raw.githubusercontent.com/nextcloud/ldap_contacts_backend/master/screenshots/contactsmenu-with-action.png</screenshot>
     <dependencies>
-		<php min-version="7.3"/>
 		<lib>ldap</lib>
 		<nextcloud min-version="24" max-version="24"/>
     </dependencies>
