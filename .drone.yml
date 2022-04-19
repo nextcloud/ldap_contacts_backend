@@ -53,24 +53,11 @@ clone:
     depth: 1
 
 steps:
-    - name: php7.3
-      image: nextcloudci/php7.3:php7.3-5
-      environment:
-          APP_NAME: ldap_contacts_backend
-          CORE_BRANCH: stable24
-          DB: sqlite
-      commands:
-          - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
-          - bash ./before_install.sh $APP_NAME $CORE_BRANCH $DB
-          - cd ../server/apps/$APP_NAME
-          - composer install
-          - cd tests/phpunit/
-          - phpunit --configuration phpunit.xml
     - name: php7.4
       image: nextcloudci/php7.4:php7.4-1
       environment:
           APP_NAME: ldap_contacts_backend
-          CORE_BRANCH: master
+          CORE_BRANCH: stable24
           DB: sqlite
       commands:
           - wget https://raw.githubusercontent.com/nextcloud/travis_ci/master/before_install.sh
