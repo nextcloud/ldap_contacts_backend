@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2020 Arthur Schiwon <blizzz@arthur-schiwon.de>
@@ -47,7 +48,7 @@ class AddressBook extends ExternalAddressBook {
 	/**
 	 * @inheritDoc
 	 */
-	function createFile($name, $data = null) {
+	public function createFile($name, $data = null) {
 		throw new \Exception('This addressbook is immutable');
 	}
 
@@ -55,21 +56,21 @@ class AddressBook extends ExternalAddressBook {
 	 * @inheritDoc
 	 * @throws RecordNotFound
 	 */
-	function getChild($name) {
+	public function getChild($name) {
 		return $this->cardBackend->getCard($name);
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	function getChildren() {
+	public function getChildren() {
 		return $this->cardBackend->getCards();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	function childExists($name) {
+	public function childExists($name) {
 		try {
 			$this->getChild($name);
 			return true;
@@ -81,28 +82,28 @@ class AddressBook extends ExternalAddressBook {
 	/**
 	 * @inheritDoc
 	 */
-	function delete() {
+	public function delete() {
 		throw new \Exception('This addressbook is immutable');
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	function getLastModified() {
+	public function getLastModified() {
 		return null;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	function propPatch(PropPatch $propPatch) {
+	public function propPatch(PropPatch $propPatch) {
 		throw new \Exception('This addressbook is immutable');
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	function getProperties($properties) {
+	public function getProperties($properties) {
 		return [
 			'principaluri' => $this->principalUri,
 			'{DAV:}displayname' => $this->cardBackend->getDisplayName(),

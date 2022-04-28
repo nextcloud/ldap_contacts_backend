@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2020 Arthur Schiwon <blizzz@arthur-schiwon.de>
@@ -47,7 +48,6 @@ class ContactsAddressBookFactory {
 		CsrfTokenManager $tokenManager,
 		PhotoService $photoService
 	) {
-
 		$this->config = $config;
 		$this->urlGenerator = $urlGenerator;
 		$this->tokenManager = $tokenManager;

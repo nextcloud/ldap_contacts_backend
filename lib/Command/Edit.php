@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2020 Arthur Schiwon <blizzz@arthur-schiwon.de>
@@ -63,27 +64,33 @@ class Edit extends Base {
 		$this->configureOptions();
 	}
 
-	protected function getListOfOptions (ConfigurationModel $model): \Generator {
+	protected function getListOfOptions(ConfigurationModel $model): \Generator {
 		yield [
 			'key' => 'addressBookName',
 			'type' => 'string',
 			'currentLabel' => sprintf('Address book display name: %s.', $model->getAddressBookDisplayName()),
 			'newLabel' => '  New address book display name: ',
-			'setter' => function($v) use($model) { return $model->setAddressBookDisplayName($v); },
+			'setter' => function ($v) use ($model) {
+				return $model->setAddressBookDisplayName($v);
+			},
 		];
 		yield [
 			'key' => 'host',
 			'type' => 'string',
 			'currentLabel' => sprintf('LDAP hostname: %s.', $model->getHost()),
 			'newLabel' => '  New LDAP hostname: ',
-			'setter' => function($v) use($model) { return $model->setHost($v); },
+			'setter' => function ($v) use ($model) {
+				return $model->setHost($v);
+			},
 		];
 		yield [
 			'key' => 'port',
 			'type' => 'uint',
 			'currentLabel' => sprintf('LDAP port: %u.', $model->getPort()),
 			'newLabel' => '  New LDAP port: ',
-			'setter' => function($v) use($model) { return $model->setPort($v); },
+			'setter' => function ($v) use ($model) {
+				return $model->setPort($v);
+			},
 		];
 		yield [
 			'key' => 'trans_enc',
@@ -91,28 +98,36 @@ class Edit extends Base {
 			'currentLabel' => sprintf('Transport encryption: %s.', $model->getTEnc()),
 			'newLabel' => '  New transport encryption (StartTLS, LDAPS, none): ',
 			'autoComplete' => ['tls' => 'StartTLS', 'ssl' => 'LDAPS', 'none' => 'none'],
-			'setter' => function($v) use($model) { return $model->setTEnc($v); },
+			'setter' => function ($v) use ($model) {
+				return $model->setTEnc($v);
+			},
 		];
 		yield [
 			'key' => 'bindDN',
 			'type' => 'string',
 			'currentLabel' => sprintf('LDAP bind DN: %s.', $model->getAgentDn()),
 			'newLabel' => '  New LDAP bind DN: ',
-			'setter' => function($v) use($model) { return $model->setAgentDn($v); },
+			'setter' => function ($v) use ($model) {
+				return $model->setAgentDn($v);
+			},
 		];
 		yield [
 			'key' => 'bindPwd',
 			'type' => 'string',
-			'currentLabel' =>'LDAP bind password.',
+			'currentLabel' => 'LDAP bind password.',
 			'newLabel' => '  New LDAP bind password: ',
-			'setter' => function($v) use($model) { return $model->setAgentPassword($v); },
+			'setter' => function ($v) use ($model) {
+				return $model->setAgentPassword($v);
+			},
 		];
 		yield [
 			'key' => 'filter',
 			'type' => 'string',
 			'currentLabel' => sprintf('LDAP contacts filter: %s.', $model->getFilter()),
 			'newLabel' => '  New LDAP contacts filter: ',
-			'setter' => function($v) use($model) { return $model->setFilter($v); },
+			'setter' => function ($v) use ($model) {
+				return $model->setFilter($v);
+			},
 		];
 		yield [
 			'key' => 'base',
@@ -120,14 +135,18 @@ class Edit extends Base {
 			'currentLabel' => sprintf('LDAP contacts bases: %s.', implode('; ', $model->getBases())),
 			'newLabel' => '  New LDAP contacts bases: ',
 			'followUpLabel' => '  additional base (leave empty to continue): ',
-			'setter' => function($v) use($model) { return $model->setBases($v); },
+			'setter' => function ($v) use ($model) {
+				return $model->setBases($v);
+			},
 		];
 		yield [
 			'key' => 'attrs',
 			'type' => 'cs-string',
 			'currentLabel' => sprintf('LDAP contacts search attributes: %s.', implode(', ', $model->getSearchAttributes())),
 			'newLabel' => '  New LDAP search attributes (comma separated): ',
-			'setter' => function($v) use($model) { return $model->setSearchAttributes($v); },
+			'setter' => function ($v) use ($model) {
+				return $model->setSearchAttributes($v);
+			},
 		];
 		yield [
 			'key' => 'mapping',
@@ -135,7 +154,7 @@ class Edit extends Base {
 			'currentLabel' => sprintf('LDAP CardDAV mapping: %s.', implode('; ', $model->getAttributeMapping())),
 			'newLabel' => '  New mapping (example: TEL:mobile,telephoneNumber): ',
 			'followUpLabel' => '  additional mapping (leave empty to continue): ',
-			'setter' => function($v) use($model) {
+			'setter' => function ($v) use ($model) {
 				$mappings = [];
 				foreach ($v as $pair) {
 					list($property, $attributes) = explode(':', $pair);
@@ -155,8 +174,8 @@ class Edit extends Base {
 		foreach ($this->getListOfOptions($model) as $questionData) {
 			if (empty($input->getOption($questionData['key']))) {
 				$wantEdit = $this->askWantChangeField($questionData['currentLabel'], $input, $output);
-				if($wantEdit) {
-					switch($questionData['type']) {
+				if ($wantEdit) {
+					switch ($questionData['type']) {
 						case 'string':
 							$this->askString($questionData['key'], $questionData['newLabel'], $input, $output, $questionData['autoComplete'] ?? null);
 							continue 2;
@@ -174,15 +193,14 @@ class Edit extends Base {
 			}
 		}
 		//TODO FIXME: mappings are not being asked for
-
 	}
 
 	public function execute(InputInterface $input, OutputInterface $output): int {
 		$config = $this->configurationService->get((int)$input->getArgument('id'));
 
 		foreach ($this->getListOfOptions($config) as $optionData) {
-			if(!empty($input->getOption($optionData['key']))) {
-				switch($optionData['type']) {
+			if (!empty($input->getOption($optionData['key']))) {
+				switch ($optionData['type']) {
 					case 'uint':
 						$v = max((int)$input->getOption($optionData['key']), 0);
 						break;
@@ -206,10 +224,10 @@ class Edit extends Base {
 
 	private function yesOrNoNormalizer(string $input): ?bool {
 		$input = strtolower($input);
-		if($input === 'y') {
+		if ($input === 'y') {
 			return true;
 		}
-		if($input === 'n' || $input === '') {
+		if ($input === 'n' || $input === '') {
 			return false;
 		}
 		return null;
@@ -238,9 +256,9 @@ class Edit extends Base {
 		$helper = $this->getHelper('question');
 
 		$q = new Question($label);
-		if(is_array($autoComplete)) {
+		if (is_array($autoComplete)) {
 			$q->setAutocompleterValues(array_values($autoComplete));
-			$q->setNormalizer(function ($input) use ($autoComplete){
+			$q->setNormalizer(function ($input) use ($autoComplete) {
 				return $this->autoCompleteNormalizer($input, $autoComplete);
 			});
 		} else {
@@ -278,7 +296,7 @@ class Edit extends Base {
 
 		while (($value = $helper->ask($input, $output, $q)) !== '') {
 			$values[] = $value;
-			if(!$isFollowUp) {
+			if (!$isFollowUp) {
 				$q = new Question($followUpLabel);
 				$q->setNormalizer(function ($input) {
 					return $this->stringNormalizer($input);
@@ -317,5 +335,4 @@ class Edit extends Base {
 		} while ($wantEdit === null);
 		return $wantEdit;
 	}
-
 }

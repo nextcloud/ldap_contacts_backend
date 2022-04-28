@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2020 Arthur Schiwon <blizzz@arthur-schiwon.de>
@@ -92,23 +93,23 @@ class ContactsController extends Controller {
 			/** @var IAddressBook $userAddressBook */
 			$fallback = null;
 			foreach ($userAddressBooks as $userAddressBook) {
-				if(!($userAddressBook->getPermissions() & Constants::PERMISSION_CREATE)) {
+				if (!($userAddressBook->getPermissions() & Constants::PERMISSION_CREATE)) {
 					continue;
 				}
-				if($fallback === null
+				if ($fallback === null
 					&& $userAddressBook instanceof IShareable
 					&& $userAddressBook->getOwner() !== $this->userSession->getUser()->getUID()
 				) {
 					$fallback = $userAddressBook;
 					continue;
 				}
-				if($uri = $this->createCard($userAddressBook, $contact)) {
+				if ($uri = $this->createCard($userAddressBook, $contact)) {
 					return new RedirectResponse($this->getRedirectURL($uri));
 				}
 			}
 
-			if($fallback instanceof IAddressBook) {
-				if($uri = $this->createCard($fallback, $contact)) {
+			if ($fallback instanceof IAddressBook) {
+				if ($uri = $this->createCard($fallback, $contact)) {
 					return new RedirectResponse($this->getRedirectURL($uri));
 				}
 			}
@@ -137,7 +138,6 @@ class ContactsController extends Controller {
 		try {
 			$image = $this->photoService->retrieve((string)$sourceId, $contactId);
 			return new InlineImageResponse($image);
-
 		} catch (PhotoServiceUnavailable $e) {
 			$this->logger->info(
 				'Photo could not be retrieved, reason: {msg}',
@@ -154,7 +154,7 @@ class ContactsController extends Controller {
 		$data = $card->getData();
 		unset($data['URI']); // ensures a new card is created
 		$newCard = $addressBook->createOrUpdate($data);
-		if(!is_array($newCard)) {
+		if (!is_array($newCard)) {
 			return null;
 		}
 		return $newCard['UID'] . '~' . $addressBook->getUri();

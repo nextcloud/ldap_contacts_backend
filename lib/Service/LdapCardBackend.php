@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2020 Arthur Schiwon <blizzz@arthur-schiwon.de>
@@ -57,7 +58,7 @@ class LdapCardBackend implements ICardBackend {
 		return $this->entryToCard($record);
 	}
 
-	public function searchCards(string $pattern, int $limit = 0): array  {
+	public function searchCards(string $pattern, int $limit = 0): array {
 		$records = $this->ldapQuerent->find($pattern, $limit);
 		$vCards = [];
 		foreach ($records as $record) {
@@ -73,8 +74,8 @@ class LdapCardBackend implements ICardBackend {
 		$records = $this->ldapQuerent->fetchAll();
 		$vCards = [];
 		foreach ($records as $record) {
-			 $vCards[] = $this->entryToCard($record);
-			 unset($record);
+			$vCards[] = $this->entryToCard($record);
+			unset($record);
 		}
 		return $vCards;
 	}
@@ -83,5 +84,4 @@ class LdapCardBackend implements ICardBackend {
 		$vCardData = LdapEntryToVcard::convert($record, $this->configuration);
 		return new Card($vCardData);
 	}
-
 }

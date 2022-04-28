@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2020 Arthur Schiwon <blizzz@arthur-schiwon.de>
@@ -138,7 +139,7 @@ class Add extends Base {
 			return;
 		}
 
-		if($input->getOption('ldapConfiguration') !== null) {
+		if ($input->getOption('ldapConfiguration') !== null) {
 			$this->importConnection($input);
 		}
 
@@ -155,7 +156,7 @@ class Add extends Base {
 		}
 
 		if ($input->getOption('ldapConfiguration') === null) {
-			$this->askImport($input,  $output);
+			$this->askImport($input, $output);
 		}
 
 		if ($input->getOption('host') === null) {
@@ -228,7 +229,7 @@ class Add extends Base {
 		$config = $this->configurationService->add();
 		$config->setAddressBookDisplayName($input->getArgument('addressBookName'));
 
-		if($input->getOption('ldapConfiguration') !== null) {
+		if ($input->getOption('ldapConfiguration') !== null) {
 			$this->importConnection($input);
 		}
 
@@ -283,18 +284,18 @@ class Add extends Base {
 
 	protected function importConnection(InputInterface $input) {
 		static $wasRun = false;
-		if($wasRun || !$this->connectionImporter instanceof ConnectionImporter) {
+		if ($wasRun || !$this->connectionImporter instanceof ConnectionImporter) {
 			// avoid running twice during interact && executed
 			return;
 		}
 		$connection = $this->connectionImporter->getConnection($input->getOption('ldapConfiguration'));
-		if($input->getOption('host') === null) {
+		if ($input->getOption('host') === null) {
 			$input->setOption('host', $connection->getHost());
 		}
-		if($input->getOption('port') === null) {
+		if ($input->getOption('port') === null) {
 			$input->setOption('port', $connection->getPort());
 		}
-		if($input->getOption('trans_enc') === null) {
+		if ($input->getOption('trans_enc') === null) {
 			$input->setOption('trans_enc', $connection->getTlsMode());
 		}
 		if ($input->getOption('bindDN') === null) {
@@ -320,7 +321,7 @@ class Add extends Base {
 
 	protected function askImport(InputInterface $input, OutputInterface $output): void {
 		$availableConnections = $this->connectionImporter ? $this->connectionImporter->getAvailableConnections() : [];
-		if(count($availableConnections) === 0) {
+		if (count($availableConnections) === 0) {
 			return;
 		}
 
@@ -338,7 +339,7 @@ class Add extends Base {
 			count($list) - 1
 		);
 		$choice = $helper->ask($input, $output, $question);
-		if($choice === 'None') {
+		if ($choice === 'None') {
 			return;
 		}
 		$chosenPrefix = substr($choice, 0, strpos($choice, ' '));
@@ -418,7 +419,7 @@ class Add extends Base {
 
 		while (($value = $helper->ask($input, $output, $q)) !== '') {
 			$values[] = $value;
-			if(!$isFollowUp) {
+			if (!$isFollowUp) {
 				$q = new Question($followUpLabel);
 				$q->setNormalizer(function ($input) {
 					return $this->stringNormalizer($input);
@@ -439,5 +440,4 @@ class Add extends Base {
 		}
 		return $input;
 	}
-
 }

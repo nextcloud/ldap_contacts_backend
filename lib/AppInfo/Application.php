@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2020 Arthur Schiwon <blizzz@arthur-schiwon.de>
@@ -53,7 +54,7 @@ class Application extends App implements IBootstrap {
 
 	public function boot(IBootContext $context): void {
 		$cm = $context->getServerContainer()->get(IManager::class);
-		$cm->register(function() use ($cm) {
+		$cm->register(function () use ($cm) {
 			$this->registerAddressBook($cm);
 		});
 	}

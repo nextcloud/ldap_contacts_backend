@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2020 Arthur Schiwon <blizzz@arthur-schiwon.de>
@@ -82,11 +83,11 @@ class ContactsAddressBook implements IAddressBook {
 		// options worth considering: types
 		$limit = $this->config->getSystemValueInt('sharing.maxAutocompleteResults', 25);
 		$vCards = $this->cardBackend->searchCards($pattern, $limit);
-		if(isset($options['offset'])) {
+		if (isset($options['offset'])) {
 			$vCards = array_slice($vCards, (int)$options['offset']);
 		}
 		if (isset($options['limit'])) {
-			$vCards = array_slice($vCards,0, (int)$options['limit']);
+			$vCards = array_slice($vCards, 0, (int)$options['limit']);
 		}
 
 		$result = [];
@@ -107,7 +108,6 @@ class ContactsAddressBook implements IAddressBook {
 						]);
 					$record['PHOTO'] = 'VALUE=uri:' . $photoUrl;
 				} catch (PhotoServiceUnavailable $e) {
-
 				}
 			}
 			// prevents linking to contacts if UID is set

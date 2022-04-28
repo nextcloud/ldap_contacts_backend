@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2020 Arthur Schiwon <blizzz@arthur-schiwon.de>
@@ -81,7 +82,7 @@ class ConfigurationTest extends TestCase {
 		$config2 = $this->configurationService->add();
 		$this->assertInstanceOf(ConfigurationModel::class, $config2);
 		$this->assertIsInt($config2->getId());
-		$this->assertTrue($config2->getId() === ($config->getId() +1));
+		$this->assertTrue($config2->getId() === ($config->getId() + 1));
 	}
 
 	public function testGet() {
@@ -171,5 +172,4 @@ class ConfigurationTest extends TestCase {
 		$this->assertSame($config2->getAgentDn(), 'cn=Nxtcld Srvc,ou=Applications,dc=example,dc=io');
 		$this->assertSame($config2->getAgentPassword(), '135711131719');
 	}
-
 }
