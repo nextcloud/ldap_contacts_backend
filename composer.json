@@ -11,7 +11,7 @@
 	"require-dev": {
 		"christophwurst/nextcloud": "dev-master",
 		"phpunit/phpunit": "^8",
-		"nextcloud/coding-standard": "^0.5.0"
+		"nextcloud/coding-standard": "^1.0.0"
 	},
     "require": {
         "symfony/ldap": "^5.0"
