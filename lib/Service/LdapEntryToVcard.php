@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2020 Arthur Schiwon <blizzz@arthur-schiwon.de>
@@ -39,7 +40,7 @@ class LdapEntryToVcard {
 		'ORG' => 'ou',
 	];
 
-	static public function convert(Entry $record, ConfigurationModel $configuration): array {
+	public static function convert(Entry $record, ConfigurationModel $configuration): array {
 		$vCardData = ['VERSION' => '4.0'];
 		$mappings = array_merge(self::DEFAULT_MAPPING, $configuration->getAttributeMapping());
 		foreach ($mappings as $vcProperty => $lAttributes) {
@@ -50,7 +51,7 @@ class LdapEntryToVcard {
 				if ($lAttribute === 'dn') {
 					$vCardData[$propertyName] = [];
 					$vCardData[$propertyName] = base64_encode($record->getDn());
-				} else if ($record->hasAttribute($lAttribute)) {
+				} elseif ($record->hasAttribute($lAttribute)) {
 					$vCardData[$propertyName] = [];
 					foreach ($record->getAttribute($lAttribute) as $value) {
 						if ($propertyName === 'PHOTO') {
@@ -69,10 +70,10 @@ class LdapEntryToVcard {
 		return $vCardData;
 	}
 
-	static protected function buildPhotoValue(string $rawData): string {
+	protected static function buildPhotoValue(string $rawData): string {
 		$image = new Image();
 		$image->loadFromData($rawData);
-		if(!$image->valid()) {
+		if (!$image->valid()) {
 			return  '';
 		}
 		$valType = 'data:' . $image->dataMimeType() . ';base64';

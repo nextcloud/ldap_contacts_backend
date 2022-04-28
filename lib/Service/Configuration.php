@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2020 Arthur Schiwon <blizzz@arthur-schiwon.de>
@@ -63,7 +64,7 @@ class Configuration {
 	public function get(int $id): ConfigurationModel {
 		$this->ensureLoaded();
 
-		if(isset($this->configurations[$id])) {
+		if (isset($this->configurations[$id])) {
 			return $this->configurations[$id];
 		}
 
@@ -81,7 +82,7 @@ class Configuration {
 	public function delete(int $id): void {
 		$this->ensureLoaded();
 
-		if(!isset($this->configurations[$id])) {
+		if (!isset($this->configurations[$id])) {
 			throw new ConfigurationNotFound();
 		}
 
@@ -96,7 +97,7 @@ class Configuration {
 	public function update(ConfigurationModel $model): void {
 		$this->ensureLoaded();
 
-		if(!isset($this->configurations[$model->getId()])) {
+		if (!isset($this->configurations[$model->getId()])) {
 			throw new ConfigurationNotFound();
 		}
 
@@ -111,7 +112,7 @@ class Configuration {
 	}
 
 	protected function ensureLoaded(): void {
-		if(empty($this->configurations)) {
+		if (empty($this->configurations)) {
 			$connections = $this->config->getAppValue(Application::APPID, 'connections', '[]');
 			$connections = \json_decode($connections, true);
 			foreach ($connections as $connection) {

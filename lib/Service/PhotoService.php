@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2020 Arthur Schiwon <blizzz@arthur-schiwon.de>
@@ -47,7 +48,7 @@ class PhotoService {
 		$cache = $this->getCache();
 
 		$knownImage = $cache->get($key);
-		if(is_string($knownImage)) {
+		if (is_string($knownImage)) {
 			$this->getCache()->set($key, $knownImage, 3600);
 			return  true;
 		}
@@ -65,7 +66,7 @@ class PhotoService {
 		$cache = $this->getCache();
 
 		$knownImage = $cache->get($key);
-		if(is_string($knownImage)) {
+		if (is_string($knownImage)) {
 			$image = new Image();
 			$image->loadFromBase64($knownImage);
 			return $image;
@@ -78,10 +79,10 @@ class PhotoService {
 	 * @throws PhotoServiceUnavailable
 	 */
 	protected function getCache(): ICache {
-		if($this->cacheFactory->isAvailable()) {
+		if ($this->cacheFactory->isAvailable()) {
 			return $this->cacheFactory->createDistributed(Application::APPID . '_PhotoCache');
 		}
-		if($this->cacheFactory->isLocalCacheAvailable()) {
+		if ($this->cacheFactory->isLocalCacheAvailable()) {
 			return $this->cacheFactory->createLocal(Application::APPID . '_PhotoCache');
 		}
 		throw new PhotoServiceUnavailable('No cache available');
@@ -92,7 +93,7 @@ class PhotoService {
 	 */
 	protected function prepareImage(string $imageData): Image {
 		$image = new Image();
-		if(!$image->loadFromBase64($imageData) || !$image->centerCrop(64)) {
+		if (!$image->loadFromBase64($imageData) || !$image->centerCrop(64)) {
 			throw new PhotoServiceUnavailable('Image data invalid');
 		}
 		return $image;
@@ -101,5 +102,4 @@ class PhotoService {
 	protected function getCacheKey(string $sourceId, string $entryId): string {
 		return hash('sha256', $sourceId . '|' . $entryId);
 	}
-
 }

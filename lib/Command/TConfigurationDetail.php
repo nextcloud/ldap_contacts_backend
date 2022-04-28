@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2020 Arthur Schiwon <blizzz@arthur-schiwon.de>
@@ -25,12 +26,9 @@ declare(strict_types=1);
 namespace OCA\LDAPContactsBackend\Command;
 
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 
 trait TConfigurationDetail {
-
 	public function configureOptions() {
 		if (!$this instanceof Command) {
 			throw new \LogicException('Trait applied on wrong base class');
@@ -108,5 +106,4 @@ trait TConfigurationDetail {
 				);
 		}
 	}
-
 }

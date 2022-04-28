@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2020 Arthur Schiwon <blizzz@arthur-schiwon.de>
@@ -38,7 +39,7 @@ class ConnectionImporter {
 
 	public function getConnection(string $prefix): LDAPBaseConfiguration {
 		$prefixes = $this->ldapHelper->getServerConfigurationPrefixes();
-		if(!in_array($prefix, $prefixes)) {
+		if (!in_array($prefix, $prefixes)) {
 			throw new \OutOfBoundsException('Specified configuration not available');
 		}
 		$c = new \OCA\User_LDAP\Configuration($prefix);

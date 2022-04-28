@@ -1,9 +1,6 @@
 {
     "name": "nextcloud/ldap_contacts_backend",
     "type": "project",
-    "require-dev": {
-        "php-parallel-lint/php-parallel-lint": "^1.2"
-    },
     "license": "AGPLv3",
     "authors": [
         {
@@ -11,7 +8,17 @@
             "email": "blizzz@arthur-schiwon.de"
         }
     ],
+	"require-dev": {
+		"christophwurst/nextcloud": "dev-master",
+		"phpunit/phpunit": "^8",
+		"nextcloud/coding-standard": "^1.0.0"
+	},
     "require": {
         "symfony/ldap": "^5.0"
-    }
+    },
+	"scripts": {
+		"lint": "find . -name \\*.php -not -path './vendor/*' -not -path './build/*' -print0 | xargs -0 -n1 php -l",
+		"cs:check": "php-cs-fixer fix --dry-run --diff",
+		"cs:fix": "php-cs-fixer fix"
+	}
 }

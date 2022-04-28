@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2020 Arthur Schiwon <blizzz@arthur-schiwon.de>
@@ -23,13 +24,13 @@ declare(strict_types=1);
  */
 
 if (!defined('PHPUNIT_RUN')) {
-        define('PHPUNIT_RUN', 1);
+	define('PHPUNIT_RUN', 1);
 }
 
-require_once __DIR__.'/../../../../lib/base.php';
+require_once __DIR__.'/../../../lib/base.php';
 \OC::$loader->addValidRoot(\OC::$SERVERROOT . '/tests');
-if(!class_exists('PHPUnit\Framework\TestCase')) {
-        require_once('PHPUnit/Autoload.php');
+if (!class_exists('PHPUnit\Framework\TestCase')) {
+	require_once('PHPUnit/Autoload.php');
 }
 
 \OC_App::loadApp('ldap_contacts_backend');

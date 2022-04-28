@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2020 Arthur Schiwon <blizzz@arthur-schiwon.de>
@@ -50,7 +51,7 @@ class Configuration implements \JsonSerializable {
 	}
 
 	public function setHost(string $host): Configuration {
-		$this->data['host'] = preg_replace('/^ldap(s)?:\/\//','', $host);
+		$this->data['host'] = preg_replace('/^ldap(s)?:\/\//', '', $host);
 		return $this;
 	}
 
@@ -168,15 +169,15 @@ class Configuration implements \JsonSerializable {
 	 * @throws InvalidConfiguration
 	 */
 	public static function fromArray(array $data) {
-		if(!isset($data['id'])) {
+		if (!isset($data['id'])) {
 			throw new InvalidConfiguration();
 		}
 		$model = new Configuration();
 
 		foreach (self::PROPERTIES as $property) {
-			if(isset($property)) {
+			if (isset($property)) {
 				try {
-					if(!isset($data[$property])) {
+					if (!isset($data[$property])) {
 						continue;
 					}
 					$setter = 'set' . ucfirst($property);

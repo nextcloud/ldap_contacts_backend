@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2020 Arthur Schiwon <blizzz@arthur-schiwon.de>
@@ -68,7 +69,7 @@ class LdapQuerent {
 		$ldap = $this->getClient();
 		$filter = $filter ?? $this->configuration->getFilter();
 		$options = ['maxItems' => $limit, 'timeout' => 0];
-		if($limit === 0 || $limit > 500) {
+		if ($limit === 0 || $limit > 500) {
 			$options['pageSize'] = 500;
 		}
 		foreach ($this->configuration->getBases() as $base) {
@@ -143,5 +144,4 @@ class LdapQuerent {
 
 		return $this->ldap;
 	}
-
 }

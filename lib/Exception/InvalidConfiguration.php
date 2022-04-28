@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2020 Arthur Schiwon <blizzz@arthur-schiwon.de>
@@ -25,5 +26,4 @@ declare(strict_types=1);
 namespace OCA\LDAPContactsBackend\Exception;
 
 class InvalidConfiguration extends \Exception {
-
 }

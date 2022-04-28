@@ -11,8 +11,8 @@
 	<!-- filters for code coverage -->
 	<filter>
 		<whitelist>
-			<directory suffix=".php">../../ldap_contacts_backend/appinfo</directory>
-			<directory suffix=".php">../../ldap_contacts_backend/lib</directory>
+			<directory suffix=".php">../ldap_contacts_backend/appinfo</directory>
+			<directory suffix=".php">../ldap_contacts_backend/lib</directory>
 		</whitelist>
 	</filter>
 	<logging>

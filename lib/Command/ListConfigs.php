@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2020 Arthur Schiwon <blizzz@arthur-schiwon.de>
@@ -53,7 +54,7 @@ class ListConfigs extends Base {
 			$cfgValues = [];
 			foreach (ConfigurationModel::PROPERTIES as $property) {
 				$getter = 'get' . ucfirst($property);
-				if(method_exists($config, $getter)) {
+				if (method_exists($config, $getter)) {
 					$cfgValues[$property] = $config->$getter();
 				}
 			}

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * @copyright Copyright (c) 2020 Arthur Schiwon <blizzz@arthur-schiwon.de>
@@ -62,12 +63,12 @@ class ImportProvider implements IProvider {
 	}
 
 	public function process(IEntry $entry): void {
-		if(!$this->appManager->isEnabledForUser('contacts')) {
+		if (!$this->appManager->isEnabledForUser('contacts')) {
 			return;
 		}
 
 		$configId = $entry->getProperty(ContactsAddressBook::DAV_PROPERTY_SOURCE);
-		if($configId === null) {
+		if ($configId === null) {
 			return;
 		}
 
