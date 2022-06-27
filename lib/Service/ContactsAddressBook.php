@@ -66,7 +66,7 @@ class ContactsAddressBook implements IAddressBook {
 	}
 
 	public function getKey() {
-		return $this->cardBackend->getURI();
+		return self::class . '_' . $this->cardBackend->getURI();
 	}
 
 	public function getUri(): string {
