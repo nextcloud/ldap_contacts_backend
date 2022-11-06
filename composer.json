@@ -2,7 +2,8 @@
     "name": "nextcloud/ldap_contacts_backend",
     "type": "project",
     "require-dev": {
-        "php-parallel-lint/php-parallel-lint": "^1.2"
+        "php-parallel-lint/php-parallel-lint": "^1.2",
+        "nextcloud/ocp": "dev-stable24"
     },
     "license": "AGPLv3",
     "authors": [
