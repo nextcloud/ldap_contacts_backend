@@ -17,15 +17,6 @@ steps:
           - cd ../server
           - ./occ app:check-code $APP_NAME -c strong-comparison -c deprecation
           - cd apps/$APP_NAME/
-    -   name: syntax-php7.3
-        image: nextcloudci/php7.3:php7.3-5
-        environment:
-            APP_NAME: ldap_contacts_backend
-            CORE_BRANCH: master
-            DB: sqlite
-        commands:
-            - composer install
-            - ./vendor/bin/parallel-lint --exclude ./vendor/ .
     -   name: syntax-php7.4
         image: nextcloudci/php7.4:php7.4-2
         environment:
