@@ -37,7 +37,6 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 
 class Add extends Base {
-
 	/** @var Configuration */
 	private $configurationService;
 	/** @var ConnectionImporter|null */

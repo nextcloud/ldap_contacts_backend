@@ -36,7 +36,6 @@ use OCP\IL10N;
 use OCP\IURLGenerator;
 
 class ImportProvider implements IProvider {
-
 	/** @var IActionFactory */
 	private $actionFactory;
 	/** @var IURLGenerator */
@@ -76,11 +75,11 @@ class ImportProvider implements IProvider {
 			$this->urlGenerator->imagePath('core', 'places/contacts.svg'),
 			$this->l->t('Copy to address book'),
 			$this->urlGenerator->linkToRoute(Application::APPID . '.contacts.import',
-			[
-				'sourceId' => (int)$configId,
-				'contactId' => $entry->getProperty('URI'),
-				'requesttoken' => $this->tokenManager->getToken()->getEncryptedValue()
-			])
+				[
+					'sourceId' => (int)$configId,
+					'contactId' => $entry->getProperty('URI'),
+					'requesttoken' => $this->tokenManager->getToken()->getEncryptedValue()
+				])
 		);
 
 		$entry->addAction($action);

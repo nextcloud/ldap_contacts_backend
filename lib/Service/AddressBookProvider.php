@@ -33,7 +33,6 @@ use OCA\LDAPContactsBackend\Model\Configuration as ConfigurationModel;
 use OCP\IConfig;
 
 class AddressBookProvider implements IAddressBookProvider {
-
 	/** @var Configuration */
 	private $configurationService;
 	/** @var LdapQuerentFactory */
