@@ -48,7 +48,6 @@ use OCP\IURLGenerator;
 use OCP\IUserSession;
 
 class ContactsController extends Controller {
-
 	/** @var AddressBookProvider */
 	private $addressBookProvider;
 	/** @var IManager */

@@ -35,7 +35,6 @@ use Symfony\Component\Ldap\Exception\ConnectionException;
 use Symfony\Component\Ldap\Ldap;
 
 class LdapQuerent {
-
 	/** @var ConfigurationModel */
 	private $configuration;
 
