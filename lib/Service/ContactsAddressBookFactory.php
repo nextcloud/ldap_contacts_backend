@@ -30,7 +30,6 @@ use OCP\IConfig;
 use OCP\IURLGenerator;
 
 class ContactsAddressBookFactory {
-
 	/** @var ICardBackend */
 	private $cardBackend;
 	/** @var IConfig */

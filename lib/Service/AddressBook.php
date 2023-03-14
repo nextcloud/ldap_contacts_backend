@@ -32,7 +32,6 @@ use OCA\LDAPContactsBackend\Exception\RecordNotFound;
 use Sabre\DAV\PropPatch;
 
 class AddressBook extends ExternalAddressBook {
-
 	/** @var ICardBackend */
 	private $cardBackend;
 	/** @var string */
