@@ -13,4 +13,4 @@ screenshots
 tests
 .travis.yml
 .tx
-
+.php-cs-fixer.dist.php

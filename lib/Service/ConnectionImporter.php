@@ -29,7 +29,6 @@ use OCA\LDAPContactsBackend\Model\LDAPBaseConfiguration;
 use OCA\User_LDAP\Helper;
 
 class ConnectionImporter {
-
 	/** @var Helper */
 	private $ldapHelper;
 
