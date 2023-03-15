@@ -26,17 +26,16 @@ declare(strict_types=1);
 namespace OCA\LDAPContactsBackend\Service;
 
 use OCA\LDAPContactsBackend\Model\Configuration as ConfigurationModel;
-use OCP\ILogger;
+use Psr\Log\LoggerInterface;
 
 class LdapQuerentFactory {
-	/** @var ILogger */
-	private $logger;
+	private LoggerInterface $logger;
 
-	public function __construct(ILogger $logger) {
+	public function __construct(LoggerInterface $logger) {
 		$this->logger = $logger;
 	}
 
-	public function get(ConfigurationModel $model) {
+	public function get(ConfigurationModel $model): LdapQuerent {
 		return new LdapQuerent($model, $this->logger);
 	}
 }

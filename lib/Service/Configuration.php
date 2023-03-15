@@ -31,14 +31,14 @@ use OCA\LDAPContactsBackend\Exception\InvalidConfiguration;
 use OCA\LDAPContactsBackend\Model\Configuration as ConfigurationModel;
 use OCP\IConfig;
 use OCP\Security\ICredentialsManager;
+use function json_decode;
+use function json_encode;
 
 class Configuration {
 	/** @var ConfigurationModel[] */
-	protected $configurations = [];
-	/** @var IConfig */
-	private $config;
-	/** @var ICredentialsManager */
-	private $credentialsManager;
+	protected array $configurations = [];
+	private IConfig $config;
+	private ICredentialsManager $credentialsManager;
 
 	public function __construct(IConfig $config, ICredentialsManager $credentialsManager) {
 		$this->config = $config;
@@ -107,14 +107,14 @@ class Configuration {
 	}
 
 	protected function save(): void {
-		$serialized = \json_encode($this->configurations);
+		$serialized = json_encode($this->configurations);
 		$this->config->setAppValue(Application::APPID, 'connections', $serialized);
 	}
 
 	protected function ensureLoaded(): void {
 		if (empty($this->configurations)) {
 			$connections = $this->config->getAppValue(Application::APPID, 'connections', '[]');
-			$connections = \json_decode($connections, true);
+			$connections = json_decode($connections, true);
 			foreach ($connections as $connection) {
 				try {
 					$model = $this->modelFromArray($connection);
@@ -135,7 +135,7 @@ class Configuration {
 		return ConfigurationModel::fromArray($configArray);
 	}
 
-	private function loadCredentials(ConfigurationModel $model) {
+	private function loadCredentials(ConfigurationModel $model): void {
 		$model->setAgentDN((string)$this->credentialsManager->retrieve(
 			'',
 			$this->getCredentialsDNKey($model->getId())

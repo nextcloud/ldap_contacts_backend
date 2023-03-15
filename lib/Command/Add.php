@@ -28,6 +28,7 @@ namespace OCA\LDAPContactsBackend\Command;
 use OC\Core\Command\Base;
 use OCA\LDAPContactsBackend\Service\Configuration;
 use OCA\LDAPContactsBackend\Service\ConnectionImporter;
+use RuntimeException;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -37,10 +38,8 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 
 class Add extends Base {
-	/** @var Configuration */
-	private $configurationService;
-	/** @var ConnectionImporter|null */
-	private $connectionImporter;
+	private Configuration $configurationService;
+	private ?ConnectionImporter $connectionImporter;
 
 	public function __construct(Configuration $configurationService, ?ConnectionImporter $connectionImporter = null) {
 		parent::__construct();
@@ -147,7 +146,7 @@ class Add extends Base {
 			$helper = $this->getHelper('question');
 
 			$q = new Question('Address book display name: ');
-			$q->setNormalizer(function ($input) {
+			$q->setNormalizer(function (string $input) {
 				return $this->stringNormalizer($input);
 			});
 
@@ -173,16 +172,11 @@ class Add extends Base {
 			$q = new Question('Transport encryption: ');
 			$q->setAutocompleterValues(['StartTLS', 'LDAPS', 'none']);
 
-			switch ($helper->ask($input, $output, $q)) {
-				case 'StartTLS':
-					$v = 'tls';
-					break;
-				case 'LDAPS':
-					$v = 'ssl';
-					break;
-				default:
-					$v = 'none';
-			}
+			$v = match ($helper->ask($input, $output, $q)) {
+				'StartTLS' => 'tls',
+				'LDAPS' => 'ssl',
+				default => 'none',
+			};
 
 			$input->setOption('trans_enc', $v);
 		}
@@ -306,18 +300,6 @@ class Add extends Base {
 		$wasRun = true;
 	}
 
-	protected function askArrayOfString(string $subject, string $label, InputInterface $input, OutputInterface $output): void {
-		/** @var QuestionHelper $helper */
-		$helper = $this->getHelper('question');
-
-		$q = new Question($label);
-		$q->setNormalizer(function ($input) {
-			return $this->arrayOfStringNormalizer($input);
-		});
-
-		$input->setOption($subject, $helper->ask($input, $output, $q));
-	}
-
 	protected function askImport(InputInterface $input, OutputInterface $output): void {
 		$availableConnections = $this->connectionImporter ? $this->connectionImporter->getAvailableConnections() : [];
 		if (count($availableConnections) === 0) {
@@ -393,15 +375,8 @@ class Add extends Base {
 		$input->setOption($subject, $helper->ask($input, $output, $q));
 	}
 
-	protected function stringNormalizer($input) {
+	protected function stringNormalizer(?string $input): string {
 		return $input ? trim($input) : '';
-	}
-
-	protected function arrayOfStringNormalizer(string $input) {
-		foreach ($input as &$item) {
-			$item = $this->stringNormalizer($item);
-		}
-		return $input;
 	}
 
 	protected function askStrings(string $subject, string $label, string $followUpLabel, InputInterface $input, OutputInterface $output): void {
@@ -435,7 +410,7 @@ class Add extends Base {
 			$input = (int)$input;
 		}
 		if (is_int($input) && $input < 0) {
-			throw new \RuntimeException('Port must not be negative');
+			throw new RuntimeException('Port must not be negative');
 		}
 		return $input;
 	}

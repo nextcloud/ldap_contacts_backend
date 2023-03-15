@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace OCA\LDAPContactsBackend\Service;
 
+use Exception;
 use OCA\DAV\CardDAV\Integration\ExternalAddressBook;
 use OCA\DAV\DAV\Sharing\Plugin;
 use OCA\LDAPContactsBackend\AppInfo\Application;
@@ -32,10 +33,8 @@ use OCA\LDAPContactsBackend\Exception\RecordNotFound;
 use Sabre\DAV\PropPatch;
 
 class AddressBook extends ExternalAddressBook {
-	/** @var ICardBackend */
-	private $cardBackend;
-	/** @var string */
-	private $principalUri;
+	private ICardBackend $cardBackend;
+	private string $principalUri;
 
 	public function __construct(string $principalUri, ICardBackend $cardBackend) {
 		parent::__construct(Application::APPID, $cardBackend->getURI());
@@ -48,7 +47,7 @@ class AddressBook extends ExternalAddressBook {
 	 * @inheritDoc
 	 */
 	public function createFile($name, $data = null) {
-		throw new \Exception('This addressbook is immutable');
+		throw new Exception('This addressbook is immutable');
 	}
 
 	/**
@@ -82,7 +81,7 @@ class AddressBook extends ExternalAddressBook {
 	 * @inheritDoc
 	 */
 	public function delete() {
-		throw new \Exception('This addressbook is immutable');
+		throw new Exception('This addressbook is immutable');
 	}
 
 	/**
@@ -96,7 +95,7 @@ class AddressBook extends ExternalAddressBook {
 	 * @inheritDoc
 	 */
 	public function propPatch(PropPatch $propPatch) {
-		throw new \Exception('This addressbook is immutable');
+		throw new Exception('This addressbook is immutable');
 	}
 
 	/**
