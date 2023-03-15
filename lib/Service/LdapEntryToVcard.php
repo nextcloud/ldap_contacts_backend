@@ -27,6 +27,7 @@ namespace OCA\LDAPContactsBackend\Service;
 
 use OCA\LDAPContactsBackend\Model\Configuration as ConfigurationModel;
 use OCP\Image;
+use RuntimeException;
 use Symfony\Component\Ldap\Entry;
 
 class LdapEntryToVcard {
@@ -49,7 +50,6 @@ class LdapEntryToVcard {
 			foreach ($lAttributes as $lAttribute) {
 				$lAttribute = trim($lAttribute);
 				if ($lAttribute === 'dn') {
-					$vCardData[$propertyName] = [];
 					$vCardData[$propertyName] = base64_encode($record->getDn());
 				} elseif ($record->hasAttribute($lAttribute)) {
 					$vCardData[$propertyName] = [];
@@ -63,7 +63,7 @@ class LdapEntryToVcard {
 			}
 		}
 		if (!isset($vCardData['FN'])) {
-			throw new \RuntimeException('Invalid record or configuration for vcard');
+			throw new RuntimeException('Invalid record or configuration for vcard');
 		}
 		$vCardData['URI'] = base64_encode($record->getDn());
 		// $vCardData['UID'] = $vCardData['URI'];

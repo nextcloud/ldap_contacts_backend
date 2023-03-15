@@ -27,10 +27,10 @@ namespace OCA\LDAPContactsBackend\Service;
 
 use OCA\LDAPContactsBackend\Model\LDAPBaseConfiguration;
 use OCA\User_LDAP\Helper;
+use OutOfBoundsException;
 
 class ConnectionImporter {
-	/** @var Helper */
-	private $ldapHelper;
+	private Helper $ldapHelper;
 
 	public function __construct(Helper $ldapHelper) {
 		$this->ldapHelper = $ldapHelper;
@@ -39,7 +39,7 @@ class ConnectionImporter {
 	public function getConnection(string $prefix): LDAPBaseConfiguration {
 		$prefixes = $this->ldapHelper->getServerConfigurationPrefixes();
 		if (!in_array($prefix, $prefixes)) {
-			throw new \OutOfBoundsException('Specified configuration not available');
+			throw new OutOfBoundsException('Specified configuration not available');
 		}
 		$c = new \OCA\User_LDAP\Configuration($prefix);
 		$m = new LDAPBaseConfiguration();
@@ -70,7 +70,7 @@ class ConnectionImporter {
 				->setHost($this->extractHost($c->ldapHost))
 				->setTlsMode($this->extractTlsMode($c->ldapHost, $c->ldapPort, $c->ldapTLS));
 			// give disabled configurations a high key, so they will be sorted to the end
-			$connections[$i + ((int)!(bool)$c->ldapConfigurationActive * 100)] = $m;
+			$connections[$i + ((int)!$c->ldapConfigurationActive * 100)] = $m;
 			$i++;
 		}
 		ksort($connections);
@@ -85,7 +85,7 @@ class ConnectionImporter {
 		if ($startTls === '1') {
 			return 'tls';
 		}
-		if (strpos($host, 'ldaps://') === 0 || $port === '636') {
+		if (str_starts_with($host, 'ldaps://') || $port === '636') {
 			return 'ssl';
 		}
 		return 'none';
