@@ -229,7 +229,7 @@ class Edit extends Base {
 	}
 
 	private function stringNormalizer(?string $input): string {
-		return $input ? trim($input) : '';
+		return ($input !== null) ? trim($input) : '';
 	}
 
 	private function autoCompleteNormalizer($input, array $autoComplete) {
