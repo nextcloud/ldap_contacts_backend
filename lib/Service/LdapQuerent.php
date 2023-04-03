@@ -39,7 +39,7 @@ use Symfony\Component\Ldap\Ldap;
 class LdapQuerent {
 	private ConfigurationModel $configuration;
 	private LoggerInterface $logger;
-	protected ?Ldap $ldap;
+	protected ?Ldap $ldap = null;
 
 	public function __construct(ConfigurationModel $configuration, LoggerInterface $logger) {
 		$this->configuration = $configuration;
@@ -114,7 +114,7 @@ class LdapQuerent {
 	 * @throws Exception
 	 */
 	protected function getClient(): Ldap {
-		if (isset($this->ldap) && $this->ldap instanceof Ldap) {
+		if ($this->ldap instanceof Ldap) {
 			return $this->ldap;
 		}
 
