@@ -376,7 +376,7 @@ class Add extends Base {
 	}
 
 	protected function stringNormalizer(?string $input): string {
-		return $input ? trim($input) : '';
+		return ($input !== null) ? trim($input) : '';
 	}
 
 	protected function askStrings(string $subject, string $label, string $followUpLabel, InputInterface $input, OutputInterface $output): void {
