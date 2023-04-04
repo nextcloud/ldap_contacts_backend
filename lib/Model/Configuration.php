@@ -25,10 +25,14 @@ declare(strict_types=1);
 
 namespace OCA\LDAPContactsBackend\Model;
 
+use InvalidArgumentException;
+use JsonSerializable;
 use OCA\LDAPContactsBackend\AppInfo\Application;
 use OCA\LDAPContactsBackend\Exception\InvalidConfiguration;
+use OCP\Server;
+use Psr\Log\LoggerInterface;
 
-class Configuration implements \JsonSerializable {
+class Configuration implements JsonSerializable {
 	public const PROPERTIES = [
 		'id',
 		'addressBookDisplayName',
@@ -44,7 +48,7 @@ class Configuration implements \JsonSerializable {
 		'filter',
 	];
 
-	protected $data = [];
+	protected array $data = [];
 
 	public function getHost(): string {
 		return $this->data['host'] ?? '';
@@ -154,7 +158,7 @@ class Configuration implements \JsonSerializable {
 		return $this;
 	}
 
-	public function jsonSerialize() {
+	public function jsonSerialize(): array {
 		$serializable = $this->data;
 
 		// serialization is for writing into DB in plain text,
@@ -168,7 +172,7 @@ class Configuration implements \JsonSerializable {
 	/**
 	 * @throws InvalidConfiguration
 	 */
-	public static function fromArray(array $data) {
+	public static function fromArray(array $data): Configuration {
 		if (!isset($data['id'])) {
 			throw new InvalidConfiguration();
 		}
@@ -182,8 +186,8 @@ class Configuration implements \JsonSerializable {
 					}
 					$setter = 'set' . ucfirst($property);
 					$model->$setter($data[$property]);
-				} catch (\InvalidArgumentException $e) {
-					\OC::$server->getLogger()->info(
+				} catch (InvalidArgumentException $e) {
+					Server::get(LoggerInterface::class)->info(
 						'Ignoring invalid value for {property}, ID {id}',
 						[
 							'app' => Application::APPID,

@@ -34,20 +34,14 @@ use OCP\IConfig;
 use OCP\IURLGenerator;
 
 class ContactsAddressBook implements IAddressBook {
-	/** @var ICardBackend */
-	private $cardBackend;
-	/** @var string */
-	private $principalURI;
-	/** @var IConfig */
-	private $config;
-	/** @var IURLGenerator */
-	private $urlGenerator;
-	/** @var CsrfTokenManager */
-	private $tokenManager;
+	private ICardBackend $cardBackend;
+	private ?string $principalURI;
+	private IConfig $config;
+	private IURLGenerator $urlGenerator;
+	private CsrfTokenManager $tokenManager;
+	private PhotoService $photoService;
 
 	public const DAV_PROPERTY_SOURCE = 'X-NC_LDAP_CONTACTS_ID';
-	/** @var PhotoService */
-	private $photoService;
 
 	public function __construct(
 		ICardBackend $cardBackend,

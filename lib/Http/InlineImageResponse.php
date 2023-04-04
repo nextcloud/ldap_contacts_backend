@@ -32,8 +32,7 @@ use OCP\AppFramework\Http\Response;
 use OCP\Image;
 
 class InlineImageResponse extends Response implements ICallbackResponse {
-	/** @var Image */
-	protected $image;
+	protected Image $image;
 
 	public function __construct(Image $image) {
 		parent::__construct();

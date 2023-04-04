@@ -25,9 +25,11 @@ declare(strict_types=1);
 
 namespace OCA\LDAPContactsBackend\Command;
 
+use Generator;
 use OC\Core\Command\Base;
 use OCA\LDAPContactsBackend\Model\Configuration as ConfigurationModel;
 use OCA\LDAPContactsBackend\Service\Configuration;
+use RuntimeException;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -38,8 +40,7 @@ use Symfony\Component\Console\Question\Question;
 class Edit extends Base {
 	use TConfigurationDetail;
 
-	/** @var Configuration */
-	private $configurationService;
+	private Configuration $configurationService;
 
 	public function __construct(Configuration $configurationService) {
 		parent::__construct();
@@ -64,7 +65,7 @@ class Edit extends Base {
 		$this->configureOptions();
 	}
 
-	protected function getListOfOptions(ConfigurationModel $model): \Generator {
+	protected function getListOfOptions(ConfigurationModel $model): Generator {
 		yield [
 			'key' => 'addressBookName',
 			'type' => 'string',
@@ -200,16 +201,10 @@ class Edit extends Base {
 
 		foreach ($this->getListOfOptions($config) as $optionData) {
 			if (!empty($input->getOption($optionData['key']))) {
-				switch ($optionData['type']) {
-					case 'uint':
-						$v = max((int)$input->getOption($optionData['key']), 0);
-						break;
-					case 'string':
-					case 'array-string':
-					case 'cs-string':
-					default:
-						$v = $input->getOption($optionData['key']);
-				}
+				$v = match ($optionData['type']) {
+					'uint' => max((int)$input->getOption($optionData['key']), 0),
+					default => $input->getOption($optionData['key']),
+				};
 				$optionData['setter']($v);
 			}
 		}
@@ -233,12 +228,12 @@ class Edit extends Base {
 		return null;
 	}
 
-	private function stringNormalizer($input) {
-		return $input ? trim($input) : '';
+	private function stringNormalizer(?string $input): string {
+		return ($input !== null) ? trim($input) : '';
 	}
 
 	private function autoCompleteNormalizer($input, array $autoComplete) {
-		return $v = array_change_key_case(array_flip($autoComplete))[strtolower($input)] ?? array_pop($autoComplete);
+		return array_change_key_case(array_flip($autoComplete))[strtolower($input)] ?? array_pop($autoComplete);
 	}
 
 	private function uIntNormalizer(?string $input): ?int {
@@ -246,7 +241,7 @@ class Edit extends Base {
 			$input = (int)$input;
 		}
 		if (is_int($input) && $input < 0) {
-			throw new \RuntimeException('Port must not be negative');
+			throw new RuntimeException('Port must not be negative');
 		}
 		return $input;
 	}

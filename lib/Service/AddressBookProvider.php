@@ -30,27 +30,19 @@ use OCA\DAV\CardDAV\Integration\IAddressBookProvider;
 use OCA\LDAPContactsBackend\AppInfo\Application;
 use OCA\LDAPContactsBackend\Exception\ConfigurationNotFound;
 use OCA\LDAPContactsBackend\Model\Configuration as ConfigurationModel;
-use OCP\IConfig;
 
 class AddressBookProvider implements IAddressBookProvider {
-	/** @var Configuration */
-	private $configurationService;
-	/** @var LdapQuerentFactory */
-	private $ldapQuerentFactory;
-	/** @var IConfig */
-	private $config;
-	/** @var ContactsAddressBookFactory */
-	private $contactsAddressBookFactory;
+	private Configuration $configurationService;
+	private LdapQuerentFactory $ldapQuerentFactory;
+	private ContactsAddressBookFactory $contactsAddressBookFactory;
 
 	public function __construct(
 		Configuration $configurationService,
 		LdapQuerentFactory $ldapQuerentFactory,
-		IConfig $config,
 		ContactsAddressBookFactory $contactsAddressBookFactory
 	) {
 		$this->configurationService = $configurationService;
 		$this->ldapQuerentFactory = $ldapQuerentFactory;
-		$this->config = $config;
 		$this->contactsAddressBookFactory = $contactsAddressBookFactory;
 	}
 
@@ -86,7 +78,6 @@ class AddressBookProvider implements IAddressBookProvider {
 	 */
 	public function hasAddressBookInAddressBookHome(string $principalUri, string $uri): bool {
 		foreach ($this->configurationService->getAll() as $config) {
-			/** @var ConfigurationModel $config */
 			if ($config->isEnabled()) {
 				return true;
 			}
@@ -111,7 +102,7 @@ class AddressBookProvider implements IAddressBookProvider {
 	/**
 	 * @throws ConfigurationNotFound
 	 */
-	public function getAddressBookById(int $addressBookId) {
+	public function getAddressBookById(int $addressBookId): AddressBook {
 		$config = $this->configurationService->get($addressBookId);
 		$cardBackend = new LdapCardBackend($this->ldapQuerentFactory->get($config), $config);
 		return new AddressBook(Application::APPID, $cardBackend);

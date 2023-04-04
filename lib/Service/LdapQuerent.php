@@ -25,24 +25,23 @@ declare(strict_types=1);
 
 namespace OCA\LDAPContactsBackend\Service;
 
+use Exception;
+use Generator;
 use OCA\LDAPContactsBackend\AppInfo\Application;
 use OCA\LDAPContactsBackend\Exception\RecordNotFound;
 use OCA\LDAPContactsBackend\Model\Configuration as ConfigurationModel;
-use OCP\ILogger;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Ldap\Adapter\QueryInterface;
 use Symfony\Component\Ldap\Entry;
 use Symfony\Component\Ldap\Exception\ConnectionException;
 use Symfony\Component\Ldap\Ldap;
 
 class LdapQuerent {
-	/** @var ConfigurationModel */
-	private $configuration;
+	private ConfigurationModel $configuration;
+	private LoggerInterface $logger;
+	protected ?Ldap $ldap = null;
 
-	protected $ldap;
-	/** @var ILogger */
-	private $logger;
-
-	public function __construct(ConfigurationModel $configuration, ILogger $logger) {
+	public function __construct(ConfigurationModel $configuration, LoggerInterface $logger) {
 		$this->configuration = $configuration;
 		$this->logger = $logger;
 	}
@@ -58,13 +57,16 @@ class LdapQuerent {
 			foreach ($collection->getIterator() as $record) {
 				return $record;
 			}
-		} catch (\Exception $e) {
-			$this->logger->logException($e, ['app' => Application::APPID]);
+		} catch (Exception $e) {
+			$this->logger->error($e->getMessage(), [
+				'exception' => $e,
+				'app' => Application::APPID,
+			]);
 		}
 		throw new RecordNotFound();
 	}
 
-	public function fetchAll(string $filter = null, int $limit = 0): \Generator {
+	public function fetchAll(string $filter = null, int $limit = 0): Generator {
 		$ldap = $this->getClient();
 		$filter = $filter ?? $this->configuration->getFilter();
 		$options = ['maxItems' => $limit, 'timeout' => 0];
@@ -74,13 +76,13 @@ class LdapQuerent {
 		foreach ($this->configuration->getBases() as $base) {
 			$query = $ldap->query($base, $filter, $options);
 			$subset = $query->execute()->toArray();
-			foreach ($subset as &$record) {
+			foreach ($subset as $record) {
 				yield $record;
 			}
 		}
 	}
 
-	public function find(string $search, int $limit = 0): \Generator {
+	public function find(string $search, int $limit = 0): Generator {
 		try {
 			$ldap = $this->getClient();
 		} catch (ConnectionException $e) {
@@ -109,7 +111,7 @@ class LdapQuerent {
 	}
 
 	/**
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	protected function getClient(): Ldap {
 		if ($this->ldap instanceof Ldap) {
@@ -136,7 +138,7 @@ class LdapQuerent {
 				$this->configuration->getAgentDn(),
 				$this->configuration->getAgentPassword()
 			);
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			$this->ldap = null;
 			throw $e;
 		}

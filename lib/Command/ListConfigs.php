@@ -32,8 +32,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ListConfigs extends Base {
-	/** @var Configuration */
-	private $configurationService;
+	private Configuration $configurationService;
 
 	public function __construct(Configuration $configurationService) {
 		parent::__construct();

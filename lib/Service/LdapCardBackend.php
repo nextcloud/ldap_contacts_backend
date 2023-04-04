@@ -32,10 +32,8 @@ use Symfony\Component\Ldap\Entry;
 use function base64_decode;
 
 class LdapCardBackend implements ICardBackend {
-	/** @var LdapQuerent */
-	private $ldapQuerent;
-	/** @var ConfigurationModel */
-	private $configuration;
+	private LdapQuerent $ldapQuerent;
+	private ConfigurationModel $configuration;
 
 	public function __construct(LdapQuerent $ldapQuerent, ConfigurationModel $configuration) {
 		$this->ldapQuerent = $ldapQuerent;
