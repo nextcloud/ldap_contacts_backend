@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace OCA\LDAPContactsBackend\Controller;
 
+use OCP\AppFramework\Http;
 use OCP\L10N\IFactory;
 use OCA\DAV\DAV\Sharing\IShareable;
 use OCA\LDAPContactsBackend\AppInfo\Application;
@@ -42,33 +43,26 @@ use OCP\AppFramework\Http\Response;
 use OCP\Constants;
 use OCP\Contacts\IManager;
 use OCP\IAddressBook;
-use OCP\ILogger;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 use OCP\IUserSession;
+use Psr\Log\LoggerInterface;
 
 class ContactsController extends Controller {
-	/** @var AddressBookProvider */
-	private $addressBookProvider;
-	/** @var IManager */
-	private $contactsManager;
-	/** @var IUserSession */
-	private $userSession;
-	/** @var ILogger */
-	private $logger;
-	/** @var IURLGenerator */
-	private $urlGenerator;
-	/** @var PhotoService */
-	private $photoService;
-	/** @var IFactory */
-	private $l10nFactory;
+	private AddressBookProvider $addressBookProvider;
+	private IManager $contactsManager;
+	private IUserSession $userSession;
+	private LoggerInterface $logger;
+	private IURLGenerator $urlGenerator;
+	private PhotoService $photoService;
+	private IFactory $l10nFactory;
 
 	public function __construct(
 		IRequest $request,
 		AddressBookProvider $addressBookProvider,
 		IManager $contactsManager,
 		IUserSession $userSession,
-		ILogger $logger,
+		LoggerInterface $logger,
 		IURLGenerator $urlGenerator,
 		PhotoService $photoService,
 		IFactory $l10nFactory
@@ -131,6 +125,11 @@ class ContactsController extends Controller {
 			);
 			return new NotFoundResponse();
 		}
+
+		// for the unlikely case reply with 4xx value
+		$response = new Response();
+		$response->setStatus(Http::STATUS_CONFLICT);
+		return $response;
 	}
 
 	public function photo(int $sourceId = -1, string $contactId = ''): Response {

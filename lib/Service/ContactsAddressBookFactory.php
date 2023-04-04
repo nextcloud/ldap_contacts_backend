@@ -30,16 +30,10 @@ use OCP\IConfig;
 use OCP\IURLGenerator;
 
 class ContactsAddressBookFactory {
-	/** @var ICardBackend */
-	private $cardBackend;
-	/** @var IConfig */
-	private $config;
-	/** @var IURLGenerator */
-	private $urlGenerator;
-	/** @var CsrfTokenManager */
-	private $tokenManager;
-	/** @var PhotoService */
-	private $photoService;
+	private IConfig $config;
+	private IURLGenerator $urlGenerator;
+	private CsrfTokenManager $tokenManager;
+	private PhotoService $photoService;
 
 	public function __construct(
 		IConfig $config,
@@ -53,7 +47,7 @@ class ContactsAddressBookFactory {
 		$this->photoService = $photoService;
 	}
 
-	public function get(ICardBackend $cardBackend) {
+	public function get(ICardBackend $cardBackend): ContactsAddressBook {
 		return new ContactsAddressBook(
 			$cardBackend,
 			$this->config,

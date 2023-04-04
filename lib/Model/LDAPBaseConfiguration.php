@@ -26,12 +26,12 @@ declare(strict_types=1);
 namespace OCA\LDAPContactsBackend\Model;
 
 class LDAPBaseConfiguration {
-	protected $prefix;
-	protected $host;
-	protected $port;
-	protected $tlsMode;
-	protected $bindDn;
-	protected $bindPwd;
+	protected string $prefix;
+	protected string $host;
+	protected string $port;
+	protected string $tlsMode;
+	protected string $bindDn;
+	protected string $bindPwd;
 
 
 	public function getBindPwd(): string {
@@ -79,7 +79,7 @@ class LDAPBaseConfiguration {
 		return $this;
 	}
 
-	public function setPrefix($prefix): LDAPBaseConfiguration {
+	public function setPrefix(string $prefix): LDAPBaseConfiguration {
 		$this->prefix = $prefix;
 		return $this;
 	}

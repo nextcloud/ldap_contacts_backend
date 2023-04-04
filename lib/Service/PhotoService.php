@@ -32,8 +32,7 @@ use OCP\ICacheFactory;
 use OCP\Image;
 
 class PhotoService {
-	/** @var ICacheFactory */
-	private $cacheFactory;
+	private ICacheFactory $cacheFactory;
 
 	public function __construct(ICacheFactory $cacheFactory) {
 		$this->cacheFactory = $cacheFactory;
