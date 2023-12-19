@@ -179,23 +179,21 @@ class Configuration implements JsonSerializable {
 		$model = new Configuration();
 
 		foreach (self::PROPERTIES as $property) {
-			if (isset($property)) {
-				try {
-					if (!isset($data[$property])) {
-						continue;
-					}
-					$setter = 'set' . ucfirst($property);
-					$model->$setter($data[$property]);
-				} catch (InvalidArgumentException $e) {
-					Server::get(LoggerInterface::class)->info(
-						'Ignoring invalid value for {property}, ID {id}',
-						[
-							'app' => Application::APPID,
-							'property' => $property,
-							'id' => $data['id'],
-						]
-					);
+			try {
+				if (!isset($data[$property])) {
+					continue;
 				}
+				$setter = 'set' . ucfirst($property);
+				$model->$setter($data[$property]);
+			} catch (InvalidArgumentException $e) {
+				Server::get(LoggerInterface::class)->info(
+					'Ignoring invalid value for {property}, ID {id}',
+					[
+						'app' => Application::APPID,
+						'property' => $property,
+						'id' => $data['id'],
+					]
+				);
 			}
 		}
 
