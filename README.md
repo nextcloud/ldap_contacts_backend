@@ -22,7 +22,7 @@ Note: The [Contacts app for Nextcloud](https://apps.nextcloud.com/apps/contacts)
 
 In order to configure an LDAP backend, run:
 
-`php php occ ldap_contacts:add --interactive <ADDRESS_BOOK_NAME>`
+`./occ ldap_contacts:add --interactive <ADDRESS_BOOK_NAME>`
 
 Where `<ADDRESSBOOK_NAME>` is a name you like to identify the virtual addressbook with. The interactive mode leads you 
 through the configuration, but you can also use the --help flag to see all the options.
