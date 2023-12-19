@@ -18,4 +18,7 @@
 	<extraFiles>
 		<directory name="vendor" />
 	</extraFiles>
+	<stubs>
+		<file name="tests/stubs/stub.phpstub" preloadClasses="true"/>
+	</stubs>
 </psalm>
