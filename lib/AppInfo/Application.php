@@ -43,7 +43,7 @@ class Application extends App implements IBootstrap {
 
 	private function registerAddressBook(IManager $cm) {
 		/** @var AddressBookProvider $provider */
-		$provider = $this->getContainer()->query(AddressBookProvider::class);
+		$provider = $this->getContainer()->get(AddressBookProvider::class);
 		foreach ($provider->fetchAllForContactsStore() as $ab) {
 			$cm->registerAddressBook($ab);
 		}

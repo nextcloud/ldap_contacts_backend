@@ -35,7 +35,7 @@ use function json_decode;
 use function json_encode;
 
 class Configuration {
-	/** @var ConfigurationModel[] */
+	/** @var array<int,ConfigurationModel> */
 	protected array $configurations = [];
 	private IConfig $config;
 	private ICredentialsManager $credentialsManager;
@@ -97,11 +97,12 @@ class Configuration {
 	public function update(ConfigurationModel $model): void {
 		$this->ensureLoaded();
 
-		if (!isset($this->configurations[$model->getId()])) {
+		$id = $model->getId();
+		if ($id === null || !isset($this->configurations[$id])) {
 			throw new ConfigurationNotFound();
 		}
 
-		$this->configurations[$model->getId()] = $model;
+		$this->configurations[$id] = $model;
 		$this->saveCredentials($model);
 		$this->save();
 	}
@@ -119,6 +120,9 @@ class Configuration {
 				try {
 					$model = $this->modelFromArray($connection);
 					$id = $model->getId();
+					if ($id === null) {
+						continue;
+					}
 					$this->configurations[$id] = $model;
 					$this->loadCredentials($model);
 				} catch (InvalidConfiguration $e) {

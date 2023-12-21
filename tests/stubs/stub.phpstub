@@ -1,0 +1,1023 @@
+<?php
+
+namespace OCA\DAV\CardDAV\Integration {
+    /**
+     * @since 19.0.0
+     */
+    abstract class ExternalAddressBook implements \Sabre\CardDAV\IAddressBook, \Sabre\DAV\IProperties
+    {
+        /** @var string */
+        private const PREFIX = 'z-app-generated';
+        /**
+         * @var string
+         *
+         * Double dash is a valid delimiter,
+         * because it will always split the URIs correctly:
+         * - our prefix contains only one dash and won't be split
+         * - appIds are not allowed to contain dashes as per spec:
+         * > must contain only lowercase ASCII characters and underscore
+         * - explode has a limit of three, so even if the app-generated
+         *   URI has double dashes, it won't be split
+         */
+        private const DELIMITER = '--';
+        private string $appId;
+        private string $uri;
+        public function __construct(string $appId, string $uri)
+        {
+        }
+        /**
+         * @inheritDoc
+         */
+        public final function getName()
+        {
+        }
+        /**
+         * @inheritDoc
+         */
+        public final function setName($name)
+        {
+        }
+        /**
+         * @inheritDoc
+         */
+        public final function createDirectory($name)
+        {
+        }
+        /**
+         * Checks whether the address book uri is app-generated
+         *
+         * @param string $uri
+         *
+         * @return bool
+         */
+        public static function isAppGeneratedAddressBook(string $uri) : bool
+        {
+        }
+        /**
+         * Splits an app-generated uri into appId and uri
+         *
+         * @param string $uri
+         *
+         * @return array
+         */
+        public static function splitAppGeneratedAddressBookUri(string $uri) : array
+        {
+        }
+        /**
+         * Checks whether a address book name the user wants to create violates
+         * the reserved name for URIs
+         *
+         * @param string $uri
+         *
+         * @return bool
+         */
+        public static function doesViolateReservedName(string $uri) : bool
+        {
+        }
+    }
+    /**
+     * @since 19.0.0
+     */
+    interface IAddressBookProvider
+    {
+        /**
+         * Provides the appId of the plugin
+         *
+         * @since 19.0.0
+         * @return string AppId
+         */
+        public function getAppId() : string;
+        /**
+         * Fetches all address books for a given principal uri
+         *
+         * @since 19.0.0
+         * @param string $principalUri E.g. principals/users/user1
+         * @return ExternalAddressBook[] Array of all address books
+         */
+        public function fetchAllForAddressBookHome(string $principalUri) : array;
+        /**
+         * Checks whether plugin has an address book for a given principalUri and URI
+         *
+         * @since 19.0.0
+         * @param string $principalUri E.g. principals/users/user1
+         * @param string $uri E.g. personal
+         * @return bool True if address book for principalUri and URI exists, false otherwise
+         */
+        public function hasAddressBookInAddressBookHome(string $principalUri, string $uri) : bool;
+        /**
+         * Fetches an address book for a given principalUri and URI
+         * Returns null if address book does not exist
+         *
+         * @param string $principalUri E.g. principals/users/user1
+         * @param string $uri E.g. personal
+         *
+         * @return ExternalAddressBook|null address book if it exists, null otherwise
+         *@since 19.0.0
+         */
+        public function getAddressBookInAddressBookHome(string $principalUri, string $uri) : ?\OCA\DAV\CardDAV\Integration\ExternalAddressBook;
+    }
+}
+namespace OCA\DAV\DAV\Sharing {
+    /**
+     * This interface represents a dav resource that can be shared with other users.
+     *
+     */
+    interface IShareable extends \Sabre\DAV\INode
+    {
+        /**
+         * Updates the list of shares.
+         *
+         * The first array is a list of people that are to be added to the
+         * resource.
+         *
+         * Every element in the add array has the following properties:
+         *   * href - A url. Usually a mailto: address
+         *   * commonName - Usually a first and last name, or false
+         *   * readOnly - A boolean value
+         *
+         * Every element in the remove array is just the address string.
+         *
+         * @param list<array{href: string, commonName: string, readOnly: bool}> $add
+         * @param list<string> $remove
+         */
+        public function updateShares(array $add, array $remove) : void;
+        /**
+         * Returns the list of people whom this resource is shared with.
+         *
+         * Every element in this array should have the following properties:
+         *   * href - Often a mailto: address
+         *   * commonName - Optional, for example a first + last name
+         *   * status - See the Sabre\CalDAV\SharingPlugin::STATUS_ constants.
+         *   * readOnly - boolean
+         *
+         * @return list<array{href: string, commonName: string, status: int, readOnly: bool, '{http://owncloud.org/ns}principal': string, '{http://owncloud.org/ns}group-share': bool}>
+         */
+        public function getShares() : array;
+        public function getResourceId() : int;
+        /**
+         * @return ?string
+         */
+        public function getOwner();
+    }
+    class Plugin extends \Sabre\DAV\ServerPlugin
+    {
+        public const NS_OWNCLOUD = 'http://owncloud.org/ns';
+        public const NS_NEXTCLOUD = 'http://nextcloud.com/ns';
+        /** @var Auth */
+        private $auth;
+        /** @var IRequest */
+        private $request;
+        /** @var IConfig */
+        private $config;
+        /**
+         * Plugin constructor.
+         *
+         * @param Auth $authBackEnd
+         * @param IRequest $request
+         * @param IConfig $config
+         */
+        public function __construct(\OCA\DAV\Connector\Sabre\Auth $authBackEnd, \OCP\IRequest $request, \OCP\IConfig $config)
+        {
+        }
+        /**
+         * Reference to SabreDAV server object.
+         *
+         * @var \Sabre\DAV\Server
+         */
+        protected $server;
+        /**
+         * This method should return a list of server-features.
+         *
+         * This is for example 'versioning' and is added to the DAV: header
+         * in an OPTIONS response.
+         *
+         * @return string[]
+         */
+        public function getFeatures()
+        {
+        }
+        /**
+         * Returns a plugin name.
+         *
+         * Using this name other plugins will be able to access other plugins
+         * using Sabre\DAV\Server::getPlugin
+         *
+         * @return string
+         */
+        public function getPluginName()
+        {
+        }
+        /**
+         * This initializes the plugin.
+         *
+         * This function is called by Sabre\DAV\Server, after
+         * addPlugin is called.
+         *
+         * This method should set up the required event subscriptions.
+         *
+         * @param Server $server
+         * @return void
+         */
+        public function initialize(\Sabre\DAV\Server $server)
+        {
+        }
+        /**
+         * We intercept this to handle POST requests on a dav resource.
+         *
+         * @param RequestInterface $request
+         * @param ResponseInterface $response
+         * @return null|false
+         */
+        public function httpPost(\Sabre\HTTP\RequestInterface $request, \Sabre\HTTP\ResponseInterface $response)
+        {
+        }
+        /**
+         * This event is triggered when properties are requested for a certain
+         * node.
+         *
+         * This allows us to inject any properties early.
+         *
+         * @param PropFind $propFind
+         * @param INode $node
+         * @return void
+         */
+        public function propFind(\Sabre\DAV\PropFind $propFind, \Sabre\DAV\INode $node)
+        {
+        }
+    }
+}
+namespace OCA\User_LDAP {
+    /**
+     * @property int $ldapPagingSize holds an integer
+     * @property string $ldapUserAvatarRule
+	 * @property string $ldapPort
+	 * @property string $ldapAgentName
+	 * @property string $ldapAgentPassword
+	 * @property string $ldapHost
+	 * @property string $ldapTLS
+	 * @property string $ldapConfigurationActive
+     */
+    class Configuration
+    {
+        public const AVATAR_PREFIX_DEFAULT = 'default';
+        public const AVATAR_PREFIX_NONE = 'none';
+        public const AVATAR_PREFIX_DATA_ATTRIBUTE = 'data:';
+        public const LDAP_SERVER_FEATURE_UNKNOWN = 'unknown';
+        public const LDAP_SERVER_FEATURE_AVAILABLE = 'available';
+        public const LDAP_SERVER_FEATURE_UNAVAILABLE = 'unavailable';
+        /**
+         * @var string
+         */
+        protected $configPrefix;
+        /**
+         * @var bool
+         */
+        protected $configRead = false;
+        /**
+         * @var string[]
+         */
+        protected array $unsavedChanges = [];
+        /**
+         * @var array<string, mixed> settings
+         */
+        protected $config = ['ldapHost' => null, 'ldapPort' => null, 'ldapBackupHost' => null, 'ldapBackupPort' => null, 'ldapBackgroundHost' => null, 'ldapBackgroundPort' => null, 'ldapBase' => null, 'ldapBaseUsers' => null, 'ldapBaseGroups' => null, 'ldapAgentName' => null, 'ldapAgentPassword' => null, 'ldapTLS' => null, 'turnOffCertCheck' => null, 'ldapIgnoreNamingRules' => null, 'ldapUserDisplayName' => null, 'ldapUserDisplayName2' => null, 'ldapUserAvatarRule' => null, 'ldapGidNumber' => null, 'ldapUserFilterObjectclass' => null, 'ldapUserFilterGroups' => null, 'ldapUserFilter' => null, 'ldapUserFilterMode' => null, 'ldapGroupFilter' => null, 'ldapGroupFilterMode' => null, 'ldapGroupFilterObjectclass' => null, 'ldapGroupFilterGroups' => null, 'ldapGroupDisplayName' => null, 'ldapGroupMemberAssocAttr' => null, 'ldapLoginFilter' => null, 'ldapLoginFilterMode' => null, 'ldapLoginFilterEmail' => null, 'ldapLoginFilterUsername' => null, 'ldapLoginFilterAttributes' => null, 'ldapQuotaAttribute' => null, 'ldapQuotaDefault' => null, 'ldapEmailAttribute' => null, 'ldapCacheTTL' => null, 'ldapUuidUserAttribute' => 'auto', 'ldapUuidGroupAttribute' => 'auto', 'ldapOverrideMainServer' => false, 'ldapConfigurationActive' => false, 'ldapAttributesForUserSearch' => null, 'ldapAttributesForGroupSearch' => null, 'ldapExperiencedAdmin' => false, 'homeFolderNamingRule' => null, 'hasMemberOfFilterSupport' => false, 'useMemberOfToDetectMembership' => true, 'ldapExpertUsernameAttr' => null, 'ldapExpertUUIDUserAttr' => null, 'ldapExpertUUIDGroupAttr' => null, 'markRemnantsAsDisabled' => false, 'lastJpegPhotoLookup' => null, 'ldapNestedGroups' => false, 'ldapPagingSize' => null, 'turnOnPasswordChange' => false, 'ldapDynamicGroupMemberURL' => null, 'ldapDefaultPPolicyDN' => null, 'ldapExtStorageHomeAttribute' => null, 'ldapMatchingRuleInChainState' => self::LDAP_SERVER_FEATURE_UNKNOWN, 'ldapConnectionTimeout' => 15, 'ldapAttributePhone' => null, 'ldapAttributeWebsite' => null, 'ldapAttributeAddress' => null, 'ldapAttributeTwitter' => null, 'ldapAttributeFediverse' => null, 'ldapAttributeOrganisation' => null, 'ldapAttributeRole' => null, 'ldapAttributeHeadline' => null, 'ldapAttributeBiography' => null, 'ldapAdminGroup' => ''];
+        public function __construct(string $configPrefix, bool $autoRead = true)
+        {
+        }
+        /**
+         * @param string $name
+         * @return mixed|null
+         */
+        public function __get($name)
+        {
+        }
+        /**
+         * @param string $name
+         * @param mixed $value
+         */
+        public function __set($name, $value)
+        {
+        }
+        public function getConfiguration() : array
+        {
+        }
+        /**
+         * set LDAP configuration with values delivered by an array, not read
+         * from configuration. It does not save the configuration! To do so, you
+         * must call saveConfiguration afterwards.
+         * @param array $config array that holds the config parameters in an associated
+         * array
+         * @param array &$applied optional; array where the set fields will be given to
+         */
+        public function setConfiguration(array $config, array &$applied = null) : void
+        {
+        }
+        public function readConfiguration() : void
+        {
+        }
+        /**
+         * saves the current config changes in the database
+         */
+        public function saveConfiguration() : void
+        {
+        }
+        /**
+         * @param string $varName
+         * @return array|string
+         */
+        protected function getMultiLine($varName)
+        {
+        }
+        /**
+         * Sets multi-line values as arrays
+         *
+         * @param string $varName name of config-key
+         * @param array|string $value to set
+         */
+        protected function setMultiLine(string $varName, $value) : void
+        {
+        }
+        protected function getPwd(string $varName) : string
+        {
+        }
+        protected function getLcValue(string $varName) : string
+        {
+        }
+        protected function getSystemValue(string $varName) : string
+        {
+        }
+        protected function getValue(string $varName) : string
+        {
+        }
+        /**
+         * Sets a scalar value.
+         *
+         * @param string $varName name of config key
+         * @param mixed $value to set
+         */
+        protected function setValue(string $varName, $value) : void
+        {
+        }
+        /**
+         * Sets a scalar value without trimming.
+         *
+         * @param string $varName name of config key
+         * @param mixed $value to set
+         */
+        protected function setRawValue(string $varName, $value) : void
+        {
+        }
+        protected function saveValue(string $varName, string $value) : bool
+        {
+        }
+        /**
+         * @return array an associative array with the default values. Keys are correspond
+         * to config-value entries in the database table
+         */
+        public function getDefaults() : array
+        {
+        }
+        /**
+         * @return array that maps internal variable names to database fields
+         */
+        public function getConfigTranslationArray() : array
+        {
+        }
+        /**
+         * @throws \RuntimeException
+         */
+        public function resolveRule(string $rule) : array
+        {
+        }
+        public function getAvatarAttributes() : array
+        {
+        }
+        /**
+         * Returns TRUE if the ldapHost variable starts with 'ldapi://'
+         */
+        public function usesLdapi() : bool
+        {
+        }
+    }
+    class Helper
+    {
+        private \OCP\IConfig $config;
+        private \OCP\IDBConnection $connection;
+        /** @var CappedMemoryCache<string> */
+        protected \OCP\Cache\CappedMemoryCache $sanitizeDnCache;
+        public function __construct(\OCP\IConfig $config, \OCP\IDBConnection $connection)
+        {
+        }
+        /**
+         * returns prefixes for each saved LDAP/AD server configuration.
+         *
+         * @param bool $activeConfigurations optional, whether only active configuration shall be
+         * retrieved, defaults to false
+         * @return array with a list of the available prefixes
+         *
+         * Configuration prefixes are used to set up configurations for n LDAP or
+         * AD servers. Since configuration is stored in the database, table
+         * appconfig under appid user_ldap, the common identifiers in column
+         * 'configkey' have a prefix. The prefix for the very first server
+         * configuration is empty.
+         * Configkey Examples:
+         * Server 1: ldap_login_filter
+         * Server 2: s1_ldap_login_filter
+         * Server 3: s2_ldap_login_filter
+         *
+         * The prefix needs to be passed to the constructor of Connection class,
+         * except the default (first) server shall be connected to.
+         *
+         */
+        public function getServerConfigurationPrefixes($activeConfigurations = false) : array
+        {
+        }
+        /**
+         *
+         * determines the host for every configured connection
+         *
+         * @return array an array with configprefix as keys
+         *
+         */
+        public function getServerConfigurationHosts()
+        {
+        }
+        /**
+         * return the next available configuration prefix
+         *
+         * @return string
+         */
+        public function getNextServerConfigurationPrefix()
+        {
+        }
+        private function getServersConfig(string $value) : array
+        {
+        }
+        /**
+         * deletes a given saved LDAP/AD server configuration.
+         *
+         * @param string $prefix the configuration prefix of the config to delete
+         * @return bool true on success, false otherwise
+         */
+        public function deleteServerConfiguration($prefix)
+        {
+        }
+        /**
+         * checks whether there is one or more disabled LDAP configurations
+         */
+        public function haveDisabledConfigurations() : bool
+        {
+        }
+        /**
+         * extracts the domain from a given URL
+         *
+         * @param string $url the URL
+         * @return string|false domain as string on success, false otherwise
+         */
+        public function getDomainFromURL($url)
+        {
+        }
+        /**
+         * sanitizes a DN received from the LDAP server
+         *
+         * @param array|string $dn the DN in question
+         * @return array|string the sanitized DN
+         */
+        public function sanitizeDN($dn)
+        {
+        }
+        /**
+         * converts a stored DN so it can be used as base parameter for LDAP queries, internally we store them for usage in LDAP filters
+         *
+         * @param string $dn the DN
+         * @return string
+         */
+        public function DNasBaseParameter($dn)
+        {
+        }
+        /**
+         * listens to a hook thrown by server2server sharing and replaces the given
+         * login name by a username, if it matches an LDAP user.
+         *
+         * @param array $param contains a reference to a $uid var under 'uid' key
+         * @throws \Exception
+         */
+        public static function loginName2UserName($param) : void
+        {
+        }
+    }
+}
+namespace Stecman\Component\Symfony\Console\BashCompletion\Completion {
+    interface CompletionAwareInterface
+    {
+        /**
+         * Return possible values for the named option
+         *
+         * @param string $optionName
+         * @param CompletionContext $context
+         * @return array
+         */
+        public function completeOptionValues($optionName, \Stecman\Component\Symfony\Console\BashCompletion\CompletionContext $context);
+        /**
+         * Return possible values for the named argument
+         *
+         * @param string $argumentName
+         * @param CompletionContext $context
+         * @return array
+         */
+        public function completeArgumentValues($argumentName, \Stecman\Component\Symfony\Console\BashCompletion\CompletionContext $context);
+    }
+}
+namespace OC\Core\Command {
+    class Base extends \Symfony\Component\Console\Command\Command implements \Stecman\Component\Symfony\Console\BashCompletion\Completion\CompletionAwareInterface
+    {
+        public const OUTPUT_FORMAT_PLAIN = 'plain';
+        public const OUTPUT_FORMAT_JSON = 'json';
+        public const OUTPUT_FORMAT_JSON_PRETTY = 'json_pretty';
+        protected string $defaultOutputFormat = self::OUTPUT_FORMAT_PLAIN;
+        private bool $php_pcntl_signal = false;
+        private bool $interrupted = false;
+        protected function configure()
+        {
+        }
+        protected function writeArrayInOutputFormat(\Symfony\Component\Console\Input\InputInterface $input, \Symfony\Component\Console\Output\OutputInterface $output, array $items, string $prefix = '  - ') : void
+        {
+        }
+        protected function writeTableInOutputFormat(\Symfony\Component\Console\Input\InputInterface $input, \Symfony\Component\Console\Output\OutputInterface $output, array $items) : void
+        {
+        }
+        /**
+         * @param mixed $item
+         */
+        protected function writeMixedInOutputFormat(\Symfony\Component\Console\Input\InputInterface $input, \Symfony\Component\Console\Output\OutputInterface $output, $item)
+        {
+        }
+        protected function valueToString($value, bool $returnNull = true) : ?string
+        {
+        }
+        /**
+         * Throw InterruptedException when interrupted by user
+         *
+         * @throws InterruptedException
+         */
+        protected function abortIfInterrupted()
+        {
+        }
+        /**
+         * Changes the status of the command to "interrupted" if ctrl-c has been pressed
+         *
+         * Gives a chance to the command to properly terminate what it's doing
+         */
+        public function cancelOperation() : void
+        {
+        }
+        public function run(\Symfony\Component\Console\Input\InputInterface $input, \Symfony\Component\Console\Output\OutputInterface $output)
+        {
+        }
+        /**
+         * @param string $optionName
+         * @param CompletionContext $context
+         * @return string[]
+         */
+        public function completeOptionValues($optionName, \Stecman\Component\Symfony\Console\BashCompletion\CompletionContext $context)
+        {
+        }
+        /**
+         * @param string $argumentName
+         * @param CompletionContext $context
+         * @return string[]
+         */
+        public function completeArgumentValues($argumentName, \Stecman\Component\Symfony\Console\BashCompletion\CompletionContext $context)
+        {
+        }
+    }
+}
+namespace OC\Security\CSRF {
+    /**
+     * Class CsrfTokenManager is the manager for all CSRF token related activities.
+     *
+     * @package OC\Security\CSRF
+     */
+    class CsrfTokenManager
+    {
+        private \OC\Security\CSRF\TokenStorage\SessionStorage $sessionStorage;
+        private ?\OC\Security\CSRF\CsrfToken $csrfToken = null;
+        public function __construct(private \OC\Security\CSRF\CsrfTokenGenerator $tokenGenerator, \OC\Security\CSRF\TokenStorage\SessionStorage $storageInterface)
+        {
+        }
+        /**
+         * Returns the current CSRF token, if none set it will create a new one.
+         */
+        public function getToken() : \OC\Security\CSRF\CsrfToken
+        {
+        }
+        /**
+         * Invalidates any current token and sets a new one.
+         */
+        public function refreshToken() : \OC\Security\CSRF\CsrfToken
+        {
+        }
+        /**
+         * Remove the current token from the storage.
+         */
+        public function removeToken() : void
+        {
+        }
+        /**
+         * Verifies whether the provided token is valid.
+         */
+        public function isTokenValid(\OC\Security\CSRF\CsrfToken $token) : bool
+        {
+        }
+    }
+    /**
+     * Class CsrfToken represents the stored or provided CSRF token. To mitigate
+     * BREACH alike vulnerabilities the token is returned in an encrypted value as
+     * well in an unencrypted value. For display measures to the user always the
+     * unencrypted one should be chosen.
+     *
+     * @package OC\Security\CSRF
+     */
+    class CsrfToken
+    {
+        private string $encryptedValue = '';
+        /**
+         * @param string $value Value of the token. Can be encrypted or not encrypted.
+         */
+        public function __construct(private string $value)
+        {
+        }
+        /**
+         * Encrypted value of the token. This is used to mitigate BREACH alike
+         * vulnerabilities. For display measures do use this functionality.
+         */
+        public function getEncryptedValue() : string
+        {
+        }
+        /**
+         * The unencrypted value of the token. Used for decrypting an already
+         * encrypted token.
+         */
+        public function getDecryptedValue() : string
+        {
+        }
+    }
+}
+namespace {
+    /**
+     * Class for basic image manipulation
+     */
+    class OC_Image implements \OCP\IImage
+    {
+        // Default memory limit for images to load (256 MBytes).
+        protected const DEFAULT_MEMORY_LIMIT = 256;
+        // Default quality for jpeg images
+        protected const DEFAULT_JPEG_QUALITY = 80;
+        /** @var false|resource|\GdImage */
+        protected $resource = \false;
+        // tmp resource.
+        /** @var int */
+        protected $imageType = \IMAGETYPE_PNG;
+        // Default to png if file type isn't evident.
+        /** @var null|string */
+        protected $mimeType = 'image/png';
+        // Default to png
+        /** @var null|string */
+        protected $filePath = \null;
+        /** @var finfo */
+        private $fileInfo;
+        /** @var \OCP\ILogger */
+        private $logger;
+        /** @var \OCP\IConfig */
+        private $config;
+        /** @var array */
+        private $exif;
+        /**
+         * Constructor.
+         *
+         * @param resource|string|\GdImage $imageRef The path to a local file, a base64 encoded string or a resource created by
+         * an imagecreate* function.
+         * @param \OCP\ILogger $logger
+         * @param \OCP\IConfig $config
+         * @throws \InvalidArgumentException in case the $imageRef parameter is not null
+         */
+        public function __construct($imageRef = \null, \OCP\ILogger $logger = \null, \OCP\IConfig $config = \null)
+        {
+        }
+        /**
+         * Determine whether the object contains an image resource.
+         *
+         * @return bool
+         */
+        public function valid() : bool
+        {
+        }
+        /**
+         * Returns the MIME type of the image or null if no image is loaded.
+         *
+         * @return string
+         */
+        public function mimeType() : ?string
+        {
+        }
+        /**
+         * Returns the width of the image or -1 if no image is loaded.
+         *
+         * @return int
+         */
+        public function width() : int
+        {
+        }
+        /**
+         * Returns the height of the image or -1 if no image is loaded.
+         *
+         * @return int
+         */
+        public function height() : int
+        {
+        }
+        /**
+         * Returns the width when the image orientation is top-left.
+         *
+         * @return int
+         */
+        public function widthTopLeft() : int
+        {
+        }
+        /**
+         * Returns the height when the image orientation is top-left.
+         *
+         * @return int
+         */
+        public function heightTopLeft() : int
+        {
+        }
+        /**
+         * Outputs the image.
+         *
+         * @param string $mimeType
+         * @return bool
+         */
+        public function show(string $mimeType = \null) : bool
+        {
+        }
+        /**
+         * Saves the image.
+         *
+         * @param string $filePath
+         * @param string $mimeType
+         * @return bool
+         */
+        public function save(?string $filePath = \null, ?string $mimeType = \null) : bool
+        {
+        }
+        /**
+         * Outputs/saves the image.
+         *
+         * @param string $filePath
+         * @param string $mimeType
+         * @return bool
+         * @throws Exception
+         */
+        private function _output(?string $filePath = \null, ?string $mimeType = \null) : bool
+        {
+        }
+        /**
+         * Prints the image when called as $image().
+         */
+        public function __invoke()
+        {
+        }
+        /**
+         * @param resource|\GdImage $resource
+         * @throws \InvalidArgumentException in case the supplied resource does not have the type "gd"
+         */
+        public function setResource($resource)
+        {
+        }
+        /**
+         * @return false|resource|\GdImage Returns the image resource if any
+         */
+        public function resource()
+        {
+        }
+        /**
+         * @return string Returns the mimetype of the data. Returns null if the data is not valid.
+         */
+        public function dataMimeType() : ?string
+        {
+        }
+        /**
+         * @return null|string Returns the raw image data.
+         */
+        public function data() : ?string
+        {
+        }
+        /**
+         * @return string - base64 encoded, which is suitable for embedding in a VCard.
+         */
+        public function __toString()
+        {
+        }
+        /**
+         * @return int
+         */
+        protected function getJpegQuality() : int
+        {
+        }
+        /**
+         * (I'm open for suggestions on better method name ;)
+         * Get the orientation based on EXIF data.
+         *
+         * @return int The orientation or -1 if no EXIF data is available.
+         */
+        public function getOrientation() : int
+        {
+        }
+        public function readExif($data) : void
+        {
+        }
+        /**
+         * (I'm open for suggestions on better method name ;)
+         * Fixes orientation based on EXIF data.
+         *
+         * @return bool
+         */
+        public function fixOrientation() : bool
+        {
+        }
+        /**
+         * Loads an image from an open file handle.
+         * It is the responsibility of the caller to position the pointer at the correct place and to close the handle again.
+         *
+         * @param resource $handle
+         * @return resource|\GdImage|false An image resource or false on error
+         */
+        public function loadFromFileHandle($handle)
+        {
+        }
+        /**
+         * Check if allocating an image with the given size is allowed.
+         *
+         * @param int $width The image width.
+         * @param int $height The image height.
+         * @return bool true if allocating is allowed, false otherwise
+         */
+        private function checkImageMemory($width, $height)
+        {
+        }
+        /**
+         * Check if loading an image file from the given path is allowed.
+         *
+         * @param string $path The path to a local file.
+         * @return bool true if allocating is allowed, false otherwise
+         */
+        private function checkImageSize($path)
+        {
+        }
+        /**
+         * Check if loading an image from the given data is allowed.
+         *
+         * @param string $data A string of image data as read from a file.
+         * @return bool true if allocating is allowed, false otherwise
+         */
+        private function checkImageDataSize($data)
+        {
+        }
+        /**
+         * Loads an image from a local file.
+         *
+         * @param bool|string $imagePath The path to a local file.
+         * @return bool|resource|\GdImage An image resource or false on error
+         */
+        public function loadFromFile($imagePath = \false)
+        {
+        }
+        /**
+         * Loads an image from a string of data.
+         *
+         * @param string $str A string of image data as read from a file.
+         * @return bool|resource|\GdImage An image resource or false on error
+         */
+        public function loadFromData(string $str)
+        {
+        }
+        /**
+         * Loads an image from a base64 encoded string.
+         *
+         * @param string $str A string base64 encoded string of image data.
+         * @return bool|resource|\GdImage An image resource or false on error
+         */
+        public function loadFromBase64(string $str)
+        {
+        }
+        /**
+         * Resizes the image preserving ratio.
+         *
+         * @param int $maxSize The maximum size of either the width or height.
+         * @return bool
+         */
+        public function resize(int $maxSize) : bool
+        {
+        }
+        /**
+         * @param $maxSize
+         * @return resource|bool|\GdImage
+         */
+        private function resizeNew(int $maxSize)
+        {
+        }
+        /**
+         * @param int $width
+         * @param int $height
+         * @return bool
+         */
+        public function preciseResize(int $width, int $height) : bool
+        {
+        }
+        /**
+         * @param int $width
+         * @param int $height
+         * @return resource|bool|\GdImage
+         */
+        public function preciseResizeNew(int $width, int $height)
+        {
+        }
+        /**
+         * Crops the image to the middle square. If the image is already square it just returns.
+         *
+         * @param int $size maximum size for the result (optional)
+         * @return bool for success or failure
+         */
+        public function centerCrop(int $size = 0) : bool
+        {
+        }
+        /**
+         * Crops the image from point $x$y with dimension $wx$h.
+         *
+         * @param int $x Horizontal position
+         * @param int $y Vertical position
+         * @param int $w Width
+         * @param int $h Height
+         * @return bool for success or failure
+         */
+        public function crop(int $x, int $y, int $w, int $h) : bool
+        {
+        }
+        /**
+         * Crops the image from point $x$y with dimension $wx$h.
+         *
+         * @param int $x Horizontal position
+         * @param int $y Vertical position
+         * @param int $w Width
+         * @param int $h Height
+         * @return resource|\GdImage|false
+         */
+        public function cropNew(int $x, int $y, int $w, int $h)
+        {
+        }
+        /**
+         * Resizes the image to fit within a boundary while preserving ratio.
+         *
+         * Warning: Images smaller than $maxWidth x $maxHeight will end up being scaled up
+         *
+         * @param int $maxWidth
+         * @param int $maxHeight
+         * @return bool
+         */
+        public function fitIn(int $maxWidth, int $maxHeight) : bool
+        {
+        }
+        /**
+         * Shrinks larger images to fit within specified boundaries while preserving ratio.
+         *
+         * @param int $maxWidth
+         * @param int $maxHeight
+         * @return bool
+         */
+        public function scaleDownToFit(int $maxWidth, int $maxHeight) : bool
+        {
+        }
+        public function copy() : \OCP\IImage
+        {
+        }
+        public function cropCopy(int $x, int $y, int $w, int $h) : \OCP\IImage
+        {
+        }
+        public function preciseResizeCopy(int $width, int $height) : \OCP\IImage
+        {
+        }
+        public function resizeCopy(int $maxSize) : \OCP\IImage
+        {
+        }
+        /**
+         * Destroys the current image and resets the object
+         */
+        public function destroy() : void
+        {
+        }
+        public function __destruct()
+        {
+        }
+    }
+}

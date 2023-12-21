@@ -25,8 +25,6 @@ declare(strict_types=1);
 
 namespace OCA\LDAPContactsBackend\Controller;
 
-use OCP\AppFramework\Http;
-use OCP\L10N\IFactory;
 use OCA\DAV\DAV\Sharing\IShareable;
 use OCA\LDAPContactsBackend\AppInfo\Application;
 use OCA\LDAPContactsBackend\Exception\ConfigurationNotFound;
@@ -37,6 +35,7 @@ use OCA\LDAPContactsBackend\Model\Card;
 use OCA\LDAPContactsBackend\Service\AddressBookProvider;
 use OCA\LDAPContactsBackend\Service\PhotoService;
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\NotFoundResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\Response;
@@ -46,6 +45,7 @@ use OCP\IAddressBook;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 use OCP\IUserSession;
+use OCP\L10N\IFactory;
 use Psr\Log\LoggerInterface;
 
 class ContactsController extends Controller {
