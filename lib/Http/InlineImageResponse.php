@@ -31,6 +31,9 @@ use OCP\AppFramework\Http\IOutput;
 use OCP\AppFramework\Http\Response;
 use OCP\Image;
 
+/**
+ * @template-extends Response<Http::STATUS_OK,array{}>
+ */
 class InlineImageResponse extends Response implements ICallbackResponse {
 	protected Image $image;
 
