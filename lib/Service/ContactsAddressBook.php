@@ -34,29 +34,19 @@ use OCP\IConfig;
 use OCP\IURLGenerator;
 
 class ContactsAddressBook implements IAddressBook {
-	private ICardBackend $cardBackend;
-	private ?string $principalURI;
-	private IConfig $config;
-	private IURLGenerator $urlGenerator;
 	private CsrfTokenManager $tokenManager;
-	private PhotoService $photoService;
 
 	public const DAV_PROPERTY_SOURCE = 'X-NC_LDAP_CONTACTS_ID';
 
 	public function __construct(
-		ICardBackend $cardBackend,
-		IConfig $config,
-		IURLGenerator $urlGenerator,
+		private ICardBackend $cardBackend,
+		private IConfig $config,
+		private IURLGenerator $urlGenerator,
 		CsrfTokenManager $tokenManager,
-		PhotoService $photoService,
-		?string $principalURI = null,
+		private PhotoService $photoService,
+		private ?string $principalURI = null,
 	) {
-		$this->cardBackend = $cardBackend;
-		$this->principalURI = $principalURI;
-		$this->config = $config;
-		$this->urlGenerator = $urlGenerator;
 		$this->tokenManager = $tokenManager;
-		$this->photoService = $photoService;
 	}
 
 	public function getKey() {
@@ -102,7 +92,7 @@ class ContactsAddressBook implements IAddressBook {
 							'requesttoken' => $this->tokenManager->getToken()->getEncryptedValue()
 						]);
 					$record['PHOTO'] = 'VALUE=uri:' . $photoUrl;
-				} catch (PhotoServiceUnavailable $e) {
+				} catch (PhotoServiceUnavailable) {
 				}
 			}
 

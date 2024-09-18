@@ -187,7 +187,7 @@ class Configuration implements JsonSerializable {
 
 				$setter = 'set' . ucfirst($property);
 				$model->$setter($data[$property]);
-			} catch (InvalidArgumentException $e) {
+			} catch (InvalidArgumentException) {
 				Server::get(LoggerInterface::class)->info(
 					'Ignoring invalid value for {property}, ID {id}',
 					[

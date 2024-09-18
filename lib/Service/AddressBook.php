@@ -34,12 +34,13 @@ use Sabre\DAV\PropPatch;
 
 class AddressBook extends ExternalAddressBook {
 	private ICardBackend $cardBackend;
-	private string $principalUri;
 
-	public function __construct(string $principalUri, ICardBackend $cardBackend) {
+	public function __construct(
+		private string $principalUri,
+		ICardBackend $cardBackend,
+	) {
 		parent::__construct(Application::APPID, $cardBackend->getURI());
 		$this->cardBackend = $cardBackend;
-		$this->principalUri = $principalUri;
 	}
 
 
@@ -72,7 +73,7 @@ class AddressBook extends ExternalAddressBook {
 		try {
 			$this->getChild($name);
 			return true;
-		} catch (RecordNotFound $e) {
+		} catch (RecordNotFound) {
 			return false;
 		}
 	}

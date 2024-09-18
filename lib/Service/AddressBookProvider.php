@@ -32,18 +32,11 @@ use OCA\LDAPContactsBackend\Exception\ConfigurationNotFound;
 use OCA\LDAPContactsBackend\Model\Configuration as ConfigurationModel;
 
 class AddressBookProvider implements IAddressBookProvider {
-	private Configuration $configurationService;
-	private LdapQuerentFactory $ldapQuerentFactory;
-	private ContactsAddressBookFactory $contactsAddressBookFactory;
-
 	public function __construct(
-		Configuration $configurationService,
-		LdapQuerentFactory $ldapQuerentFactory,
-		ContactsAddressBookFactory $contactsAddressBookFactory,
+		private Configuration $configurationService,
+		private LdapQuerentFactory $ldapQuerentFactory,
+		private ContactsAddressBookFactory $contactsAddressBookFactory,
 	) {
-		$this->configurationService = $configurationService;
-		$this->ldapQuerentFactory = $ldapQuerentFactory;
-		$this->contactsAddressBookFactory = $contactsAddressBookFactory;
 	}
 
 	/**
@@ -59,9 +52,7 @@ class AddressBookProvider implements IAddressBookProvider {
 	public function fetchAllForAddressBookHome(string $principalUri): array {
 		$configs = array_filter(
 			$this->configurationService->getAll(),
-			function (ConfigurationModel $config) {
-				return $config->isEnabled();
-			}
+			fn (ConfigurationModel $config) => $config->isEnabled()
 		);
 
 		$addressBooks = [];
@@ -118,9 +109,7 @@ class AddressBookProvider implements IAddressBookProvider {
 	public function fetchAllForContactsStore(): array {
 		$configs = array_filter(
 			$this->configurationService->getAll(),
-			function (ConfigurationModel $config) {
-				return $config->isEnabled();
-			}
+			fn (ConfigurationModel $config) => $config->isEnabled()
 		);
 
 		$addressBooks = [];

@@ -49,32 +49,17 @@ use OCP\L10N\IFactory;
 use Psr\Log\LoggerInterface;
 
 class ContactsController extends Controller {
-	private AddressBookProvider $addressBookProvider;
-	private IManager $contactsManager;
-	private IUserSession $userSession;
-	private LoggerInterface $logger;
-	private IURLGenerator $urlGenerator;
-	private PhotoService $photoService;
-	private IFactory $l10nFactory;
-
 	public function __construct(
 		IRequest $request,
-		AddressBookProvider $addressBookProvider,
-		IManager $contactsManager,
-		IUserSession $userSession,
-		LoggerInterface $logger,
-		IURLGenerator $urlGenerator,
-		PhotoService $photoService,
-		IFactory $l10nFactory,
+		private AddressBookProvider $addressBookProvider,
+		private IManager $contactsManager,
+		private IUserSession $userSession,
+		private LoggerInterface $logger,
+		private IURLGenerator $urlGenerator,
+		private PhotoService $photoService,
+		private IFactory $l10nFactory,
 	) {
 		parent::__construct(Application::APPID, $request);
-		$this->addressBookProvider = $addressBookProvider;
-		$this->contactsManager = $contactsManager;
-		$this->userSession = $userSession;
-		$this->logger = $logger;
-		$this->urlGenerator = $urlGenerator;
-		$this->photoService = $photoService;
-		$this->l10nFactory = $l10nFactory;
 	}
 
 	public function import(int $sourceId = -1, string $contactId = ''): Response {
@@ -108,7 +93,7 @@ class ContactsController extends Controller {
 					return new RedirectResponse($this->getRedirectURL($uri));
 				}
 			}
-		} catch (RecordNotFound $e) {
+		} catch (RecordNotFound) {
 			$this->logger->info(
 				'Record with ID {id} not found for importing',
 				[
@@ -118,7 +103,7 @@ class ContactsController extends Controller {
 			);
 
 			return new NotFoundResponse();
-		} catch (ConfigurationNotFound $e) {
+		} catch (ConfigurationNotFound) {
 			$this->logger->info(
 				'LDAP Contacts Backend with ID {id} not found',
 				[

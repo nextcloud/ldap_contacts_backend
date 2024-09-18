@@ -37,13 +37,12 @@ use Symfony\Component\Ldap\Exception\ConnectionException;
 use Symfony\Component\Ldap\Ldap;
 
 class LdapQuerent {
-	private ConfigurationModel $configuration;
-	private LoggerInterface $logger;
 	protected ?Ldap $ldap = null;
 
-	public function __construct(ConfigurationModel $configuration, LoggerInterface $logger) {
-		$this->configuration = $configuration;
-		$this->logger = $logger;
+	public function __construct(
+		private ConfigurationModel $configuration,
+		private LoggerInterface $logger,
+	) {
 	}
 
 	/**
@@ -69,7 +68,7 @@ class LdapQuerent {
 
 	public function fetchAll(?string $filter = null, int $limit = 0): Generator {
 		$ldap = $this->getClient();
-		$filter = $filter ?? $this->configuration->getFilter();
+		$filter ??= $this->configuration->getFilter();
 		$options = ['maxItems' => $limit, 'timeout' => 0];
 		if ($limit === 0 || $limit > 500) {
 			$options['pageSize'] = 500;
@@ -87,7 +86,7 @@ class LdapQuerent {
 	public function find(string $search, int $limit = 0): Generator {
 		try {
 			$ldap = $this->getClient();
-		} catch (ConnectionException $e) {
+		} catch (ConnectionException) {
 			$this->logger->warning(
 				'LDAP server {host}:{port} is unavailable',
 				[

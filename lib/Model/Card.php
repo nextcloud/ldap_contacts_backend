@@ -30,10 +30,9 @@ use Sabre\DAV\Exception\NotImplemented;
 use Sabre\VObject\Component\VCard;
 
 class Card implements ICard {
-	private array $vCardData;
-
-	public function __construct(array $vCardData) {
-		$this->vCardData = $vCardData;
+	public function __construct(
+		private array $vCardData,
+	) {
 	}
 
 	/**

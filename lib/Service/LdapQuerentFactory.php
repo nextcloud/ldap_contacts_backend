@@ -29,10 +29,9 @@ use OCA\LDAPContactsBackend\Model\Configuration as ConfigurationModel;
 use Psr\Log\LoggerInterface;
 
 class LdapQuerentFactory {
-	private LoggerInterface $logger;
-
-	public function __construct(LoggerInterface $logger) {
-		$this->logger = $logger;
+	public function __construct(
+		private LoggerInterface $logger,
+	) {
 	}
 
 	public function get(ConfigurationModel $model): LdapQuerent {
