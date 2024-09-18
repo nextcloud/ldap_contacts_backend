@@ -10,5 +10,5 @@ return RectorConfig::configure()
 		__DIR__ . '/lib',
 		__DIR__ . '/tests',
 	])
-	->withPhpSets(php80: true)
+	->withPhpSets(php81: true)
 	->withTypeCoverageLevel(0);
