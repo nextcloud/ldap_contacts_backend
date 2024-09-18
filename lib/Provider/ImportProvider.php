@@ -47,7 +47,7 @@ class ImportProvider implements IProvider {
 		IURLGenerator $urlGenerator,
 		IL10N $l,
 		CsrfTokenManager $tokenManager,
-		IAppManager $appManager
+		IAppManager $appManager,
 	) {
 		$this->actionFactory = $actionFactory;
 		$this->urlGenerator = $urlGenerator;

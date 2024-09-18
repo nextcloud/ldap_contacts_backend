@@ -63,6 +63,7 @@ class LdapCardBackend implements ICardBackend {
 			$vCards[] = $this->entryToCard($record);
 			unset($record);
 		}
+
 		return $vCards;
 	}
 
@@ -75,6 +76,7 @@ class LdapCardBackend implements ICardBackend {
 			$vCards[] = $this->entryToCard($record);
 			unset($record);
 		}
+
 		return $vCards;
 	}
 

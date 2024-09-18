@@ -65,7 +65,7 @@ class ContactsController extends Controller {
 		LoggerInterface $logger,
 		IURLGenerator $urlGenerator,
 		PhotoService $photoService,
-		IFactory $l10nFactory
+		IFactory $l10nFactory,
 	) {
 		parent::__construct(Application::APPID, $request);
 		$this->addressBookProvider = $addressBookProvider;
@@ -89,6 +89,7 @@ class ContactsController extends Controller {
 				if (!($userAddressBook->getPermissions() & Constants::PERMISSION_CREATE)) {
 					continue;
 				}
+
 				if ($fallback === null
 					&& $userAddressBook instanceof IShareable
 					&& $userAddressBook->getOwner() !== $this->userSession->getUser()->getUID()
@@ -96,6 +97,7 @@ class ContactsController extends Controller {
 					$fallback = $userAddressBook;
 					continue;
 				}
+
 				if ($uri = $this->createCard($userAddressBook, $contact)) {
 					return new RedirectResponse($this->getRedirectURL($uri));
 				}
@@ -114,6 +116,7 @@ class ContactsController extends Controller {
 					'id' => $contactId
 				]
 			);
+
 			return new NotFoundResponse();
 		} catch (ConfigurationNotFound $e) {
 			$this->logger->info(
@@ -123,12 +126,14 @@ class ContactsController extends Controller {
 					'id' => $sourceId
 				]
 			);
+
 			return new NotFoundResponse();
 		}
 
 		// for the unlikely case reply with 4xx value
 		$response = new Response();
 		$response->setStatus(Http::STATUS_CONFLICT);
+
 		return $response;
 	}
 
@@ -144,6 +149,7 @@ class ContactsController extends Controller {
 					'msg' => $e->getMessage(),
 				]
 			);
+
 			return new NotFoundResponse();
 		}
 	}
@@ -155,6 +161,7 @@ class ContactsController extends Controller {
 		if (!is_array($newCard)) {
 			return null;
 		}
+
 		return $newCard['UID'] . '~' . $addressBook->getUri();
 	}
 

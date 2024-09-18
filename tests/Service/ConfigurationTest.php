@@ -40,7 +40,7 @@ class ConfigurationTest extends TestCase {
 
 	/** @var IConfig|MockObject */
 	protected $configMock;
-	/** @var ICredentialsManager|MockObject	 */
+	/** @var ICredentialsManager|MockObject */
 	protected $credentialsManagerMock;
 
 	public function setUp(): void {

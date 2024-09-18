@@ -123,6 +123,7 @@ class Configuration {
 					if ($id === null) {
 						continue;
 					}
+
 					$this->configurations[$id] = $model;
 					$this->loadCredentials($model);
 				} catch (InvalidConfiguration $e) {

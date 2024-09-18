@@ -57,14 +57,17 @@ class LdapEntryToVcard {
 						if ($propertyName === 'PHOTO') {
 							$value = self::buildPhotoValue($value);
 						}
+
 						$vCardData[$propertyName][] = $value;
 					}
 				}
 			}
 		}
+
 		if (!isset($vCardData['FN'])) {
 			throw new RuntimeException('Invalid record or configuration for vcard');
 		}
+
 		$vCardData['URI'] = base64_encode($record->getDn());
 		// $vCardData['UID'] = $vCardData['URI'];
 		return $vCardData;
@@ -76,8 +79,10 @@ class LdapEntryToVcard {
 		if (!$image->valid()) {
 			return  '';
 		}
+
 		$valType = 'data:' . $image->dataMimeType() . ';base64';
 		unset($image);
+
 		return $valType . ',' . base64_encode($rawData);
 	}
 }

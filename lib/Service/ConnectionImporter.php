@@ -41,6 +41,7 @@ class ConnectionImporter {
 		if (!in_array($prefix, $prefixes)) {
 			throw new OutOfBoundsException('Specified configuration not available');
 		}
+
 		$c = new \OCA\User_LDAP\Configuration($prefix);
 		$m = new LDAPBaseConfiguration();
 		$m
@@ -49,6 +50,7 @@ class ConnectionImporter {
 			->setBindPwd($c->ldapAgentPassword)
 			->setHost($this->extractHost($c->ldapHost))
 			->setTlsMode($this->extractTlsMode($c->ldapHost, $c->ldapPort, $c->ldapTLS));
+
 		return $m;
 	}
 
@@ -73,7 +75,9 @@ class ConnectionImporter {
 			$connections[$i + ((int)!$c->ldapConfigurationActive * 100)] = $m;
 			$i++;
 		}
+
 		ksort($connections);
+
 		return array_values($connections);
 	}
 
@@ -85,9 +89,11 @@ class ConnectionImporter {
 		if ($startTls === '1') {
 			return 'tls';
 		}
+
 		if (str_starts_with($host, 'ldaps://') || $port === '636') {
 			return 'ssl';
 		}
+
 		return 'none';
 	}
 }

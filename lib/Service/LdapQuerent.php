@@ -63,16 +63,18 @@ class LdapQuerent {
 				'app' => Application::APPID,
 			]);
 		}
+
 		throw new RecordNotFound();
 	}
 
-	public function fetchAll(string $filter = null, int $limit = 0): Generator {
+	public function fetchAll(?string $filter = null, int $limit = 0): Generator {
 		$ldap = $this->getClient();
 		$filter = $filter ?? $this->configuration->getFilter();
 		$options = ['maxItems' => $limit, 'timeout' => 0];
 		if ($limit === 0 || $limit > 500) {
 			$options['pageSize'] = 500;
 		}
+
 		foreach ($this->configuration->getBases() as $base) {
 			$query = $ldap->query($base, $filter, $options);
 			$subset = $query->execute()->toArray();
@@ -94,14 +96,17 @@ class LdapQuerent {
 					'port' => $this->configuration->getPort(),
 				]
 			);
+
 			return;
 		}
+
 		$search = $ldap->escape($search);
 
 		$searchFilter = '(|';
 		foreach ($this->configuration->getSearchAttributes() as $attribute) {
 			$searchFilter .= '(' . $attribute . '=' . $search . '*)';
 		}
+
 		$searchFilter .= ')';
 		$filter = '(&' . $this->configuration->getFilter() . $searchFilter . ')';
 

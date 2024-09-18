@@ -241,18 +241,23 @@ class Add extends Base {
 		if ($input->getOption('trans_enc') !== null) {
 			$config->setTEnc($input->getOption('trans_enc'));
 		}
+
 		if ($input->getOption('bindDN') !== null) {
 			$config->setAgentDn($input->getOption('bindDN'));
 		}
+
 		if ($input->getOption('bindPwd') !== null) {
 			$config->setAgentPassword($input->getOption('bindPwd'));
 		}
+
 		if ($input->getOption('filter') !== null) {
 			$config->setFilter($input->getOption('filter'));
 		}
+
 		if ($input->getOption('attrs') !== null) {
 			$config->setSearchAttributes($input->getOption('attrs'));
 		}
+
 		if ($input->getOption('base') !== null) {
 			$config->setBases($input->getOption('base'));
 		}
@@ -260,9 +265,10 @@ class Add extends Base {
 		if (is_array($input->getOption('mapping'))) {
 			$mappings = [];
 			foreach ($input->getOption('mapping') as $pair) {
-				list($property, $attributes) = explode(':', $pair);
+				[$property, $attributes] = explode(':', $pair);
 				$mappings[$property] = $attributes;
 			}
+
 			$config->setAttributeMapping($mappings);
 		}
 
@@ -281,22 +287,28 @@ class Add extends Base {
 			// avoid running twice during interact && executed
 			return;
 		}
+
 		$connection = $this->connectionImporter->getConnection($input->getOption('ldapConfiguration'));
 		if ($input->getOption('host') === null) {
 			$input->setOption('host', $connection->getHost());
 		}
+
 		if ($input->getOption('port') === null) {
 			$input->setOption('port', $connection->getPort());
 		}
+
 		if ($input->getOption('trans_enc') === null) {
 			$input->setOption('trans_enc', $connection->getTlsMode());
 		}
+
 		if ($input->getOption('bindDN') === null) {
 			$input->setOption('bindDN', $connection->getBindDn());
 		}
+
 		if ($input->getOption('bindPwd') === null) {
 			$input->setOption('bindPwd', $connection->getBindPwd());
 		}
+
 		$wasRun = true;
 	}
 
@@ -310,6 +322,7 @@ class Add extends Base {
 		foreach ($availableConnections as $connection) {
 			$list[] = $connection->getPrefix() . ' ' . $connection->getHost() . ' (Bind with: ' . $connection->getBindDn() . ')';
 		}
+
 		$list[] = 'None';
 
 		/** @var QuestionHelper $helper */
@@ -323,6 +336,7 @@ class Add extends Base {
 		if ($choice === 'None') {
 			return;
 		}
+
 		$chosenPrefix = substr($choice, 0, strpos($choice, ' '));
 		$input->setOption('ldapConfiguration', $chosenPrefix);
 		$this->importConnection($input);
@@ -409,9 +423,11 @@ class Add extends Base {
 		if (is_string($input)) {
 			$input = (int)$input;
 		}
+
 		if (is_int($input) && $input < 0) {
 			throw new RuntimeException('Port must not be negative');
 		}
+
 		return $input;
 	}
 }

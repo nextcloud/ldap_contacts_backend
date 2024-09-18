@@ -39,7 +39,7 @@ class ContactsAddressBookFactory {
 		IConfig $config,
 		IURLGenerator $urlGenerator,
 		CsrfTokenManager $tokenManager,
-		PhotoService $photoService
+		PhotoService $photoService,
 	) {
 		$this->config = $config;
 		$this->urlGenerator = $urlGenerator;

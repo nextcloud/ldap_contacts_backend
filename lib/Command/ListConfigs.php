@@ -57,8 +57,10 @@ class ListConfigs extends Base {
 					$cfgValues[$property] = $config->$getter();
 				}
 			}
+
 			$this->writeMixedInOutputFormat($input, $output, $cfgValues);
 		}
+
 		return 0;
 	}
 }

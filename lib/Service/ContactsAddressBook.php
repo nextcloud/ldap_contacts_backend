@@ -49,7 +49,7 @@ class ContactsAddressBook implements IAddressBook {
 		IURLGenerator $urlGenerator,
 		CsrfTokenManager $tokenManager,
 		PhotoService $photoService,
-		?string $principalURI = null
+		?string $principalURI = null,
 	) {
 		$this->cardBackend = $cardBackend;
 		$this->principalURI = $principalURI;
@@ -80,6 +80,7 @@ class ContactsAddressBook implements IAddressBook {
 		if (isset($options['offset'])) {
 			$vCards = array_slice($vCards, (int)$options['offset']);
 		}
+
 		if (isset($options['limit'])) {
 			$vCards = array_slice($vCards, 0, (int)$options['limit']);
 		}
@@ -104,11 +105,13 @@ class ContactsAddressBook implements IAddressBook {
 				} catch (PhotoServiceUnavailable $e) {
 				}
 			}
+
 			// prevents linking to contacts if UID is set
 			$record['isLocalSystemBook'] = true;
 			$record[self::DAV_PROPERTY_SOURCE] = $this->cardBackend->getURI();
 			$result[] = $record;
 		}
+
 		return $result;
 	}
 

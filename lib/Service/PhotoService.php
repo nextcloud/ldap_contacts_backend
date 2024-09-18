@@ -53,6 +53,7 @@ class PhotoService {
 
 		$image = $this->prepareImage($imageData);
 		$cache->set($key, base64_encode($image->data()), 3600);
+
 		return true;
 	}
 
@@ -67,6 +68,7 @@ class PhotoService {
 		if (is_string($knownImage)) {
 			$image = new Image();
 			$image->loadFromBase64($knownImage);
+
 			return $image;
 		}
 
@@ -80,9 +82,11 @@ class PhotoService {
 		if ($this->cacheFactory->isAvailable()) {
 			return $this->cacheFactory->createDistributed(Application::APPID . '_PhotoCache');
 		}
+
 		if ($this->cacheFactory->isLocalCacheAvailable()) {
 			return $this->cacheFactory->createLocal(Application::APPID . '_PhotoCache');
 		}
+
 		throw new PhotoServiceUnavailable('No cache available');
 	}
 
@@ -94,6 +98,7 @@ class PhotoService {
 		if (!$image->loadFromBase64($imageData) || !$image->centerCrop(64)) {
 			throw new PhotoServiceUnavailable('Image data invalid');
 		}
+
 		return $image;
 	}
 

@@ -39,7 +39,7 @@ class AddressBookProvider implements IAddressBookProvider {
 	public function __construct(
 		Configuration $configurationService,
 		LdapQuerentFactory $ldapQuerentFactory,
-		ContactsAddressBookFactory $contactsAddressBookFactory
+		ContactsAddressBookFactory $contactsAddressBookFactory,
 	) {
 		$this->configurationService = $configurationService;
 		$this->ldapQuerentFactory = $ldapQuerentFactory;
@@ -70,6 +70,7 @@ class AddressBookProvider implements IAddressBookProvider {
 			$cardBackend = new LdapCardBackend($this->ldapQuerentFactory->get($config), $config);
 			$addressBooks[] = new AddressBook(Application::APPID, $cardBackend);
 		}
+
 		return $addressBooks;
 	}
 
@@ -82,6 +83,7 @@ class AddressBookProvider implements IAddressBookProvider {
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -96,6 +98,7 @@ class AddressBookProvider implements IAddressBookProvider {
 				return new AddressBook($principalUri, $cardBackend);
 			}
 		}
+
 		return null;
 	}
 
@@ -105,6 +108,7 @@ class AddressBookProvider implements IAddressBookProvider {
 	public function getAddressBookById(int $addressBookId): AddressBook {
 		$config = $this->configurationService->get($addressBookId);
 		$cardBackend = new LdapCardBackend($this->ldapQuerentFactory->get($config), $config);
+
 		return new AddressBook(Application::APPID, $cardBackend);
 	}
 
@@ -125,6 +129,7 @@ class AddressBookProvider implements IAddressBookProvider {
 			$cardBackend = new LdapCardBackend($this->ldapQuerentFactory->get($config), $config);
 			$addressBooks[] = $this->contactsAddressBookFactory->get($cardBackend);
 		}
+
 		return $addressBooks;
 	}
 }

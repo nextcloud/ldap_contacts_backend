@@ -158,9 +158,10 @@ class Edit extends Base {
 			'setter' => function ($v) use ($model) {
 				$mappings = [];
 				foreach ($v as $pair) {
-					list($property, $attributes) = explode(':', $pair);
+					[$property, $attributes] = explode(':', $pair);
 					$mappings[$property] = $attributes;
 				}
+
 				return $model->setAttributeMapping($mappings);
 			},
 		];
@@ -214,6 +215,7 @@ class Edit extends Base {
 		}
 
 		$this->configurationService->update($config);
+
 		return 0;
 	}
 
@@ -222,9 +224,11 @@ class Edit extends Base {
 		if ($input === 'y') {
 			return true;
 		}
+
 		if ($input === 'n' || $input === '') {
 			return false;
 		}
+
 		return null;
 	}
 
@@ -240,13 +244,15 @@ class Edit extends Base {
 		if (is_string($input)) {
 			$input = (int)$input;
 		}
+
 		if (is_int($input) && $input < 0) {
 			throw new RuntimeException('Port must not be negative');
 		}
+
 		return $input;
 	}
 
-	private function askString(string $subject, string $label, InputInterface $input, OutputInterface $output, array $autoComplete = null): void {
+	private function askString(string $subject, string $label, InputInterface $input, OutputInterface $output, ?array $autoComplete = null): void {
 		/** @var QuestionHelper $helper */
 		$helper = $this->getHelper('question');
 
@@ -328,6 +334,7 @@ class Edit extends Base {
 
 			$wantEdit = $helper->ask($input, $output, $q);
 		} while ($wantEdit === null);
+
 		return $wantEdit;
 	}
 }
