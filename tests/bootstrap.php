@@ -1,6 +1,9 @@
 <?php
 
 declare(strict_types=1);
+
+use PHPUnit\Framework\TestCase;
+
 /**
  * @copyright Copyright (c) 2020 Arthur Schiwon <blizzz@arthur-schiwon.de>
  *
@@ -29,7 +32,7 @@ if (!defined('PHPUNIT_RUN')) {
 
 require_once __DIR__ . '/../../../lib/base.php';
 \OC::$loader->addValidRoot(\OC::$SERVERROOT . '/tests');
-if (!class_exists(\PHPUnit\Framework\TestCase::class)) {
+if (!class_exists(TestCase::class)) {
 	require_once('PHPUnit/Autoload.php');
 }
 

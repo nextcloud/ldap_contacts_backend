@@ -144,7 +144,7 @@ class Add extends Base {
 			$helper = $this->getHelper('question');
 
 			$q = new Question('Address book display name: ');
-			$q->setNormalizer(fn (string $input) => $this->stringNormalizer($input));
+			$q->setNormalizer(fn (string $input): string => $this->stringNormalizer($input));
 
 			$input->setArgument('addressBookName', $helper->ask($input, $output, $q));
 		}
@@ -343,7 +343,7 @@ class Add extends Base {
 		$helper = $this->getHelper('question');
 
 		$q = new Question($label);
-		$q->setNormalizer(fn ($input) => $this->stringNormalizer($input));
+		$q->setNormalizer(fn ($input): string => $this->stringNormalizer($input));
 
 		$input->setOption($subject, $helper->ask($input, $output, $q));
 	}
@@ -353,7 +353,7 @@ class Add extends Base {
 		$helper = $this->getHelper('question');
 
 		$q = new Question($label);
-		$q->setNormalizer(fn ($input) => $this->stringNormalizer($input));
+		$q->setNormalizer(fn ($input): string => $this->stringNormalizer($input));
 		$values = array_map('trim', explode(',', $helper->ask($input, $output, $q)));
 
 		$input->setOption($subject, $values);
@@ -374,7 +374,7 @@ class Add extends Base {
 		$helper = $this->getHelper('question');
 
 		$q = new Question($label);
-		$q->setNormalizer(fn ($input) => $this->posNumberNormalizer($input));
+		$q->setNormalizer(fn ($input): ?int => $this->posNumberNormalizer($input));
 
 		$input->setOption($subject, $helper->ask($input, $output, $q));
 	}
@@ -391,13 +391,13 @@ class Add extends Base {
 		$isFollowUp = false;
 
 		$q = new Question($label);
-		$q->setNormalizer(fn ($input) => $this->stringNormalizer($input));
+		$q->setNormalizer(fn ($input): string => $this->stringNormalizer($input));
 
 		while (($value = $helper->ask($input, $output, $q)) !== '') {
 			$values[] = $value;
 			if (!$isFollowUp) {
 				$q = new Question($followUpLabel);
-				$q->setNormalizer(fn ($input) => $this->stringNormalizer($input));
+				$q->setNormalizer(fn ($input): string => $this->stringNormalizer($input));
 				$isFollowUp = true;
 			}
 		}
