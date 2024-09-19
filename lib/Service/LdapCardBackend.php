@@ -32,12 +32,10 @@ use Symfony\Component\Ldap\Entry;
 use function base64_decode;
 
 class LdapCardBackend implements ICardBackend {
-	private LdapQuerent $ldapQuerent;
-	private ConfigurationModel $configuration;
-
-	public function __construct(LdapQuerent $ldapQuerent, ConfigurationModel $configuration) {
-		$this->ldapQuerent = $ldapQuerent;
-		$this->configuration = $configuration;
+	public function __construct(
+		private LdapQuerent $ldapQuerent,
+		private ConfigurationModel $configuration,
+	) {
 	}
 
 	public function getURI(): string {
@@ -63,6 +61,7 @@ class LdapCardBackend implements ICardBackend {
 			$vCards[] = $this->entryToCard($record);
 			unset($record);
 		}
+
 		return $vCards;
 	}
 
@@ -75,6 +74,7 @@ class LdapCardBackend implements ICardBackend {
 			$vCards[] = $this->entryToCard($record);
 			unset($record);
 		}
+
 		return $vCards;
 	}
 

@@ -14,3 +14,4 @@ tests
 .travis.yml
 .tx
 .php-cs-fixer.dist.php
+rector.php

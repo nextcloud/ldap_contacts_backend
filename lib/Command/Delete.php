@@ -32,11 +32,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Delete extends Base {
-	private Configuration $configurationService;
-
-	public function __construct(Configuration $configurationService) {
+	public function __construct(
+		private Configuration $configurationService,
+	) {
 		parent::__construct();
-		$this->configurationService = $configurationService;
 	}
 
 	protected function configure() {
@@ -54,6 +53,7 @@ class Delete extends Base {
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$id = (int)$input->getArgument('id');
 		$this->configurationService->delete($id);
+
 		return 0;
 	}
 }

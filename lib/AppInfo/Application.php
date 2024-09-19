@@ -54,7 +54,7 @@ class Application extends App implements IBootstrap {
 
 	public function boot(IBootContext $context): void {
 		$cm = $context->getServerContainer()->get(IManager::class);
-		$cm->register(function () use ($cm) {
+		$cm->register(function () use ($cm): void {
 			$this->registerAddressBook($cm);
 		});
 	}

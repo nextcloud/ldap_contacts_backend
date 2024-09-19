@@ -40,11 +40,10 @@ use Symfony\Component\Console\Question\Question;
 class Edit extends Base {
 	use TConfigurationDetail;
 
-	private Configuration $configurationService;
-
-	public function __construct(Configuration $configurationService) {
+	public function __construct(
+		private Configuration $configurationService,
+	) {
 		parent::__construct();
-		$this->configurationService = $configurationService;
 	}
 
 	protected function configure() {
@@ -71,27 +70,21 @@ class Edit extends Base {
 			'type' => 'string',
 			'currentLabel' => sprintf('Address book display name: %s.', $model->getAddressBookDisplayName()),
 			'newLabel' => '  New address book display name: ',
-			'setter' => function ($v) use ($model) {
-				return $model->setAddressBookDisplayName($v);
-			},
+			'setter' => fn ($v) => $model->setAddressBookDisplayName($v),
 		];
 		yield [
 			'key' => 'host',
 			'type' => 'string',
 			'currentLabel' => sprintf('LDAP hostname: %s.', $model->getHost()),
 			'newLabel' => '  New LDAP hostname: ',
-			'setter' => function ($v) use ($model) {
-				return $model->setHost($v);
-			},
+			'setter' => fn ($v) => $model->setHost($v),
 		];
 		yield [
 			'key' => 'port',
 			'type' => 'uint',
 			'currentLabel' => sprintf('LDAP port: %u.', $model->getPort()),
 			'newLabel' => '  New LDAP port: ',
-			'setter' => function ($v) use ($model) {
-				return $model->setPort($v);
-			},
+			'setter' => fn ($v) => $model->setPort($v),
 		];
 		yield [
 			'key' => 'trans_enc',
@@ -99,36 +92,28 @@ class Edit extends Base {
 			'currentLabel' => sprintf('Transport encryption: %s.', $model->getTEnc()),
 			'newLabel' => '  New transport encryption (StartTLS, LDAPS, none): ',
 			'autoComplete' => ['tls' => 'StartTLS', 'ssl' => 'LDAPS', 'none' => 'none'],
-			'setter' => function ($v) use ($model) {
-				return $model->setTEnc($v);
-			},
+			'setter' => fn ($v) => $model->setTEnc($v),
 		];
 		yield [
 			'key' => 'bindDN',
 			'type' => 'string',
 			'currentLabel' => sprintf('LDAP bind DN: %s.', $model->getAgentDn()),
 			'newLabel' => '  New LDAP bind DN: ',
-			'setter' => function ($v) use ($model) {
-				return $model->setAgentDn($v);
-			},
+			'setter' => fn ($v) => $model->setAgentDn($v),
 		];
 		yield [
 			'key' => 'bindPwd',
 			'type' => 'string',
 			'currentLabel' => 'LDAP bind password.',
 			'newLabel' => '  New LDAP bind password: ',
-			'setter' => function ($v) use ($model) {
-				return $model->setAgentPassword($v);
-			},
+			'setter' => fn ($v) => $model->setAgentPassword($v),
 		];
 		yield [
 			'key' => 'filter',
 			'type' => 'string',
 			'currentLabel' => sprintf('LDAP contacts filter: %s.', $model->getFilter()),
 			'newLabel' => '  New LDAP contacts filter: ',
-			'setter' => function ($v) use ($model) {
-				return $model->setFilter($v);
-			},
+			'setter' => fn ($v) => $model->setFilter($v),
 		];
 		yield [
 			'key' => 'base',
@@ -136,18 +121,14 @@ class Edit extends Base {
 			'currentLabel' => sprintf('LDAP contacts bases: %s.', implode('; ', $model->getBases())),
 			'newLabel' => '  New LDAP contacts bases: ',
 			'followUpLabel' => '  additional base (leave empty to continue): ',
-			'setter' => function ($v) use ($model) {
-				return $model->setBases($v);
-			},
+			'setter' => fn ($v) => $model->setBases($v),
 		];
 		yield [
 			'key' => 'attrs',
 			'type' => 'cs-string',
 			'currentLabel' => sprintf('LDAP contacts search attributes: %s.', implode(', ', $model->getSearchAttributes())),
 			'newLabel' => '  New LDAP search attributes (comma separated): ',
-			'setter' => function ($v) use ($model) {
-				return $model->setSearchAttributes($v);
-			},
+			'setter' => fn ($v) => $model->setSearchAttributes($v),
 		];
 		yield [
 			'key' => 'mapping',
@@ -158,9 +139,10 @@ class Edit extends Base {
 			'setter' => function ($v) use ($model) {
 				$mappings = [];
 				foreach ($v as $pair) {
-					list($property, $attributes) = explode(':', $pair);
+					[$property, $attributes] = explode(':', $pair);
 					$mappings[$property] = $attributes;
 				}
+
 				return $model->setAttributeMapping($mappings);
 			},
 		];
@@ -214,6 +196,7 @@ class Edit extends Base {
 		}
 
 		$this->configurationService->update($config);
+
 		return 0;
 	}
 
@@ -222,9 +205,11 @@ class Edit extends Base {
 		if ($input === 'y') {
 			return true;
 		}
+
 		if ($input === 'n' || $input === '') {
 			return false;
 		}
+
 		return null;
 	}
 
@@ -240,26 +225,24 @@ class Edit extends Base {
 		if (is_string($input)) {
 			$input = (int)$input;
 		}
+
 		if (is_int($input) && $input < 0) {
 			throw new RuntimeException('Port must not be negative');
 		}
+
 		return $input;
 	}
 
-	private function askString(string $subject, string $label, InputInterface $input, OutputInterface $output, array $autoComplete = null): void {
+	private function askString(string $subject, string $label, InputInterface $input, OutputInterface $output, ?array $autoComplete = null): void {
 		/** @var QuestionHelper $helper */
 		$helper = $this->getHelper('question');
 
 		$q = new Question($label);
 		if (is_array($autoComplete)) {
 			$q->setAutocompleterValues(array_values($autoComplete));
-			$q->setNormalizer(function ($input) use ($autoComplete) {
-				return $this->autoCompleteNormalizer($input, $autoComplete);
-			});
+			$q->setNormalizer(fn ($input) => $this->autoCompleteNormalizer($input, $autoComplete));
 		} else {
-			$q->setNormalizer(function ($input) {
-				return $this->stringNormalizer($input);
-			});
+			$q->setNormalizer(fn ($input) => $this->stringNormalizer($input));
 		}
 
 		$input->setOption($subject, $helper->ask($input, $output, $q));
@@ -270,9 +253,7 @@ class Edit extends Base {
 		$helper = $this->getHelper('question');
 
 		$q = new Question($label);
-		$q->setNormalizer(function ($input) {
-			return $this->uIntNormalizer($input);
-		});
+		$q->setNormalizer(fn ($input) => $this->uIntNormalizer($input));
 
 		$input->setOption($subject, $helper->ask($input, $output, $q));
 	}
@@ -285,17 +266,13 @@ class Edit extends Base {
 		$isFollowUp = false;
 
 		$q = new Question($label);
-		$q->setNormalizer(function ($input) {
-			return $this->stringNormalizer($input);
-		});
+		$q->setNormalizer(fn ($input) => $this->stringNormalizer($input));
 
 		while (($value = $helper->ask($input, $output, $q)) !== '') {
 			$values[] = $value;
 			if (!$isFollowUp) {
 				$q = new Question($followUpLabel);
-				$q->setNormalizer(function ($input) {
-					return $this->stringNormalizer($input);
-				});
+				$q->setNormalizer(fn ($input) => $this->stringNormalizer($input));
 				$isFollowUp = true;
 			}
 		}
@@ -308,9 +285,7 @@ class Edit extends Base {
 		$helper = $this->getHelper('question');
 
 		$q = new Question($label);
-		$q->setNormalizer(function ($input) {
-			return $this->stringNormalizer($input);
-		});
+		$q->setNormalizer(fn ($input) => $this->stringNormalizer($input));
 		$values = array_map('trim', explode(',', $helper->ask($input, $output, $q)));
 
 		$input->setOption($subject, $values);
@@ -322,12 +297,11 @@ class Edit extends Base {
 			$helper = $this->getHelper('question');
 
 			$q = new Question($label . ' Modify (y/N)?  ');
-			$q->setNormalizer(function ($input) {
-				return $this->yesOrNoNormalizer($input ?? 'N');
-			});
+			$q->setNormalizer(fn ($input) => $this->yesOrNoNormalizer($input ?? 'N'));
 
 			$wantEdit = $helper->ask($input, $output, $q);
 		} while ($wantEdit === null);
+
 		return $wantEdit;
 	}
 }

@@ -11,6 +11,9 @@
 	"config": {
 		"platform": {
 			"php": "8.0.2"
+		},
+		"allow-plugins": {
+			"bamarni/composer-bin-plugin": true
 		}
 	},
 	"require-dev": {
@@ -18,7 +21,8 @@
 		"nextcloud/coding-standard": "^1.1",
 		"nextcloud/ocp": "dev-master",
 		"vimeo/psalm": "^5.18",
-		"sabre/dav": "4.5.0"
+		"sabre/dav": "4.5.0",
+		"bamarni/composer-bin-plugin": "^1.8"
 	},
 	"require": {
 		"symfony/ldap": "^5.0"

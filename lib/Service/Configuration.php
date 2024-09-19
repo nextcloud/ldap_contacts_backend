@@ -37,12 +37,11 @@ use function json_encode;
 class Configuration {
 	/** @var array<int,ConfigurationModel> */
 	protected array $configurations = [];
-	private IConfig $config;
-	private ICredentialsManager $credentialsManager;
 
-	public function __construct(IConfig $config, ICredentialsManager $credentialsManager) {
-		$this->config = $config;
-		$this->credentialsManager = $credentialsManager;
+	public function __construct(
+		private IConfig $config,
+		private ICredentialsManager $credentialsManager,
+	) {
 	}
 
 	public function add(): ConfigurationModel {
@@ -123,9 +122,10 @@ class Configuration {
 					if ($id === null) {
 						continue;
 					}
+
 					$this->configurations[$id] = $model;
 					$this->loadCredentials($model);
-				} catch (InvalidConfiguration $e) {
+				} catch (InvalidConfiguration) {
 					continue;
 				}
 			}

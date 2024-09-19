@@ -32,11 +32,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ListConfigs extends Base {
-	private Configuration $configurationService;
-
-	public function __construct(Configuration $configurationService) {
+	public function __construct(
+		private Configuration $configurationService,
+	) {
 		parent::__construct();
-		$this->configurationService = $configurationService;
 	}
 
 	protected function configure() {
@@ -57,8 +56,10 @@ class ListConfigs extends Base {
 					$cfgValues[$property] = $config->$getter();
 				}
 			}
+
 			$this->writeMixedInOutputFormat($input, $output, $cfgValues);
 		}
+
 		return 0;
 	}
 }

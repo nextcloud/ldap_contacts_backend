@@ -34,29 +34,19 @@ use OCP\IConfig;
 use OCP\IURLGenerator;
 
 class ContactsAddressBook implements IAddressBook {
-	private ICardBackend $cardBackend;
-	private ?string $principalURI;
-	private IConfig $config;
-	private IURLGenerator $urlGenerator;
 	private CsrfTokenManager $tokenManager;
-	private PhotoService $photoService;
 
 	public const DAV_PROPERTY_SOURCE = 'X-NC_LDAP_CONTACTS_ID';
 
 	public function __construct(
-		ICardBackend $cardBackend,
-		IConfig $config,
-		IURLGenerator $urlGenerator,
+		private ICardBackend $cardBackend,
+		private IConfig $config,
+		private IURLGenerator $urlGenerator,
 		CsrfTokenManager $tokenManager,
-		PhotoService $photoService,
-		?string $principalURI = null
+		private PhotoService $photoService,
+		private ?string $principalURI = null,
 	) {
-		$this->cardBackend = $cardBackend;
-		$this->principalURI = $principalURI;
-		$this->config = $config;
-		$this->urlGenerator = $urlGenerator;
 		$this->tokenManager = $tokenManager;
-		$this->photoService = $photoService;
 	}
 
 	public function getKey() {
@@ -80,6 +70,7 @@ class ContactsAddressBook implements IAddressBook {
 		if (isset($options['offset'])) {
 			$vCards = array_slice($vCards, (int)$options['offset']);
 		}
+
 		if (isset($options['limit'])) {
 			$vCards = array_slice($vCards, 0, (int)$options['limit']);
 		}
@@ -101,14 +92,16 @@ class ContactsAddressBook implements IAddressBook {
 							'requesttoken' => $this->tokenManager->getToken()->getEncryptedValue()
 						]);
 					$record['PHOTO'] = 'VALUE=uri:' . $photoUrl;
-				} catch (PhotoServiceUnavailable $e) {
+				} catch (PhotoServiceUnavailable) {
 				}
 			}
+
 			// prevents linking to contacts if UID is set
 			$record['isLocalSystemBook'] = true;
 			$record[self::DAV_PROPERTY_SOURCE] = $this->cardBackend->getURI();
 			$result[] = $record;
 		}
+
 		return $result;
 	}
 
