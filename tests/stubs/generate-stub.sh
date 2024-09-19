@@ -11,7 +11,7 @@ generate-stubs \
 	~/dev/nextcloud/server/3rdparty/stecman/symfony-console-completion/src/Completion/CompletionAwareInterface.php \
 	~/dev/nextcloud/server/lib/private/Security/CSRF/CsrfTokenManager.php \
 	~/dev/nextcloud/server/lib/private/Security/CSRF/CsrfToken.php \
-	~/dev/nextcloud/server/lib/private/legacy/OC_Image.php \
+	~/dev/nextcloud/server/lib/private/Image.php \
 	> stub.phpstub
 
 #     /**
