@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace OCA\LDAPContactsBackend\Service;
 
+use OCA\User_LDAP\Configuration;
 use OCA\LDAPContactsBackend\Model\LDAPBaseConfiguration;
 use OCA\User_LDAP\Helper;
 use OutOfBoundsException;
@@ -42,7 +43,7 @@ class ConnectionImporter {
 			throw new OutOfBoundsException('Specified configuration not available');
 		}
 
-		$c = new \OCA\User_LDAP\Configuration($prefix);
+		$c = new Configuration($prefix);
 		$m = new LDAPBaseConfiguration();
 		$m
 			->setPort($c->ldapPort)
@@ -62,7 +63,7 @@ class ConnectionImporter {
 		$prefixes = $this->ldapHelper->getServerConfigurationPrefixes();
 		$i = 0;
 		foreach ($prefixes as $prefix) {
-			$c = new \OCA\User_LDAP\Configuration($prefix);
+			$c = new Configuration($prefix);
 			$m = new LDAPBaseConfiguration();
 			$m
 				->setPrefix($prefix)

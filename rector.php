@@ -17,7 +17,8 @@ return RectorConfig::configure()
 		__DIR__ . '/tests',
 	])
 	->withPhpSets(php81: true)
-	->withTypeCoverageLevel(0)
+	->withTypeCoverageLevel(10)
+	->withImportNames(importShortClasses: false)
 	->withSets([
 		NextcloudSets::NEXTCLOUD_25,
 		NextcloudSets::NEXTCLOUD_26,

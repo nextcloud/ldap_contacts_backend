@@ -52,7 +52,7 @@ class AddressBookProvider implements IAddressBookProvider {
 	public function fetchAllForAddressBookHome(string $principalUri): array {
 		$configs = array_filter(
 			$this->configurationService->getAll(),
-			fn (ConfigurationModel $config) => $config->isEnabled()
+			fn (ConfigurationModel $config): bool => $config->isEnabled()
 		);
 
 		$addressBooks = [];
@@ -109,7 +109,7 @@ class AddressBookProvider implements IAddressBookProvider {
 	public function fetchAllForContactsStore(): array {
 		$configs = array_filter(
 			$this->configurationService->getAll(),
-			fn (ConfigurationModel $config) => $config->isEnabled()
+			fn (ConfigurationModel $config): bool => $config->isEnabled()
 		);
 
 		$addressBooks = [];
