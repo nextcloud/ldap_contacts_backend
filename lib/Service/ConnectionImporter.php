@@ -25,8 +25,8 @@ declare(strict_types=1);
 
 namespace OCA\LDAPContactsBackend\Service;
 
-use OCA\User_LDAP\Configuration;
 use OCA\LDAPContactsBackend\Model\LDAPBaseConfiguration;
+use OCA\User_LDAP\Configuration;
 use OCA\User_LDAP\Helper;
 use OutOfBoundsException;
 
