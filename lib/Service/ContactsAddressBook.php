@@ -34,17 +34,17 @@ use OCP\IConfig;
 use OCP\IURLGenerator;
 
 class ContactsAddressBook implements IAddressBook {
-	private CsrfTokenManager $tokenManager;
+	private readonly CsrfTokenManager $tokenManager;
 
 	public const DAV_PROPERTY_SOURCE = 'X-NC_LDAP_CONTACTS_ID';
 
 	public function __construct(
-		private ICardBackend $cardBackend,
-		private IConfig $config,
-		private IURLGenerator $urlGenerator,
+		private readonly ICardBackend $cardBackend,
+		private readonly IConfig $config,
+		private readonly IURLGenerator $urlGenerator,
 		CsrfTokenManager $tokenManager,
-		private PhotoService $photoService,
-		private ?string $principalURI = null,
+		private readonly PhotoService $photoService,
+		private readonly ?string $principalURI = null,
 	) {
 		$this->tokenManager = $tokenManager;
 	}
@@ -83,7 +83,7 @@ class ContactsAddressBook implements IAddressBook {
 			if (isset($record['PHOTO'])) {
 				try {
 					// "data:image/<submime>;base64," is prefixed
-					$imageData = substr($record['PHOTO'][0], strpos($record['PHOTO'][0], ','));
+					$imageData = substr((string)$record['PHOTO'][0], strpos((string)$record['PHOTO'][0], ','));
 					$this->photoService->store($this->cardBackend->getURI(), $record['URI'], $imageData);
 					$photoUrl = $this->urlGenerator->linkToRouteAbsolute(Application::APPID . '.contacts.photo',
 						[

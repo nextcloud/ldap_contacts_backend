@@ -39,8 +39,8 @@ use Symfony\Component\Console\Question\Question;
 
 class Add extends Base {
 	public function __construct(
-		private Configuration $configurationService,
-		private ?ConnectionImporter $connectionImporter = null,
+		private readonly Configuration $configurationService,
+		private readonly ?ConnectionImporter $connectionImporter = null,
 	) {
 		parent::__construct();
 	}
@@ -328,7 +328,7 @@ class Add extends Base {
 			$list,
 			count($list) - 1
 		);
-		$choice = $helper->ask($input, $output, $question);
+		$choice = (string)$helper->ask($input, $output, $question);
 		if ($choice === 'None') {
 			return;
 		}
@@ -354,7 +354,7 @@ class Add extends Base {
 
 		$q = new Question($label);
 		$q->setNormalizer(fn ($input): string => $this->stringNormalizer($input));
-		$values = array_map('trim', explode(',', $helper->ask($input, $output, $q)));
+		$values = array_map('trim', explode(',', (string)$helper->ask($input, $output, $q)));
 
 		$input->setOption($subject, $values);
 	}

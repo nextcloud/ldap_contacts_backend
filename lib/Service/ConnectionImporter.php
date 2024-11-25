@@ -31,7 +31,7 @@ use OCA\User_LDAP\Helper;
 use OutOfBoundsException;
 
 class ConnectionImporter {
-	private Helper $ldapHelper;
+	private readonly Helper $ldapHelper;
 
 	public function __construct(Helper $ldapHelper) {
 		$this->ldapHelper = $ldapHelper;

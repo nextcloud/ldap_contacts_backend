@@ -30,7 +30,7 @@ use Psr\Log\LoggerInterface;
 
 class LdapQuerentFactory {
 	public function __construct(
-		private LoggerInterface $logger,
+		private readonly LoggerInterface $logger,
 	) {
 	}
 
