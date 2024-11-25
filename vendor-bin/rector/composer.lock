@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "144580060363807d84c64c8193f2f5cd",
+    "content-hash": "e61eb2cb2286d57dd0e947d53a8707bb",
     "packages": [],
     "packages-dev": [
         {
             "name": "nextcloud/rector",
-            "version": "v0.1.2",
+            "version": "v0.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nextcloud-libraries/rector.git",
-                "reference": "f98c2d8bd13654a6c27ea0d9788949e90912f800"
+                "reference": "d73ab086700564f675eda9a834b6b08410a1da7e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nextcloud-libraries/rector/zipball/f98c2d8bd13654a6c27ea0d9788949e90912f800",
-                "reference": "f98c2d8bd13654a6c27ea0d9788949e90912f800",
+                "url": "https://api.github.com/repos/nextcloud-libraries/rector/zipball/d73ab086700564f675eda9a834b6b08410a1da7e",
+                "reference": "d73ab086700564f675eda9a834b6b08410a1da7e",
                 "shasum": ""
             },
             "require": {
@@ -44,7 +44,7 @@
             },
             "autoload": {
                 "psr-4": {
-                    "ChristophWurst\\Nextcloud\\Rector\\": "src/"
+                    "Nextcloud\\Rector\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -65,22 +65,22 @@
             ],
             "support": {
                 "issues": "https://github.com/nextcloud-libraries/rector/issues",
-                "source": "https://github.com/nextcloud-libraries/rector/tree/v0.1.2"
+                "source": "https://github.com/nextcloud-libraries/rector/tree/v0.2.1"
             },
-            "time": "2024-09-11T06:54:05+00:00"
+            "time": "2024-10-01T12:24:08+00:00"
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.12.12",
+            "version": "1.12.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "b5ae1b88f471d3fd4ba1aa0046234b5ca3776dd0"
+                "reference": "0d1fc20a962a91be578bcfe7cf939e6e1a2ff733"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/b5ae1b88f471d3fd4ba1aa0046234b5ca3776dd0",
-                "reference": "b5ae1b88f471d3fd4ba1aa0046234b5ca3776dd0",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/0d1fc20a962a91be578bcfe7cf939e6e1a2ff733",
+                "reference": "0d1fc20a962a91be578bcfe7cf939e6e1a2ff733",
                 "shasum": ""
             },
             "require": {
@@ -125,7 +125,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-11-28T22:13:23+00:00"
+            "time": "2024-11-17T14:08:01+00:00"
         },
         {
             "name": "rector/rector",
