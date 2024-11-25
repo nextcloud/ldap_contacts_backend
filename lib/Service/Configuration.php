@@ -39,8 +39,8 @@ class Configuration {
 	protected array $configurations = [];
 
 	public function __construct(
-		private IConfig $config,
-		private ICredentialsManager $credentialsManager,
+		private readonly IConfig $config,
+		private readonly ICredentialsManager $credentialsManager,
 	) {
 	}
 

@@ -20,8 +20,5 @@ return RectorConfig::configure()
 	->withTypeCoverageLevel(10)
 	->withImportNames(importShortClasses: false)
 	->withSets([
-		NextcloudSets::NEXTCLOUD_25,
-		NextcloudSets::NEXTCLOUD_26,
 		NextcloudSets::NEXTCLOUD_27,
-		NextcloudSets::NEXTCLOUD_ALL,
 	]);

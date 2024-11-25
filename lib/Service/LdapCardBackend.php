@@ -33,8 +33,8 @@ use function base64_decode;
 
 class LdapCardBackend implements ICardBackend {
 	public function __construct(
-		private LdapQuerent $ldapQuerent,
-		private ConfigurationModel $configuration,
+		private readonly LdapQuerent $ldapQuerent,
+		private readonly ConfigurationModel $configuration,
 	) {
 	}
 
@@ -49,7 +49,7 @@ class LdapCardBackend implements ICardBackend {
 	/**
 	 * @throws RecordNotFound
 	 */
-	public function getCard($name): Card {
+	public function getCard(string $name): Card {
 		$record = $this->ldapQuerent->fetchOne(base64_decode($name));
 		return $this->entryToCard($record);
 	}

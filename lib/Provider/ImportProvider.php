@@ -36,14 +36,14 @@ use OCP\IL10N;
 use OCP\IURLGenerator;
 
 class ImportProvider implements IProvider {
-	private CsrfTokenManager $tokenManager;
+	private readonly CsrfTokenManager $tokenManager;
 
 	public function __construct(
-		private IActionFactory $actionFactory,
-		private IURLGenerator $urlGenerator,
-		private IL10N $l,
+		private readonly IActionFactory $actionFactory,
+		private readonly IURLGenerator $urlGenerator,
+		private readonly IL10N $l,
 		CsrfTokenManager $tokenManager,
-		private IAppManager $appManager,
+		private readonly IAppManager $appManager,
 	) {
 		$this->tokenManager = $tokenManager;
 	}

@@ -40,8 +40,8 @@ class LdapQuerent {
 	protected ?Ldap $ldap = null;
 
 	public function __construct(
-		private ConfigurationModel $configuration,
-		private LoggerInterface $logger,
+		private readonly ConfigurationModel $configuration,
+		private readonly LoggerInterface $logger,
 	) {
 	}
 
