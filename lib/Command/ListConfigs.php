@@ -33,7 +33,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ListConfigs extends Base {
 	public function __construct(
-		private Configuration $configurationService,
+		private readonly Configuration $configurationService,
 	) {
 		parent::__construct();
 	}

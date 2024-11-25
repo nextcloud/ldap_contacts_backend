@@ -71,7 +71,7 @@ class Card implements ICard {
 	 * @inheritDoc
 	 */
 	public function getSize() {
-		return \strlen($this->get());
+		return \strlen((string)$this->get());
 	}
 
 	/**

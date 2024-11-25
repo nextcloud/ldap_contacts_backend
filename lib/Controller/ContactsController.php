@@ -51,13 +51,13 @@ use Psr\Log\LoggerInterface;
 class ContactsController extends Controller {
 	public function __construct(
 		IRequest $request,
-		private AddressBookProvider $addressBookProvider,
-		private IManager $contactsManager,
-		private IUserSession $userSession,
-		private LoggerInterface $logger,
-		private IURLGenerator $urlGenerator,
-		private PhotoService $photoService,
-		private IFactory $l10nFactory,
+		private readonly AddressBookProvider $addressBookProvider,
+		private readonly IManager $contactsManager,
+		private readonly IUserSession $userSession,
+		private readonly LoggerInterface $logger,
+		private readonly IURLGenerator $urlGenerator,
+		private readonly PhotoService $photoService,
+		private readonly IFactory $l10nFactory,
 	) {
 		parent::__construct(Application::APPID, $request);
 	}

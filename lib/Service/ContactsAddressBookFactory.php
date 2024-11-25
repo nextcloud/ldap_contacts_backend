@@ -30,13 +30,13 @@ use OCP\IConfig;
 use OCP\IURLGenerator;
 
 class ContactsAddressBookFactory {
-	private CsrfTokenManager $tokenManager;
+	private readonly CsrfTokenManager $tokenManager;
 
 	public function __construct(
-		private IConfig $config,
-		private IURLGenerator $urlGenerator,
+		private readonly IConfig $config,
+		private readonly IURLGenerator $urlGenerator,
 		CsrfTokenManager $tokenManager,
-		private PhotoService $photoService,
+		private readonly PhotoService $photoService,
 	) {
 		$this->tokenManager = $tokenManager;
 	}
