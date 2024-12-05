@@ -33,10 +33,10 @@ use OCA\LDAPContactsBackend\Exception\RecordNotFound;
 use Sabre\DAV\PropPatch;
 
 class AddressBook extends ExternalAddressBook {
-	private ICardBackend $cardBackend;
+	private readonly ICardBackend $cardBackend;
 
 	public function __construct(
-		private string $principalUri,
+		private readonly string $principalUri,
 		ICardBackend $cardBackend,
 	) {
 		parent::__construct(Application::APPID, $cardBackend->getURI());

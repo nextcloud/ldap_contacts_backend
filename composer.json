@@ -38,7 +38,8 @@
 		"test:unit": "vendor/bin/phpunit -c tests/phpunit.xml",
 		"psalm": "psalm --no-cache --threads=$(nproc)",
 		"psalm:fix": "psalm --alter --issues=InvalidReturnType,InvalidNullableReturnType,MissingParamType,InvalidFalsableReturnType",
-		"psalm:update-baseline": "psalm --threads=1 --update-baseline"
+		"psalm:update-baseline": "psalm --threads=1 --update-baseline",
+		"rector": "rector && composer cs:fix"
 	},
 	"autoload-dev": {
 		"psr-4": {

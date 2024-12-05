@@ -46,7 +46,7 @@ class LdapEntryToVcard {
 		$mappings = array_merge(self::DEFAULT_MAPPING, $configuration->getAttributeMapping());
 		foreach ($mappings as $vcProperty => $lAttributes) {
 			$propertyName = strtoupper($vcProperty);
-			$lAttributes = explode(',', $lAttributes);
+			$lAttributes = explode(',', (string)$lAttributes);
 			foreach ($lAttributes as $lAttribute) {
 				$lAttribute = trim($lAttribute);
 				if ($lAttribute === 'dn') {

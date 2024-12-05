@@ -33,7 +33,7 @@ use OCP\Image;
 
 class PhotoService {
 	public function __construct(
-		private ICacheFactory $cacheFactory,
+		private readonly ICacheFactory $cacheFactory,
 	) {
 	}
 
@@ -51,7 +51,7 @@ class PhotoService {
 		}
 
 		$image = $this->prepareImage($imageData);
-		$cache->set($key, base64_encode($image->data()), 3600);
+		$cache->set($key, base64_encode((string)$image->data()), 3600);
 
 		return true;
 	}

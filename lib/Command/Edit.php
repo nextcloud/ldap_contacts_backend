@@ -218,7 +218,7 @@ class Edit extends Base {
 	}
 
 	private function autoCompleteNormalizer($input, array $autoComplete) {
-		return array_change_key_case(array_flip($autoComplete))[strtolower($input)] ?? array_pop($autoComplete);
+		return array_change_key_case(array_flip($autoComplete))[strtolower((string)$input)] ?? array_pop($autoComplete);
 	}
 
 	private function uIntNormalizer(?string $input): ?int {
@@ -286,7 +286,7 @@ class Edit extends Base {
 
 		$q = new Question($label);
 		$q->setNormalizer(fn ($input): string => $this->stringNormalizer($input));
-		$values = array_map('trim', explode(',', $helper->ask($input, $output, $q)));
+		$values = array_map('trim', explode(',', (string)$helper->ask($input, $output, $q)));
 
 		$input->setOption($subject, $values);
 	}

@@ -36,7 +36,7 @@ interface ICardBackend {
 	/**
 	 * @throws RecordNotFound
 	 */
-	public function getCard($name): Card;
+	public function getCard(string $name): Card;
 
 	/**
 	 * @return Card[]

@@ -33,9 +33,9 @@ use OCA\LDAPContactsBackend\Model\Configuration as ConfigurationModel;
 
 class AddressBookProvider implements IAddressBookProvider {
 	public function __construct(
-		private Configuration $configurationService,
-		private LdapQuerentFactory $ldapQuerentFactory,
-		private ContactsAddressBookFactory $contactsAddressBookFactory,
+		private readonly Configuration $configurationService,
+		private readonly LdapQuerentFactory $ldapQuerentFactory,
+		private readonly ContactsAddressBookFactory $contactsAddressBookFactory,
 	) {
 	}
 
