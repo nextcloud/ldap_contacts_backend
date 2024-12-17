@@ -1,5 +1,8 @@
 #!/bin/sh
-
+#
+# SPDX-FileCopyrightText: 2023 Nextcloud GmbH and Nextcloud contributors
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
 generate-stubs \
 	~/dev/nextcloud/server/apps/dav/lib/CardDAV/Integration/ExternalAddressBook.php \
 	~/dev/nextcloud/server/apps/dav/lib/CardDAV/Integration/IAddressBookProvider.php \
