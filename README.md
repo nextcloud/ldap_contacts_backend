@@ -4,6 +4,8 @@
 -->
 # LDAP Contacts Backend
 
+[![REUSE status](https://api.reuse.software/badge/github.com/nextcloud/ldap_contacts_backend)](https://api.reuse.software/info/github.com/nextcloud/ldap_contacts_backend)
+
 **LDAP backend for Nextcloud Contacts**
 
 ![image](https://github.com/nextcloud/ldap_contacts_backend/assets/1731941/1666c7bd-ec11-4448-a7fa-6fbfef2ff6a6)
