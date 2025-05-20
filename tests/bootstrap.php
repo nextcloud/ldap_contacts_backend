@@ -23,5 +23,3 @@ Server::get(IAppManager::class)->loadApp('ldap_contacts_backend');
 if (!class_exists(TestCase::class)) {
 	require_once('PHPUnit/Autoload.php');
 }
-
-OC_Hook::clear();
