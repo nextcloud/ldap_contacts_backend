@@ -1,0 +1,7 @@
+{ "translations": {
+    "All contacts" : "Kõik kontaktid",
+    "Copy to address book" : "Kopeeri aadressiraamatusse",
+    "LDAP Contacts Backend" : "Taustateenus LDAP-i serveri kontaktide jaoks",
+    "LDAP backend for Nextcloud Contacts" : "Taustateenus Nextcloudi kontaktide hoidmiseks LDAP-i serveris"
+},"pluralForm" :"nplurals=2; plural=(n != 1);"
+}

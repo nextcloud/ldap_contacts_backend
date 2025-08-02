@@ -1,4 +1,7 @@
 { "translations": {
-    "All contacts" : "Alle Kontakte"
+    "All contacts" : "Alle Kontakte",
+    "Copy to address book" : "In Adressbuch kopieren",
+    "LDAP Contacts Backend" : "LDAP Kontakte-Backend",
+    "LDAP backend for Nextcloud Contacts" : "LDAP-Backend für Nextcloud-Kontakte"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
