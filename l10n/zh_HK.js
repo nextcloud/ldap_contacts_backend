@@ -1,6 +1,9 @@
 OC.L10N.register(
     "ldap_contacts_backend",
     {
-    "All contacts" : "所有聯絡人"
+    "All contacts" : "所有聯絡人",
+    "Copy to address book" : "複製到通訊錄",
+    "LDAP Contacts Backend" : "聯絡人備份",
+    "LDAP backend for Nextcloud Contacts" : "推薦功能：Nextcloud Conracts"
 },
 "nplurals=1; plural=0;");
