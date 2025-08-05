@@ -22,7 +22,7 @@ Where $ADDRESSBOOKNAME is a name you like to identify the virtual addressbook wi
 
 Given that the configuration is correct, you and your users will be able to search through the LDAP contacts via the global contacts menu. An import action allows to copy the contact over to the best fitting existing addressbook. A redirect takes you the contacts app with the newly created card open.
 ]]></description>
-	<version>1.11.0</version>
+	<version>1.11.1</version>
     <licence>agpl</licence>
     <author mail="blizzz@arthur-schiwon.de">Arthur Schiwon</author>
     <namespace>LDAPContactsBackend</namespace>
