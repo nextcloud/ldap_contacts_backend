@@ -1,0 +1,9 @@
+OC.L10N.register(
+    "ldap_contacts_backend",
+    {
+    "All contacts" : "Todos los contactos",
+    "Copy to address book" : "Copiar a libreta de direcciones",
+    "LDAP Contacts Backend" : "Backend de Contactos LDAP",
+    "LDAP backend for Nextcloud Contacts" : "Backend LDAP para Contactos de Nextcloud"
+},
+"nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;");
