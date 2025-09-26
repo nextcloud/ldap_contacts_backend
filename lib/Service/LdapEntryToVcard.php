@@ -48,7 +48,7 @@ class LdapEntryToVcard {
 		}
 
 		if (!isset($vCardData['FN'])) {
-			throw new RuntimeException('Invalid record or configuration for vcard');
+			throw new RuntimeException('Invalid record or configuration for vcard ' . $record->getDn());
 		}
 
 		$vCardData['URI'] = base64_encode($record->getDn());
