@@ -1,0 +1,7 @@
+{ "translations": {
+    "All contacts" : "Alle kontakter",
+    "Copy to address book" : "Kopiér til adressebog",
+    "LDAP Contacts Backend" : "LDAP-kontakt backend",
+    "LDAP backend for Nextcloud Contacts" : "LDAP-backend til Nextcloud-kontakter"
+},"pluralForm" :"nplurals=2; plural=(n != 1);"
+}
