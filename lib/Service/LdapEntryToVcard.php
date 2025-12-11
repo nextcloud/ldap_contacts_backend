@@ -10,6 +10,8 @@ namespace OCA\LDAPContactsBackend\Service;
 
 use OCA\LDAPContactsBackend\Model\Configuration as ConfigurationModel;
 use OCP\Image;
+use OCP\Server;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Symfony\Component\Ldap\Entry;
 
@@ -29,6 +31,10 @@ class LdapEntryToVcard {
 		$mappings = array_merge(self::DEFAULT_MAPPING, $configuration->getAttributeMapping());
 		foreach ($mappings as $vcProperty => $lAttributes) {
 			$propertyName = strtoupper($vcProperty);
+			if ($propertyName === 'UID') {
+				Server::get(LoggerInterface::class)->warning('Ignoring unsupported UID mapping.');
+				continue;
+			}
 			$lAttributes = explode(',', (string)$lAttributes);
 			foreach ($lAttributes as $lAttribute) {
 				$lAttribute = trim($lAttribute);
