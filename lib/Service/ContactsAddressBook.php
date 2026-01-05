@@ -80,7 +80,7 @@ class ContactsAddressBook implements IAddressBook {
 			}
 
 			// prevents linking to contacts if UID is set
-			$record['isLocalSystemBook'] = true;
+			$record['isVirtualAddressBook'] = true;
 			$record[self::DAV_PROPERTY_SOURCE] = $this->cardBackend->getURI();
 			$result[] = $record;
 		}

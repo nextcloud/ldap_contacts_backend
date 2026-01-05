@@ -29,6 +29,10 @@ class LdapEntryToVcard {
 		$mappings = array_merge(self::DEFAULT_MAPPING, $configuration->getAttributeMapping());
 		foreach ($mappings as $vcProperty => $lAttributes) {
 			$propertyName = strtoupper($vcProperty);
+			if ($propertyName === 'UID') {
+				// Ignoring UID mapping as not-relevant and could generate issues in core
+				continue;
+			}
 			$lAttributes = explode(',', (string)$lAttributes);
 			foreach ($lAttributes as $lAttribute) {
 				$lAttribute = trim($lAttribute);
