@@ -1,0 +1,7 @@
+{ "translations": {
+    "All contacts" : "Semua kontak",
+    "Copy to address book" : "Salin ke buku alamat",
+    "LDAP Contacts Backend" : "Backend Kontak LDAP",
+    "LDAP backend for Nextcloud Contacts" : "Backend LDAP untuk Nextcloud Contacts"
+},"pluralForm" :"nplurals=1; plural=0;"
+}
