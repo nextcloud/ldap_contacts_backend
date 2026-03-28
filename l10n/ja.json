@@ -1,0 +1,7 @@
+{ "translations": {
+    "All contacts" : "すべての連絡先",
+    "Copy to address book" : "アドレス帳にコピー",
+    "LDAP Contacts Backend" : "LDAP連絡先バックエンド",
+    "LDAP backend for Nextcloud Contacts" : "Nextcloud連絡先用のLDAPバックエンド"
+},"pluralForm" :"nplurals=1; plural=0;"
+}
