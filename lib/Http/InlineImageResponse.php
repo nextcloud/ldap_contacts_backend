@@ -36,6 +36,7 @@ class InlineImageResponse extends Response implements ICallbackResponse {
 	/**
 	 * @inheritDoc
 	 */
+	#[\Override]
 	public function callback(IOutput $output) {
 		if ($output->getHttpResponseCode() !== Http::STATUS_NOT_MODIFIED) {
 			$output->setHeader('Content-Length: ' . strlen((string)$this->image->data()));

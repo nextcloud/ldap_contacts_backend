@@ -32,19 +32,23 @@ class ContactsAddressBook implements IAddressBook {
 		$this->tokenManager = $tokenManager;
 	}
 
+	#[\Override]
 	public function getKey() {
 		return $this->cardBackend->getURI();
 	}
 
+	#[\Override]
 	public function getUri(): string {
 		// this will have the URL part to direct to the contacts app
 		return $this->principalURI ?? $this->cardBackend->getURI();
 	}
 
+	#[\Override]
 	public function getDisplayName() {
 		return $this->cardBackend->getDisplayName();
 	}
 
+	#[\Override]
 	public function search($pattern, $searchProperties, $options) {
 		// searchProperties are ignore as we follow search attributes
 		// options worth considering: types
@@ -88,14 +92,17 @@ class ContactsAddressBook implements IAddressBook {
 		return $result;
 	}
 
+	#[\Override]
 	public function createOrUpdate($properties) {
 		return [];
 	}
 
+	#[\Override]
 	public function getPermissions() {
 		return Constants::PERMISSION_READ;
 	}
 
+	#[\Override]
 	public function delete($id) {
 		return false;
 	}
@@ -103,6 +110,7 @@ class ContactsAddressBook implements IAddressBook {
 	/**
 	 * @inheritDoc
 	 */
+	#[\Override]
 	public function isShared(): bool {
 		return true;
 	}
@@ -110,6 +118,7 @@ class ContactsAddressBook implements IAddressBook {
 	/**
 	 * @inheritDoc
 	 */
+	#[\Override]
 	public function isSystemAddressBook(): bool {
 		return true;
 	}

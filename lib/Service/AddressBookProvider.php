@@ -25,6 +25,7 @@ class AddressBookProvider implements IAddressBookProvider {
 	/**
 	 * @inheritDoc
 	 */
+	#[\Override]
 	public function getAppId(): string {
 		return Application::APPID;
 	}
@@ -32,6 +33,7 @@ class AddressBookProvider implements IAddressBookProvider {
 	/**
 	 * @inheritDoc
 	 */
+	#[\Override]
 	public function fetchAllForAddressBookHome(string $principalUri): array {
 		$configs = array_filter(
 			$this->configurationService->getAll(),
@@ -51,6 +53,7 @@ class AddressBookProvider implements IAddressBookProvider {
 	/**
 	 * @inheritDoc
 	 */
+	#[\Override]
 	public function hasAddressBookInAddressBookHome(string $principalUri, string $uri): bool {
 		foreach ($this->configurationService->getAll() as $config) {
 			if ($config->isEnabled()) {
@@ -64,6 +67,7 @@ class AddressBookProvider implements IAddressBookProvider {
 	/**
 	 * @inheritDoc
 	 */
+	#[\Override]
 	public function getAddressBookInAddressBookHome(string $principalUri, string $uri): ?ExternalAddressBook {
 		foreach ($this->configurationService->getAll() as $config) {
 			/** @var ConfigurationModel $config */

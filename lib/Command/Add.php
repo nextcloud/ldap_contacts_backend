@@ -28,6 +28,7 @@ class Add extends Base {
 		parent::__construct();
 	}
 
+	#[\Override]
 	protected function configure() {
 		$this
 			->setName('ldap_contacts:add')
@@ -113,6 +114,7 @@ class Add extends Base {
 			);
 	}
 
+	#[\Override]
 	protected function interact(InputInterface $input, OutputInterface $output) {
 		if (!$input->getOption('interactive')) {
 			return;
@@ -197,6 +199,7 @@ class Add extends Base {
 		}
 	}
 
+	#[\Override]
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$config = $this->configurationService->add();
 		$config->setAddressBookDisplayName($input->getArgument('addressBookName'));
