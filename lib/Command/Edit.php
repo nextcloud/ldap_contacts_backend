@@ -29,6 +29,7 @@ class Edit extends Base {
 		parent::__construct();
 	}
 
+	#[\Override]
 	protected function configure() {
 		$this
 			->setName('ldap_contacts:edit')
@@ -131,6 +132,7 @@ class Edit extends Base {
 		];
 	}
 
+	#[\Override]
 	protected function interact(InputInterface $input, OutputInterface $output) {
 		if (!$input->getOption('interactive')) {
 			return;
@@ -161,6 +163,7 @@ class Edit extends Base {
 		//TODO FIXME: mappings are not being asked for
 	}
 
+	#[\Override]
 	public function execute(InputInterface $input, OutputInterface $output): int {
 		$config = $this->configurationService->get((int)$input->getArgument('id'));
 

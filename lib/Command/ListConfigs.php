@@ -21,6 +21,7 @@ class ListConfigs extends Base {
 		parent::__construct();
 	}
 
+	#[\Override]
 	protected function configure() {
 		parent::configure();
 		$this
@@ -28,6 +29,7 @@ class ListConfigs extends Base {
 			->setDescription('Lists all LDAP contacts backend configurations');
 	}
 
+	#[\Override]
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$configs = $this->configurationService->getAll();
 		foreach ($configs as $config) {
