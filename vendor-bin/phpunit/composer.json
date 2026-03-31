@@ -1,10 +1,10 @@
 {
     "require-dev": {
-        "vimeo/psalm": "^6"
+        "phpunit/phpunit": "^11.5"
     },
     "config": {
         "platform": {
-            "php": "8.2.27"
+            "php": "8.2"
         }
     }
 }

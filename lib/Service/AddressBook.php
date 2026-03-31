@@ -30,6 +30,7 @@ class AddressBook extends ExternalAddressBook {
 	/**
 	 * @inheritDoc
 	 */
+	#[\Override]
 	public function createFile($name, $data = null) {
 		throw new Exception('This addressbook is immutable');
 	}
@@ -38,6 +39,7 @@ class AddressBook extends ExternalAddressBook {
 	 * @inheritDoc
 	 * @throws RecordNotFound
 	 */
+	#[\Override]
 	public function getChild($name) {
 		return $this->cardBackend->getCard($name);
 	}
@@ -45,6 +47,7 @@ class AddressBook extends ExternalAddressBook {
 	/**
 	 * @inheritDoc
 	 */
+	#[\Override]
 	public function getChildren() {
 		return $this->cardBackend->getCards();
 	}
@@ -52,6 +55,7 @@ class AddressBook extends ExternalAddressBook {
 	/**
 	 * @inheritDoc
 	 */
+	#[\Override]
 	public function childExists($name) {
 		try {
 			$this->getChild($name);
@@ -64,6 +68,7 @@ class AddressBook extends ExternalAddressBook {
 	/**
 	 * @inheritDoc
 	 */
+	#[\Override]
 	public function delete() {
 		throw new Exception('This addressbook is immutable');
 	}
@@ -71,6 +76,7 @@ class AddressBook extends ExternalAddressBook {
 	/**
 	 * @inheritDoc
 	 */
+	#[\Override]
 	public function getLastModified() {
 		return null;
 	}
@@ -78,6 +84,7 @@ class AddressBook extends ExternalAddressBook {
 	/**
 	 * @inheritDoc
 	 */
+	#[\Override]
 	public function propPatch(PropPatch $propPatch) {
 		throw new Exception('This addressbook is immutable');
 	}
@@ -85,6 +92,7 @@ class AddressBook extends ExternalAddressBook {
 	/**
 	 * @inheritDoc
 	 */
+	#[\Override]
 	public function getProperties($properties) {
 		return [
 			'principaluri' => $this->principalUri,

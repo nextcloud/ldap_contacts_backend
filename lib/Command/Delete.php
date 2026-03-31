@@ -21,6 +21,7 @@ class Delete extends Base {
 		parent::__construct();
 	}
 
+	#[\Override]
 	protected function configure() {
 		parent::configure();
 		$this
@@ -33,6 +34,7 @@ class Delete extends Base {
 			);
 	}
 
+	#[\Override]
 	protected function execute(InputInterface $input, OutputInterface $output): int {
 		$id = (int)$input->getArgument('id');
 		$this->configurationService->delete($id);

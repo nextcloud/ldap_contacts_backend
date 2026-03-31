@@ -32,9 +32,11 @@ class Application extends App implements IBootstrap {
 		}
 	}
 
+	#[\Override]
 	public function register(IRegistrationContext $context): void {
 	}
 
+	#[\Override]
 	public function boot(IBootContext $context): void {
 		$cm = $context->getServerContainer()->get(IManager::class);
 		$cm->register(function () use ($cm): void {
