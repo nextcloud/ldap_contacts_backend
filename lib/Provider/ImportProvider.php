@@ -31,6 +31,7 @@ class ImportProvider implements IProvider {
 		$this->tokenManager = $tokenManager;
 	}
 
+	#[\Override]
 	public function process(IEntry $entry): void {
 		if (!$this->appManager->isEnabledForUser('contacts')) {
 			return;

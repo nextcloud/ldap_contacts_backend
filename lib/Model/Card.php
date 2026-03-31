@@ -21,6 +21,7 @@ class Card implements ICard {
 	/**
 	 * @inheritDoc
 	 */
+	#[\Override]
 	public function put($data) {
 		throw new NotImplemented();
 	}
@@ -28,6 +29,7 @@ class Card implements ICard {
 	/**
 	 * @inheritDoc
 	 */
+	#[\Override]
 	public function get() {
 		return (new VCard($this->vCardData))->serialize();
 	}
@@ -39,6 +41,7 @@ class Card implements ICard {
 	/**
 	 * @inheritDoc
 	 */
+	#[\Override]
 	public function getContentType() {
 		return 'text/vcard; charset=utf-8';
 	}
@@ -46,6 +49,7 @@ class Card implements ICard {
 	/**
 	 * @inheritDoc
 	 */
+	#[\Override]
 	public function getETag() {
 		return null;
 	}
@@ -53,6 +57,7 @@ class Card implements ICard {
 	/**
 	 * @inheritDoc
 	 */
+	#[\Override]
 	public function getSize() {
 		return \strlen((string)$this->get());
 	}
@@ -60,6 +65,7 @@ class Card implements ICard {
 	/**
 	 * @inheritDoc
 	 */
+	#[\Override]
 	public function delete() {
 		throw new NotImplemented();
 	}
@@ -67,6 +73,7 @@ class Card implements ICard {
 	/**
 	 * @inheritDoc
 	 */
+	#[\Override]
 	public function getName() {
 		return $this->vCardData['URI'];
 	}
@@ -74,6 +81,7 @@ class Card implements ICard {
 	/**
 	 * @inheritDoc
 	 */
+	#[\Override]
 	public function setName($name) {
 		throw new NotImplemented();
 	}
@@ -81,6 +89,7 @@ class Card implements ICard {
 	/**
 	 * @inheritDoc
 	 */
+	#[\Override]
 	public function getLastModified() {
 		return null;
 	}

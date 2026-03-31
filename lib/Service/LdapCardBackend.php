@@ -21,10 +21,12 @@ class LdapCardBackend implements ICardBackend {
 	) {
 	}
 
+	#[\Override]
 	public function getURI(): string {
 		return (string)$this->configuration->getId();
 	}
 
+	#[\Override]
 	public function getDisplayName(): string {
 		return $this->configuration->getAddressBookDisplayName();
 	}
@@ -32,11 +34,13 @@ class LdapCardBackend implements ICardBackend {
 	/**
 	 * @throws RecordNotFound
 	 */
+	#[\Override]
 	public function getCard(string $name): Card {
 		$record = $this->ldapQuerent->fetchOne(base64_decode($name));
 		return $this->entryToCard($record);
 	}
 
+	#[\Override]
 	public function searchCards(string $pattern, int $limit = 0): array {
 		$records = $this->ldapQuerent->find($pattern, $limit);
 		$vCards = [];
@@ -47,6 +51,7 @@ class LdapCardBackend implements ICardBackend {
 		return $vCards;
 	}
 
+	#[\Override]
 	public function getCards(): array {
 		// to appear in the contacts app, this must really return everything
 		// as search is only by client in the presented contacts

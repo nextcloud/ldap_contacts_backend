@@ -141,6 +141,7 @@ class Configuration implements JsonSerializable {
 		return $this;
 	}
 
+	#[\Override]
 	public function jsonSerialize(): array {
 		$serializable = $this->data;
 
