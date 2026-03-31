@@ -66,7 +66,7 @@ class ConnectionImporter {
 	}
 
 	protected function extractHost(string $host): string {
-		return preg_replace('/^ldap[si]?:\/\//', '', $host);
+		return preg_replace('/^ldap[si]?:\/\//', '', $host) ?? $host;
 	}
 
 	protected function extractTlsMode(string $host, string $port, string $startTls): string {
