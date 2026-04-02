@@ -22,7 +22,7 @@ class Card implements ICard {
 	 * @inheritDoc
 	 */
 	#[\Override]
-	public function put($data) {
+	public function put($data): never {
 		throw new NotImplemented();
 	}
 
@@ -66,7 +66,7 @@ class Card implements ICard {
 	 * @inheritDoc
 	 */
 	#[\Override]
-	public function delete() {
+	public function delete(): never {
 		throw new NotImplemented();
 	}
 
@@ -82,7 +82,7 @@ class Card implements ICard {
 	 * @inheritDoc
 	 */
 	#[\Override]
-	public function setName($name) {
+	public function setName($name): never {
 		throw new NotImplemented();
 	}
 

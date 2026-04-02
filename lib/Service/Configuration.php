@@ -12,17 +12,15 @@ use OCA\LDAPContactsBackend\AppInfo\Application;
 use OCA\LDAPContactsBackend\Exception\ConfigurationNotFound;
 use OCA\LDAPContactsBackend\Exception\InvalidConfiguration;
 use OCA\LDAPContactsBackend\Model\Configuration as ConfigurationModel;
-use OCP\IConfig;
+use OCP\AppFramework\Services\IAppConfig;
 use OCP\Security\ICredentialsManager;
-use function json_decode;
-use function json_encode;
 
 class Configuration {
 	/** @var array<int,ConfigurationModel> */
 	protected array $configurations = [];
 
 	public function __construct(
-		private readonly IConfig $config,
+		private readonly IAppConfig $appConfig,
 		private readonly ICredentialsManager $credentialsManager,
 	) {
 	}
@@ -94,8 +92,7 @@ class Configuration {
 	 */
 	protected function save(): void {
 		try {
-			$serialized = json_encode($this->configurations, flags:JSON_THROW_ON_ERROR);
-			$this->config->setAppValue(Application::APPID, 'connections', $serialized);
+			$this->appConfig->setAppValueArray('connections', $this->configurations);
 		} catch (\JsonException $e) {
 			throw new InvalidConfiguration($e->getMessage(), previous:$e);
 		}
@@ -103,8 +100,7 @@ class Configuration {
 
 	protected function ensureLoaded(): void {
 		if (empty($this->configurations)) {
-			$connections = $this->config->getAppValue(Application::APPID, 'connections', '[]');
-			$connections = json_decode($connections, true);
+			$connections = $this->appConfig->getAppValueArray('connections');
 			foreach ($connections as $connection) {
 				try {
 					$model = $this->modelFromArray($connection);

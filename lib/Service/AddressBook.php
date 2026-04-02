@@ -17,32 +17,27 @@ use OCA\LDAPContactsBackend\Model\Card;
 use Sabre\DAV\PropPatch;
 
 class AddressBook extends ExternalAddressBook {
-	private readonly ICardBackend $cardBackend;
-
 	public function __construct(
 		private readonly string $principalUri,
-		ICardBackend $cardBackend,
+		private readonly ICardBackend $cardBackend,
 	) {
 		parent::__construct(Application::APPID, $cardBackend->getURI());
-		$this->cardBackend = $cardBackend;
 	}
-
 
 	/**
 	 * @inheritDoc
 	 */
 	#[\Override]
-	public function createFile($name, $data = null) {
+	public function createFile($name, $data = null): never {
 		throw new Exception('This addressbook is immutable');
 	}
 
 	/**
 	 * @inheritDoc
-	 * @return Card
 	 * @throws RecordNotFound
 	 */
 	#[\Override]
-	public function getChild($name) {
+	public function getChild($name): Card {
 		return $this->cardBackend->getCard($name);
 	}
 
@@ -71,7 +66,7 @@ class AddressBook extends ExternalAddressBook {
 	 * @inheritDoc
 	 */
 	#[\Override]
-	public function delete() {
+	public function delete(): never {
 		throw new Exception('This addressbook is immutable');
 	}
 
@@ -87,7 +82,7 @@ class AddressBook extends ExternalAddressBook {
 	 * @inheritDoc
 	 */
 	#[\Override]
-	public function propPatch(PropPatch $propPatch) {
+	public function propPatch(PropPatch $propPatch): never {
 		throw new Exception('This addressbook is immutable');
 	}
 

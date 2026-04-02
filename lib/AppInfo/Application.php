@@ -24,23 +24,20 @@ class Application extends App implements IBootstrap {
 		parent::__construct(self::APPID);
 	}
 
-	private function registerAddressBook(IManager $cm) {
-		/** @var AddressBookProvider $provider */
-		$provider = $this->getContainer()->get(AddressBookProvider::class);
-		foreach ($provider->fetchAllForContactsStore() as $ab) {
-			$cm->registerAddressBook($ab);
-		}
-	}
-
 	#[\Override]
 	public function register(IRegistrationContext $context): void {
 	}
 
 	#[\Override]
 	public function boot(IBootContext $context): void {
-		$cm = $context->getServerContainer()->get(IManager::class);
-		$cm->register(function () use ($cm): void {
-			$this->registerAddressBook($cm);
-		});
+		$context->injectFn(
+			function (IManager $cm, AddressBookProvider $provider): void {
+				$cm->register(function () use ($cm, $provider): void {
+					foreach ($provider->fetchAllForContactsStore() as $ab) {
+						$cm->registerAddressBook($ab);
+					}
+				});
+			}
+		);
 	}
 }

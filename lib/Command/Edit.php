@@ -120,7 +120,7 @@ class Edit extends Base {
 			'currentLabel' => sprintf('LDAP CardDAV mapping: %s.', implode('; ', $model->getAttributeMapping())),
 			'newLabel' => '  New mapping (example: TEL:mobile,telephoneNumber): ',
 			'followUpLabel' => '  additional mapping (leave empty to continue): ',
-			'setter' => function ($v) use ($model) {
+			'setter' => function (array $v) use ($model) {
 				$mappings = [];
 				foreach ($v as $pair) {
 					[$property, $attributes] = explode(':', $pair);
@@ -203,8 +203,8 @@ class Edit extends Base {
 		return ($input !== null) ? trim($input) : '';
 	}
 
-	private function autoCompleteNormalizer($input, array $autoComplete) {
-		return array_change_key_case(array_flip($autoComplete))[strtolower((string)$input)] ?? array_pop($autoComplete);
+	private function autoCompleteNormalizer(string $input, array $autoComplete): array {
+		return array_change_key_case(array_flip($autoComplete))[strtolower($input)] ?? array_pop($autoComplete);
 	}
 
 	private function uIntNormalizer(?string $input): ?int {
@@ -226,9 +226,9 @@ class Edit extends Base {
 		$q = new Question($label);
 		if (is_array($autoComplete)) {
 			$q->setAutocompleterValues(array_values($autoComplete));
-			$q->setNormalizer(fn ($input) => $this->autoCompleteNormalizer($input, $autoComplete));
+			$q->setNormalizer(fn ($input): array => $this->autoCompleteNormalizer($input, $autoComplete));
 		} else {
-			$q->setNormalizer(fn ($input): string => $this->stringNormalizer($input));
+			$q->setNormalizer(fn (string $input): string => $this->stringNormalizer($input));
 		}
 
 		$input->setOption($subject, $helper->ask($input, $output, $q));
@@ -239,7 +239,7 @@ class Edit extends Base {
 		$helper = $this->getHelper('question');
 
 		$q = new Question($label);
-		$q->setNormalizer(fn ($input): ?int => $this->uIntNormalizer($input));
+		$q->setNormalizer(fn (string $input): ?int => $this->uIntNormalizer($input));
 
 		$input->setOption($subject, $helper->ask($input, $output, $q));
 	}
@@ -252,13 +252,13 @@ class Edit extends Base {
 		$isFollowUp = false;
 
 		$q = new Question($label);
-		$q->setNormalizer(fn ($input): string => $this->stringNormalizer($input));
+		$q->setNormalizer(fn (string $input): string => $this->stringNormalizer($input));
 
 		while (($value = $helper->ask($input, $output, $q)) !== '') {
 			$values[] = $value;
 			if (!$isFollowUp) {
 				$q = new Question($followUpLabel);
-				$q->setNormalizer(fn ($input): string => $this->stringNormalizer($input));
+				$q->setNormalizer(fn (string $input): string => $this->stringNormalizer($input));
 				$isFollowUp = true;
 			}
 		}
@@ -271,19 +271,19 @@ class Edit extends Base {
 		$helper = $this->getHelper('question');
 
 		$q = new Question($label);
-		$q->setNormalizer(fn ($input): string => $this->stringNormalizer($input));
+		$q->setNormalizer(fn (string $input): string => $this->stringNormalizer($input));
 		$values = array_map(trim(...), explode(',', (string)$helper->ask($input, $output, $q)));
 
 		$input->setOption($subject, $values);
 	}
 
-	private function askWantChangeField(string $label, InputInterface $input, OutputInterface $output) {
+	private function askWantChangeField(string $label, InputInterface $input, OutputInterface $output): bool {
 		do {
 			/** @var QuestionHelper $helper */
 			$helper = $this->getHelper('question');
 
 			$q = new Question($label . ' Modify (y/N)?  ');
-			$q->setNormalizer(fn ($input): ?bool => $this->yesOrNoNormalizer($input ?? 'N'));
+			$q->setNormalizer(fn (?string $input): ?bool => $this->yesOrNoNormalizer($input ?? 'N'));
 
 			$wantEdit = $helper->ask($input, $output, $q);
 		} while ($wantEdit === null);
