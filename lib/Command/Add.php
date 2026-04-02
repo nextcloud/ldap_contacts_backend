@@ -319,7 +319,7 @@ class Add extends Base {
 			return;
 		}
 
-		$chosenPrefix = substr($choice, 0, strpos($choice, ' '));
+		$chosenPrefix = explode(' ', $choice, 2)[0];
 		$input->setOption('ldapConfiguration', $chosenPrefix);
 		$this->importConnection($input);
 	}

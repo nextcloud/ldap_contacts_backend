@@ -60,7 +60,7 @@ class ContactsController extends Controller {
 
 				if ($fallback === null
 					&& $userAddressBook instanceof IShareable
-					&& $userAddressBook->getOwner() !== $this->userSession->getUser()->getUID()
+					&& $userAddressBook->getOwner() !== $this->userSession->getUser()?->getUID()
 				) {
 					$fallback = $userAddressBook;
 					continue;
@@ -80,7 +80,6 @@ class ContactsController extends Controller {
 			$this->logger->info(
 				'Record with ID {id} not found for importing',
 				[
-					'app' => Application::APPID,
 					'id' => $contactId
 				]
 			);
@@ -90,7 +89,6 @@ class ContactsController extends Controller {
 			$this->logger->info(
 				'LDAP Contacts Backend with ID {id} not found',
 				[
-					'app' => Application::APPID,
 					'id' => $sourceId
 				]
 			);
@@ -113,7 +111,6 @@ class ContactsController extends Controller {
 			$this->logger->info(
 				'Photo could not be retrieved, reason: {msg}',
 				[
-					'app' => Application::APPID,
 					'msg' => $e->getMessage(),
 				]
 			);

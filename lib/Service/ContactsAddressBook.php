@@ -70,7 +70,7 @@ class ContactsAddressBook implements IAddressBook {
 			if (isset($record['PHOTO'])) {
 				try {
 					// "data:image/<submime>;base64," is prefixed
-					$imageData = substr((string)$record['PHOTO'][0], strpos((string)$record['PHOTO'][0], ','));
+					$imageData = substr((string)$record['PHOTO'][0], strpos((string)$record['PHOTO'][0], ',') ?: 0);
 					$this->photoService->store($this->cardBackend->getURI(), $record['URI'], $imageData);
 					$photoUrl = $this->urlGenerator->linkToRouteAbsolute(Application::APPID . '.contacts.photo',
 						[

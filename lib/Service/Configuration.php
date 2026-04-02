@@ -89,9 +89,16 @@ class Configuration {
 		$this->save();
 	}
 
+	/**
+	 * @throws InvalidConfiguration
+	 */
 	protected function save(): void {
-		$serialized = json_encode($this->configurations);
-		$this->config->setAppValue(Application::APPID, 'connections', $serialized);
+		try {
+			$serialized = json_encode($this->configurations, flags:JSON_THROW_ON_ERROR);
+			$this->config->setAppValue(Application::APPID, 'connections', $serialized);
+		} catch (\JsonException $e) {
+			throw new InvalidConfiguration($e->getMessage(), previous:$e);
+		}
 	}
 
 	protected function ensureLoaded(): void {
@@ -123,32 +130,44 @@ class Configuration {
 	}
 
 	private function loadCredentials(ConfigurationModel $model): void {
+		$id = $model->getId();
+		if ($id === null) {
+			throw new InvalidConfiguration('Id is null');
+		}
 		$model->setAgentDN((string)$this->credentialsManager->retrieve(
 			'',
-			$this->getCredentialsDNKey($model->getId())
+			$this->getCredentialsDNKey($id)
 		));
 		$model->setAgentPassword((string)$this->credentialsManager->retrieve(
 			'',
-			$this->getCredentialsPwdKey($model->getId())
+			$this->getCredentialsPwdKey($id)
 		));
 	}
 
 	private function saveCredentials(ConfigurationModel $model): void {
+		$id = $model->getId();
+		if ($id === null) {
+			throw new InvalidConfiguration('Id is null');
+		}
 		$this->credentialsManager->store(
 			'',
-			$this->getCredentialsDNKey($model->getId()),
+			$this->getCredentialsDNKey($id),
 			$model->getAgentDN()
 		);
 		$this->credentialsManager->store(
 			'',
-			$this->getCredentialsPwdKey($model->getId()),
+			$this->getCredentialsPwdKey($id),
 			$model->getAgentPassword()
 		);
 	}
 
 	private function deleteCredentials(ConfigurationModel $model): void {
-		$this->credentialsManager->delete('', $this->getCredentialsDNKey($model->getId()));
-		$this->credentialsManager->delete('', $this->getCredentialsPwdKey($model->getId()));
+		$id = $model->getId();
+		if ($id === null) {
+			throw new InvalidConfiguration('Id is null');
+		}
+		$this->credentialsManager->delete('', $this->getCredentialsDNKey($id));
+		$this->credentialsManager->delete('', $this->getCredentialsPwdKey($id));
 	}
 
 	private function getCredentialsDNKey(int $id): string {

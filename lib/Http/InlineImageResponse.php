@@ -18,19 +18,17 @@ use OCP\Image;
  * @template-extends Response<Http::STATUS_OK,array{}>
  */
 class InlineImageResponse extends Response implements ICallbackResponse {
-	protected Image $image;
-
-	public function __construct(Image $image) {
+	public function __construct(
+		protected Image $image,
+	) {
 		parent::__construct();
 
-		$etag = md5((string)$image->data());
-		$ext = '.' . explode('/', (string)$image->dataMimeType())[1];
+		$etag = md5((string)$this->image->data());
+		$ext = '.' . explode('/', (string)$this->image->dataMimeType())[1];
 
 		$this->setETag($etag);
 		$this->setStatus(Http::STATUS_OK);
 		$this->addHeader('Content-Disposition', 'inline; filename="' . $etag . $ext . '"');
-
-		$this->image = $image;
 	}
 
 	/**
@@ -39,8 +37,9 @@ class InlineImageResponse extends Response implements ICallbackResponse {
 	#[\Override]
 	public function callback(IOutput $output) {
 		if ($output->getHttpResponseCode() !== Http::STATUS_NOT_MODIFIED) {
-			$output->setHeader('Content-Length: ' . strlen((string)$this->image->data()));
-			$output->setOutput($this->image->data());
+			$data = (string)$this->image->data();
+			$output->setHeader('Content-Length: ' . strlen($data));
+			$output->setOutput($data);
 		}
 	}
 }

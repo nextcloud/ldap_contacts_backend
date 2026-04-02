@@ -13,6 +13,7 @@ use OCA\DAV\CardDAV\Integration\ExternalAddressBook;
 use OCA\DAV\DAV\Sharing\Plugin;
 use OCA\LDAPContactsBackend\AppInfo\Application;
 use OCA\LDAPContactsBackend\Exception\RecordNotFound;
+use OCA\LDAPContactsBackend\Model\Card;
 use Sabre\DAV\PropPatch;
 
 class AddressBook extends ExternalAddressBook {
@@ -37,6 +38,7 @@ class AddressBook extends ExternalAddressBook {
 
 	/**
 	 * @inheritDoc
+	 * @return Card
 	 * @throws RecordNotFound
 	 */
 	#[\Override]

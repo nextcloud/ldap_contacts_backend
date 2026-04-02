@@ -38,9 +38,9 @@ class LdapEntryToVcard {
 				$lAttribute = trim($lAttribute);
 				if ($lAttribute === 'dn') {
 					$vCardData[$propertyName] = base64_encode($record->getDn());
-				} elseif ($record->hasAttribute($lAttribute)) {
+				} elseif (($attribute = $record->getAttribute($lAttribute)) !== null) {
 					$vCardData[$propertyName] = [];
-					foreach ($record->getAttribute($lAttribute) as $value) {
+					foreach ($attribute as $value) {
 						if ($propertyName === 'PHOTO') {
 							$value = self::buildPhotoValue($value);
 						}
