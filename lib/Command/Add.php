@@ -340,7 +340,7 @@ class Add extends Base {
 
 		$q = new Question($label);
 		$q->setNormalizer(fn ($input): string => $this->stringNormalizer($input));
-		$values = array_map('trim', explode(',', (string)$helper->ask($input, $output, $q)));
+		$values = array_map(trim(...), explode(',', (string)$helper->ask($input, $output, $q)));
 
 		$input->setOption($subject, $values);
 	}

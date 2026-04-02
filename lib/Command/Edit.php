@@ -54,21 +54,21 @@ class Edit extends Base {
 			'type' => 'string',
 			'currentLabel' => sprintf('Address book display name: %s.', $model->getAddressBookDisplayName()),
 			'newLabel' => '  New address book display name: ',
-			'setter' => fn ($v): ConfigurationModel => $model->setAddressBookDisplayName($v),
+			'setter' => $model->setAddressBookDisplayName(...),
 		];
 		yield [
 			'key' => 'host',
 			'type' => 'string',
 			'currentLabel' => sprintf('LDAP hostname: %s.', $model->getHost()),
 			'newLabel' => '  New LDAP hostname: ',
-			'setter' => fn ($v): ConfigurationModel => $model->setHost($v),
+			'setter' => $model->setHost(...),
 		];
 		yield [
 			'key' => 'port',
 			'type' => 'uint',
 			'currentLabel' => sprintf('LDAP port: %u.', $model->getPort()),
 			'newLabel' => '  New LDAP port: ',
-			'setter' => fn ($v): ConfigurationModel => $model->setPort($v),
+			'setter' => $model->setPort(...),
 		];
 		yield [
 			'key' => 'trans_enc',
@@ -76,28 +76,28 @@ class Edit extends Base {
 			'currentLabel' => sprintf('Transport encryption: %s.', $model->getTEnc()),
 			'newLabel' => '  New transport encryption (StartTLS, LDAPS, none): ',
 			'autoComplete' => ['tls' => 'StartTLS', 'ssl' => 'LDAPS', 'none' => 'none'],
-			'setter' => fn ($v): ConfigurationModel => $model->setTEnc($v),
+			'setter' => $model->setTEnc(...),
 		];
 		yield [
 			'key' => 'bindDN',
 			'type' => 'string',
 			'currentLabel' => sprintf('LDAP bind DN: %s.', $model->getAgentDn()),
 			'newLabel' => '  New LDAP bind DN: ',
-			'setter' => fn ($v): ConfigurationModel => $model->setAgentDn($v),
+			'setter' => $model->setAgentDn(...),
 		];
 		yield [
 			'key' => 'bindPwd',
 			'type' => 'string',
 			'currentLabel' => 'LDAP bind password.',
 			'newLabel' => '  New LDAP bind password: ',
-			'setter' => fn ($v): ConfigurationModel => $model->setAgentPassword($v),
+			'setter' => $model->setAgentPassword(...),
 		];
 		yield [
 			'key' => 'filter',
 			'type' => 'string',
 			'currentLabel' => sprintf('LDAP contacts filter: %s.', $model->getFilter()),
 			'newLabel' => '  New LDAP contacts filter: ',
-			'setter' => fn ($v): ConfigurationModel => $model->setFilter($v),
+			'setter' => $model->setFilter(...),
 		];
 		yield [
 			'key' => 'base',
@@ -105,14 +105,14 @@ class Edit extends Base {
 			'currentLabel' => sprintf('LDAP contacts bases: %s.', implode('; ', $model->getBases())),
 			'newLabel' => '  New LDAP contacts bases: ',
 			'followUpLabel' => '  additional base (leave empty to continue): ',
-			'setter' => fn ($v): ConfigurationModel => $model->setBases($v),
+			'setter' => $model->setBases(...),
 		];
 		yield [
 			'key' => 'attrs',
 			'type' => 'cs-string',
 			'currentLabel' => sprintf('LDAP contacts search attributes: %s.', implode(', ', $model->getSearchAttributes())),
 			'newLabel' => '  New LDAP search attributes (comma separated): ',
-			'setter' => fn ($v): ConfigurationModel => $model->setSearchAttributes($v),
+			'setter' => $model->setSearchAttributes(...),
 		];
 		yield [
 			'key' => 'mapping',
@@ -272,7 +272,7 @@ class Edit extends Base {
 
 		$q = new Question($label);
 		$q->setNormalizer(fn ($input): string => $this->stringNormalizer($input));
-		$values = array_map('trim', explode(',', (string)$helper->ask($input, $output, $q)));
+		$values = array_map(trim(...), explode(',', (string)$helper->ask($input, $output, $q)));
 
 		$input->setOption($subject, $values);
 	}

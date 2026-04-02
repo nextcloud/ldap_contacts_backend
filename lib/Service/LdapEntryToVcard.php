@@ -28,7 +28,7 @@ class LdapEntryToVcard {
 		$vCardData = ['VERSION' => '4.0'];
 		$mappings = array_merge(self::DEFAULT_MAPPING, $configuration->getAttributeMapping());
 		foreach ($mappings as $vcProperty => $lAttributes) {
-			$propertyName = strtoupper($vcProperty);
+			$propertyName = strtoupper((string)$vcProperty);
 			if ($propertyName === 'UID') {
 				// Ignoring UID mapping as not-relevant and could generate issues in core
 				continue;
