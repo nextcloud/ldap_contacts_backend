@@ -203,7 +203,10 @@ class Edit extends Base {
 		return ($input !== null) ? trim($input) : '';
 	}
 
-	private function autoCompleteNormalizer(string $input, array $autoComplete): array {
+	/**
+	 * @param non-empty-array<string,string> $autoComplete
+	 */
+	private function autoCompleteNormalizer(string $input, array $autoComplete): string {
 		return array_change_key_case(array_flip($autoComplete))[strtolower($input)] ?? array_pop($autoComplete);
 	}
 
@@ -226,7 +229,7 @@ class Edit extends Base {
 		$q = new Question($label);
 		if (is_array($autoComplete)) {
 			$q->setAutocompleterValues(array_values($autoComplete));
-			$q->setNormalizer(fn ($input): array => $this->autoCompleteNormalizer($input, $autoComplete));
+			$q->setNormalizer(fn (string $input): string => $this->autoCompleteNormalizer($input, $autoComplete));
 		} else {
 			$q->setNormalizer(fn (string $input): string => $this->stringNormalizer($input));
 		}
