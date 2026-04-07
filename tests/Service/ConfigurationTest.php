@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * SPDX-FileCopyrightText: 2020 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
@@ -8,31 +9,27 @@ declare(strict_types=1);
 
 namespace OCA\LDAPContactsBackend\Tests\phpunit\Service;
 
-use OCA\LDAPContactsBackend\AppInfo\Application;
 use OCA\LDAPContactsBackend\Exception\ConfigurationNotFound;
 use OCA\LDAPContactsBackend\Model\Configuration as ConfigurationModel;
 use OCA\LDAPContactsBackend\Service\Configuration;
-use OCP\IConfig;
+use OCP\AppFramework\Services\IAppConfig;
 use OCP\Security\ICredentialsManager;
 use PHPUnit\Framework\MockObject\MockObject;
 use Test\TestCase;
 
 class ConfigurationTest extends TestCase {
-	/** @var Configuration */
-	protected $configurationService;
+	private Configuration $configurationService;
 
-	/** @var IConfig|MockObject */
-	protected $configMock;
-	/** @var ICredentialsManager|MockObject */
-	protected $credentialsManagerMock;
+	private IAppConfig&MockObject $appConfigMock;
+	private ICredentialsManager&MockObject $credentialsManagerMock;
 
 	public function setUp(): void {
 		parent::setUp();
 
-		$this->configMock = $this->createMock(IConfig::class);
+		$this->appConfigMock = $this->createMock(IAppConfig::class);
 		$this->credentialsManagerMock = $this->createMock(ICredentialsManager::class);
 
-		$this->configurationService = new Configuration($this->configMock, $this->credentialsManagerMock);
+		$this->configurationService = new Configuration($this->appConfigMock, $this->credentialsManagerMock);
 	}
 
 	protected function prePopulate(&$configs = null): void {
@@ -44,19 +41,19 @@ class ConfigurationTest extends TestCase {
 
 		$configs = [$c1, $c2];
 
-		$j = \json_encode($configs);
+		$arrays = \json_decode(\json_encode($configs), associative:true);
 
-		$this->configMock->expects($this->once())
-			->method('getAppValue')
-			->with(Application::APPID, 'connections', '[]')
-			->willReturn($j);
+		$this->appConfigMock->expects($this->once())
+			->method('getAppValueArray')
+			->with('connections')
+			->willReturn($arrays);
 	}
 
 	public function testCreate() {
-		$this->configMock->expects($this->once())
-			->method('getAppValue')
-			->with(Application::APPID, 'connections', '[]')
-			->willReturn('[]');
+		$this->appConfigMock->expects($this->once())
+			->method('getAppValueArray')
+			->with('connections')
+			->willReturn([]);
 
 		$config = $this->configurationService->add();
 		$this->assertInstanceOf(ConfigurationModel::class, $config);
@@ -106,10 +103,10 @@ class ConfigurationTest extends TestCase {
 	}
 
 	public function testDelete() {
-		$this->configMock->expects($this->once())
-			->method('getAppValue')
-			->with(Application::APPID, 'connections', '[]')
-			->willReturn('[]');
+		$this->appConfigMock->expects($this->once())
+			->method('getAppValueArray')
+			->with('connections')
+			->willReturn([]);
 
 		$config = $this->configurationService->add();
 		$config2 = $this->configurationService->add();
@@ -133,9 +130,9 @@ class ConfigurationTest extends TestCase {
 	public function testUpdate() {
 		$this->prePopulate($configs);
 
-		$this->configMock->expects($this->atLeastOnce())
-			->method('setAppValue')
-			->with(Application::APPID, 'connections', $this->anything());
+		$this->appConfigMock->expects($this->atLeastOnce())
+			->method('setAppValueArray')
+			->with('connections', $this->anything());
 
 		// updating both AgentDN and Password
 		$this->credentialsManagerMock->expects($this->exactly(2))
