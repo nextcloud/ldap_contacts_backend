@@ -9,12 +9,15 @@ declare(strict_types=1);
 namespace OCA\LDAPContactsBackend\Model;
 
 class LDAPBaseConfiguration {
-	protected string $prefix;
-	protected string $host;
-	protected string $port;
-	protected string $tlsMode;
-	protected string $bindDn;
-	protected string $bindPwd;
+	public function __construct(
+		private string $prefix,
+		private string $host,
+		private string $port,
+		private string $tlsMode,
+		private string $bindDn,
+		private string $bindPwd,
+	) {
+	}
 
 
 	public function getBindPwd(): string {

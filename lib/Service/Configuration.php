@@ -12,17 +12,15 @@ use OCA\LDAPContactsBackend\AppInfo\Application;
 use OCA\LDAPContactsBackend\Exception\ConfigurationNotFound;
 use OCA\LDAPContactsBackend\Exception\InvalidConfiguration;
 use OCA\LDAPContactsBackend\Model\Configuration as ConfigurationModel;
-use OCP\IConfig;
+use OCP\AppFramework\Services\IAppConfig;
 use OCP\Security\ICredentialsManager;
-use function json_decode;
-use function json_encode;
 
 class Configuration {
 	/** @var array<int,ConfigurationModel> */
 	protected array $configurations = [];
 
 	public function __construct(
-		private readonly IConfig $config,
+		private readonly IAppConfig $appConfig,
 		private readonly ICredentialsManager $credentialsManager,
 	) {
 	}
@@ -89,15 +87,20 @@ class Configuration {
 		$this->save();
 	}
 
+	/**
+	 * @throws InvalidConfiguration
+	 */
 	protected function save(): void {
-		$serialized = json_encode($this->configurations);
-		$this->config->setAppValue(Application::APPID, 'connections', $serialized);
+		try {
+			$this->appConfig->setAppValueArray('connections', $this->configurations);
+		} catch (\JsonException $e) {
+			throw new InvalidConfiguration($e->getMessage(), previous:$e);
+		}
 	}
 
 	protected function ensureLoaded(): void {
 		if (empty($this->configurations)) {
-			$connections = $this->config->getAppValue(Application::APPID, 'connections', '[]');
-			$connections = json_decode($connections, true);
+			$connections = $this->appConfig->getAppValueArray('connections');
 			foreach ($connections as $connection) {
 				try {
 					$model = $this->modelFromArray($connection);
@@ -123,32 +126,44 @@ class Configuration {
 	}
 
 	private function loadCredentials(ConfigurationModel $model): void {
+		$id = $model->getId();
+		if ($id === null) {
+			throw new InvalidConfiguration('Id is null');
+		}
 		$model->setAgentDN((string)$this->credentialsManager->retrieve(
 			'',
-			$this->getCredentialsDNKey($model->getId())
+			$this->getCredentialsDNKey($id)
 		));
 		$model->setAgentPassword((string)$this->credentialsManager->retrieve(
 			'',
-			$this->getCredentialsPwdKey($model->getId())
+			$this->getCredentialsPwdKey($id)
 		));
 	}
 
 	private function saveCredentials(ConfigurationModel $model): void {
+		$id = $model->getId();
+		if ($id === null) {
+			throw new InvalidConfiguration('Id is null');
+		}
 		$this->credentialsManager->store(
 			'',
-			$this->getCredentialsDNKey($model->getId()),
+			$this->getCredentialsDNKey($id),
 			$model->getAgentDN()
 		);
 		$this->credentialsManager->store(
 			'',
-			$this->getCredentialsPwdKey($model->getId()),
+			$this->getCredentialsPwdKey($id),
 			$model->getAgentPassword()
 		);
 	}
 
 	private function deleteCredentials(ConfigurationModel $model): void {
-		$this->credentialsManager->delete('', $this->getCredentialsDNKey($model->getId()));
-		$this->credentialsManager->delete('', $this->getCredentialsPwdKey($model->getId()));
+		$id = $model->getId();
+		if ($id === null) {
+			throw new InvalidConfiguration('Id is null');
+		}
+		$this->credentialsManager->delete('', $this->getCredentialsDNKey($id));
+		$this->credentialsManager->delete('', $this->getCredentialsPwdKey($id));
 	}
 
 	private function getCredentialsDNKey(int $id): string {

@@ -28,7 +28,7 @@ class LdapEntryToVcard {
 		$vCardData = ['VERSION' => '4.0'];
 		$mappings = array_merge(self::DEFAULT_MAPPING, $configuration->getAttributeMapping());
 		foreach ($mappings as $vcProperty => $lAttributes) {
-			$propertyName = strtoupper($vcProperty);
+			$propertyName = strtoupper((string)$vcProperty);
 			if ($propertyName === 'UID') {
 				// Ignoring UID mapping as not-relevant and could generate issues in core
 				continue;
@@ -38,9 +38,9 @@ class LdapEntryToVcard {
 				$lAttribute = trim($lAttribute);
 				if ($lAttribute === 'dn') {
 					$vCardData[$propertyName] = base64_encode($record->getDn());
-				} elseif ($record->hasAttribute($lAttribute)) {
+				} elseif (($attribute = $record->getAttribute($lAttribute)) !== null) {
 					$vCardData[$propertyName] = [];
-					foreach ($record->getAttribute($lAttribute) as $value) {
+					foreach ($attribute as $value) {
 						if ($propertyName === 'PHOTO') {
 							$value = self::buildPhotoValue($value);
 						}

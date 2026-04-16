@@ -263,7 +263,7 @@ class Add extends Base {
 		return 0;
 	}
 
-	protected function importConnection(InputInterface $input) {
+	protected function importConnection(InputInterface $input): void {
 		static $wasRun = false;
 		if ($wasRun || !$this->connectionImporter instanceof ConnectionImporter) {
 			// avoid running twice during interact && executed
@@ -319,7 +319,7 @@ class Add extends Base {
 			return;
 		}
 
-		$chosenPrefix = substr($choice, 0, strpos($choice, ' '));
+		$chosenPrefix = explode(' ', $choice, 2)[0];
 		$input->setOption('ldapConfiguration', $chosenPrefix);
 		$this->importConnection($input);
 	}
@@ -329,7 +329,7 @@ class Add extends Base {
 		$helper = $this->getHelper('question');
 
 		$q = new Question($label);
-		$q->setNormalizer(fn ($input): string => $this->stringNormalizer($input));
+		$q->setNormalizer(fn (string $input): string => $this->stringNormalizer($input));
 
 		$input->setOption($subject, $helper->ask($input, $output, $q));
 	}
@@ -339,8 +339,8 @@ class Add extends Base {
 		$helper = $this->getHelper('question');
 
 		$q = new Question($label);
-		$q->setNormalizer(fn ($input): string => $this->stringNormalizer($input));
-		$values = array_map('trim', explode(',', (string)$helper->ask($input, $output, $q)));
+		$q->setNormalizer(fn (string $input): string => $this->stringNormalizer($input));
+		$values = array_map(trim(...), explode(',', (string)$helper->ask($input, $output, $q)));
 
 		$input->setOption($subject, $values);
 	}
@@ -360,7 +360,7 @@ class Add extends Base {
 		$helper = $this->getHelper('question');
 
 		$q = new Question($label);
-		$q->setNormalizer(fn ($input): ?int => $this->posNumberNormalizer($input));
+		$q->setNormalizer(fn (string $input): ?int => $this->posNumberNormalizer($input));
 
 		$input->setOption($subject, $helper->ask($input, $output, $q));
 	}
@@ -377,13 +377,13 @@ class Add extends Base {
 		$isFollowUp = false;
 
 		$q = new Question($label);
-		$q->setNormalizer(fn ($input): string => $this->stringNormalizer($input));
+		$q->setNormalizer(fn (string $input): string => $this->stringNormalizer($input));
 
 		while (($value = $helper->ask($input, $output, $q)) !== '') {
 			$values[] = $value;
 			if (!$isFollowUp) {
 				$q = new Question($followUpLabel);
-				$q->setNormalizer(fn ($input): string => $this->stringNormalizer($input));
+				$q->setNormalizer(fn (string $input): string => $this->stringNormalizer($input));
 				$isFollowUp = true;
 			}
 		}

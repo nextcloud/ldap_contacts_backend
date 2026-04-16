@@ -27,13 +27,14 @@ class ConnectionImporter {
 		}
 
 		$c = new Configuration($prefix);
-		$m = new LDAPBaseConfiguration();
-		$m
-			->setPort($c->ldapPort)
-			->setBindDn($c->ldapAgentName)
-			->setBindPwd($c->ldapAgentPassword)
-			->setHost($this->extractHost($c->ldapHost))
-			->setTlsMode($this->extractTlsMode($c->ldapHost, $c->ldapPort, $c->ldapTLS));
+		$m = new LDAPBaseConfiguration(
+			prefix:$prefix,
+			port:$c->ldapPort,
+			bindDn:$c->ldapAgentName,
+			bindPwd:$c->ldapAgentPassword,
+			host:$this->extractHost($c->ldapHost),
+			tlsMode:$this->extractTlsMode($c->ldapHost, $c->ldapPort, $c->ldapTLS),
+		);
 
 		return $m;
 	}
@@ -47,14 +48,15 @@ class ConnectionImporter {
 		$i = 0;
 		foreach ($prefixes as $prefix) {
 			$c = new Configuration($prefix);
-			$m = new LDAPBaseConfiguration();
-			$m
-				->setPrefix($prefix)
-				->setPort($c->ldapPort)
-				->setBindDn($c->ldapAgentName)
-				->setBindPwd($c->ldapAgentPassword)
-				->setHost($this->extractHost($c->ldapHost))
-				->setTlsMode($this->extractTlsMode($c->ldapHost, $c->ldapPort, $c->ldapTLS));
+			$m = new LDAPBaseConfiguration(
+				prefix:$prefix,
+				port:$c->ldapPort,
+				bindDn:$c->ldapAgentName,
+				bindPwd:$c->ldapAgentPassword,
+				host:$this->extractHost($c->ldapHost),
+				tlsMode:$this->extractTlsMode($c->ldapHost, $c->ldapPort, $c->ldapTLS),
+			);
+
 			// give disabled configurations a high key, so they will be sorted to the end
 			$connections[$i + ((int)!$c->ldapConfigurationActive * 100)] = $m;
 			$i++;
