@@ -1,0 +1,7 @@
+{ "translations": {
+    "All contacts" : "همه مخاطبان",
+    "Copy to address book" : "کپی در دفترچه نشانی",
+    "LDAP Contacts Backend" : "Backend مخاطبان LDAP",
+    "LDAP backend for Nextcloud Contacts" : "Backend LDAP برای مخاطبان Nextcloud"
+},"pluralForm" :"nplurals=2; plural=(n > 1);"
+}
