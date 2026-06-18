@@ -1,9 +1,9 @@
 OC.L10N.register(
     "ldap_contacts_backend",
     {
-    "All contacts" : "همه مخاطبان",
-    "Copy to address book" : "کپی در دفترچه نشانی",
-    "LDAP Contacts Backend" : "Backend مخاطبان LDAP",
-    "LDAP backend for Nextcloud Contacts" : "Backend LDAP برای مخاطبان Nextcloud"
+    "All contacts" : "همه مخاطبین",
+    "Copy to address book" : "کپی به دفترچه آدرس",
+    "LDAP Contacts Backend" : "پشتیبان مخاطبین LDAP",
+    "LDAP backend for Nextcloud Contacts" : "پشتیبان LDAP برای مخاطبین نکست‌کلود"
 },
 "nplurals=2; plural=(n > 1);");
