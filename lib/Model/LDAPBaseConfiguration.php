@@ -16,7 +16,6 @@ class LDAPBaseConfiguration {
 	protected string $bindDn;
 	protected string $bindPwd;
 
-
 	public function getBindPwd(): string {
 		return $this->bindPwd;
 	}
