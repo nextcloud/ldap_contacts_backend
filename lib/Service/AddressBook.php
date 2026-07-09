@@ -26,7 +26,6 @@ class AddressBook extends ExternalAddressBook {
 		$this->cardBackend = $cardBackend;
 	}
 
-
 	/**
 	 * @inheritDoc
 	 */
