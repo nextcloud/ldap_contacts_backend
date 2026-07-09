@@ -33,7 +33,7 @@ class ContactsAddressBook implements IAddressBook {
 	}
 
 	#[\Override]
-	public function getKey() {
+	public function getKey(): string {
 		return $this->cardBackend->getURI();
 	}
 
@@ -44,7 +44,7 @@ class ContactsAddressBook implements IAddressBook {
 	}
 
 	#[\Override]
-	public function getDisplayName() {
+	public function getDisplayName(): string {
 		return $this->cardBackend->getDisplayName();
 	}
 
@@ -93,17 +93,17 @@ class ContactsAddressBook implements IAddressBook {
 	}
 
 	#[\Override]
-	public function createOrUpdate($properties) {
+	public function createOrUpdate($properties): array {
 		return [];
 	}
 
 	#[\Override]
-	public function getPermissions() {
+	public function getPermissions(): int {
 		return Constants::PERMISSION_READ;
 	}
 
 	#[\Override]
-	public function delete($id) {
+	public function delete($id): bool {
 		return false;
 	}
 
