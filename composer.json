@@ -18,7 +18,7 @@
 	},
 	"require-dev": {
 		"nextcloud/ocp": "dev-master",
-		"sabre/dav": "4.7.0",
+		"sabre/dav": "4.7.1",
 		"bamarni/composer-bin-plugin": "^1.8"
 	},
 	"require": {
