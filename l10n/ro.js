@@ -1,6 +1,9 @@
 OC.L10N.register(
     "ldap_contacts_backend",
     {
-    "All contacts" : "Toate contactele"
+    "All contacts" : "Toate contactele",
+    "Copy to address book" : "Copiază în agendă",
+    "LDAP Contacts Backend" : "Backend LDAP pentru Contacte",
+    "LDAP backend for Nextcloud Contacts" : "Backend LDAP pentru Nextcloud Contacte"
 },
 "nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));");
