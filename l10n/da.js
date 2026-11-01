@@ -3,7 +3,7 @@ OC.L10N.register(
     {
     "All contacts" : "Alle kontakter",
     "Copy to address book" : "Kopier til adressebog",
-    "LDAP Contacts Backend" : "LDAP kontakt backend",
-    "LDAP backend for Nextcloud Contacts" : "LDAP backend til Nextcloud kontakter"
+    "LDAP Contacts Backend" : "LDAP-kontaktbackend",
+    "LDAP backend for Nextcloud Contacts" : "LDAP-backend til Nextcloud Kontakter"
 },
 "nplurals=2; plural=(n != 1);");
