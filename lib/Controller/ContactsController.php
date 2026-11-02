@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * SPDX-FileCopyrightText: 2020 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
@@ -135,11 +136,13 @@ class ContactsController extends Controller {
 
 	protected function getRedirectURL(string $uri): string {
 		$contactsL10N = $this->l10nFactory->get('contacts');
-		return $this->urlGenerator->linkToRoute('contacts.page.indexgroup.contact',
-			[
-				'group' => $contactsL10N->t('All contacts'),
-				'contact' => $uri
-			]
-		);
+		$redirectUrl = $this->urlGenerator->linkToRoute('contacts.page.index');
+		if ($redirectUrl === '') {
+			$this->logger->error('Failed to generate URL for contacts redirection');
+			return $this->urlGenerator->linkToDefaultPageUrl();
+		}
+		return $redirectUrl
+			. \rawurlencode($contactsL10N->t('All contacts'))
+			. '/' . \base64_encode($uri);
 	}
 }
